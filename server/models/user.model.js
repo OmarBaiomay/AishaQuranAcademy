@@ -1,6 +1,40 @@
 import mongoose from "mongoose";
 import axios from "axios"; // To fetch data from the API
 
+const availabilitySchema = new mongoose.Schema({
+    day: {
+        type: String,
+        required: true,
+        enum: [
+            "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
+        ], // Restrict to valid days of the week
+    },
+    hour: {
+        type: String,
+        required: true,
+        validate: {
+            validator: function (v) {
+                return /^(0?[1-9]|1[0-2]):[0-5][0-9]$/.test(v); // Validates hour in hh:mm format (supports 02:00 and 2:00)
+            },
+            message: (props) => `${props.value} is not a valid hour format! Use hh:mm.`,
+        },
+    },
+    period: {
+        type: String,
+        required: true,
+        enum: ["AM", "PM"], // Restrict to "AM" or "PM"
+    },
+    isBooked: {
+        type: Boolean,
+        default: false,
+    },
+    classroomId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Classroom", // Reference to the Classroom model
+        default: null, // Null if not booked
+    },
+});
+
 const userSchema = new mongoose.Schema(
     {
         email: {
@@ -55,6 +89,11 @@ const userSchema = new mongoose.Schema(
         countryCode: {
             type: String,
         },
+
+        availability: {
+            type: [availabilitySchema], // Embeds availability schema as an array
+            default: [], // Default empty array
+        },
     },
     { timestamps: true }
 );
@@ -88,6 +127,6 @@ userSchema.pre("save", async function (next) {
     }
 });
 
-const user = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
-export default user;
+export default User;

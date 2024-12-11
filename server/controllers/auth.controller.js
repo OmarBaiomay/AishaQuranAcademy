@@ -4,7 +4,16 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 
 export const signup = async (req, res) => {
-    const { firstName, lastName, password, email, phone, country, role } = req.body;
+    const {
+        firstName,
+        lastName,
+        password,
+        email,
+        phone,
+        country,
+        role,
+        availability, // Include availability for Teacher role
+    } = req.body;
 
     try {
         // Validate required fields
@@ -25,13 +34,45 @@ export const signup = async (req, res) => {
         // Validate role
         const allowedRoles = ["Student", "Teacher", "Supervisor", "Administrator"];
         if (!allowedRoles.includes(role)) {
-            return res.status(400).json({ message: `Invalid role. Allowed roles are: ${allowedRoles.join(", ")}` });
+            return res
+                .status(400)
+                .json({ message: `Invalid role. Allowed roles are: ${allowedRoles.join(", ")}` });
         }
 
         // Check if user already exists
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({ message: "Email already exists!" });
+        }
+
+        // If role is Teacher, validate availability
+        if (role === "Teacher") {
+            if (!Array.isArray(availability)) {
+                return res.status(400).json({ message: "Availability must be an array." });
+            }
+
+            // Validate each availability slot
+            for (const slot of availability) {
+                if (
+                    !slot.day ||
+                    !slot.hour ||
+                    !slot.period ||
+                    !["AM", "PM"].includes(slot.period) ||
+                    ![
+                        "Monday",
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday",
+                        "Saturday",
+                        "Sunday",
+                    ].includes(slot.day)
+                ) {
+                    return res
+                        .status(400)
+                        .json({ message: "Each availability slot must have a valid day, hour, and period." });
+                }
+            }
         }
 
         // Hash the password
@@ -47,6 +88,7 @@ export const signup = async (req, res) => {
             phone,
             country,
             role,
+            availability: role === "Teacher" ? availability : [], // Set availability for Teacher role
         });
 
         // Save the user and automatically assign country code
@@ -64,6 +106,7 @@ export const signup = async (req, res) => {
             country: newUser.country,
             countryCode: newUser.countryCode,
             role: newUser.role,
+            availability: newUser.availability, // Include availability in the response
         });
     } catch (error) {
         console.error("Error in Sign Up Controller:", error.message);
