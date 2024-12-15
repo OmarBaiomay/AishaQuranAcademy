@@ -17,4 +17,11 @@ router.get('/classroom/:id', protectRoute, getClassroomById); // Get a specific 
 router.put('/classroom/:id', protectRoute, updateClassroom); // Update a classroom by ID
 router.delete('/classroom/:id', protectRoute, deleteClassroom); // Delete a classroom by ID
 
+
+router.post('/classroom/:classroomId/classes', protectRoute, addClassToClassroom); // Add a class
+router.put('/classroom/:classroomId/classes/:classId', protectRoute, updateClassAttendance); // Update class attendance
+router.get('/classroom/:classroomId/classes', protectRoute, getAllClasses); // Get all classes for a classroom
+router.post('/classroom/:classroomId/generate-classes', protectRoute, generateMonthlyClasses);
+
+
 export default router;

@@ -42,57 +42,40 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
-
         firstName: {
             type: String,
             required: true,
         },
-
         lastName: {
             type: String,
             required: true,
         },
-
         password: {
             type: String,
             required: true,
             minlength: 6,
         },
-
         profilePic: {
             type: String,
             default: "",
         },
-
         role: {
             type: String,
             required: true,
-            enum: ["Student", "Teacher", "Supervisor", "Administrator"], // Allowed roles
+            enum: ["Student", "Teacher", "Supervisor", "Administrator"],
         },
-
         phone: {
             type: String,
             required: true,
-            validate: {
-                validator: function (v) {
-                    return /^[0-9]{10,15}$/.test(v); // Basic phone number validation
-                },
-                message: (props) => `${props.value} is not a valid phone number!`,
-            },
         },
-
         country: {
             type: String,
             required: true,
         },
-
-        countryCode: {
+        timeZone: {
             type: String,
-        },
-
-        availability: {
-            type: [availabilitySchema], // Embeds availability schema as an array
-            default: [], // Default empty array
+            required: true,
+            default: "UTC", // Default to UTC
         },
     },
     { timestamps: true }
