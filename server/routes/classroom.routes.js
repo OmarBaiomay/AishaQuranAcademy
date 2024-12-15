@@ -5,6 +5,11 @@ import {
     getClassroomById,
     updateClassroom,
     deleteClassroom,
+    addClassToClassroom,
+    updateClassAttendance,
+    getAllClasses,
+    generateMonthlyClasses,
+    
 } from "../controllers/calssroom.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
 

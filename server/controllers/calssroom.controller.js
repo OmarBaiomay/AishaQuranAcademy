@@ -43,6 +43,12 @@ export const createClassroom = async (req, res) => {
         }
 
         // Check teacher's availability
+        if (!teacher.availability || !Array.isArray(teacher.availability) || teacher.availability.length === 0) {
+            return res.status(400).json({
+                message: "The teacher does not have availability defined. Please update their availability.",
+            });
+        }
+
         const slot = teacher.availability.find(
             (slot) =>
                 slot.day === day &&
