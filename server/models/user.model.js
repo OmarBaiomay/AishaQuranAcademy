@@ -77,6 +77,11 @@ const userSchema = new mongoose.Schema(
             required: true,
             default: "UTC", // Default to UTC
         },
+
+        availability: {
+            type: [availabilitySchema],
+            default: [], // Default to an empty array
+        },
     },
     { timestamps: true }
 );

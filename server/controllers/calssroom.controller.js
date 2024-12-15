@@ -58,9 +58,12 @@ export const createClassroom = async (req, res) => {
         );
 
         if (!slot) {
-            return res
-                .status(400)
-                .json({ message: "The selected time slot is not available or already booked." });
+            console.log("Teacher's availability:", teacher.availability);
+            console.log("Requested class time:", { day, hour, period });
+        
+            return res.status(400).json({
+                message: "The selected time slot is not available or already booked.",
+            });
         }
 
         // Create the new classroom
@@ -305,7 +308,7 @@ export const generateMonthlyClasses = async (req, res) => {
 
                 classes.push({
                     day,
-                    time: classDateTime.toFormat("hh:mm a"),
+                    time: classDateTime.toFormat("hh:mm a"), // Ensures the time is in hh:mm AM/PM format
                     period,
                     date: classDateTime.toJSDate(), // Save as JS Date object
                     zoomLink: `https://zoom.us/meeting/${classroomId}-${count + 1}`,

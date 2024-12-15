@@ -14,11 +14,11 @@ const classSchema = new mongoose.Schema({
         required: true,
         validate: {
             validator: function (v) {
-                return /^(0?[1-9]|1[0-2]):[0-5][0-9]$/.test(v);
+                return /^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/.test(v); // Matches hh:mm AM/PM format
             },
-            message: (props) => `${props.value} is not a valid time format! Use hh:mm.`,
+            message: (props) => `${props.value} is not a valid time format! Use hh:mm AM/PM.`,
         },
-    },
+    },    
     period: {
         type: String,
         required: true,
@@ -96,6 +96,7 @@ const classroomSchema = new mongoose.Schema(
         totalPricePerMonth: {
             type: Number,
             required: true,
+            default: 64
         },
         classes: [classSchema], // Embedded array of classes
         isActive: {
