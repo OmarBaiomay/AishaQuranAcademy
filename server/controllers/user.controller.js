@@ -118,3 +118,50 @@ export const deleteUser = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+// Updating Availability
+export const updateTeacherAvailability = async (req, res) => {
+    const { teacherId, availabilityId } = req.params;
+    const { day, hour, period, isBooked } = req.body;
+
+    try {
+        // Find the teacher by ID
+        const teacher = await User.findById(teacherId);
+
+        if (!teacher || teacher.role !== "Teacher") {
+            return res.status(404).json({ message: "Teacher not found or invalid role." });
+        }
+
+        // Find the specific availability slot by its ID
+        const availability = teacher.availability.id(availabilityId);
+
+        if (!availability) {
+            return res.status(404).json({ message: "Availability slot not found." });
+        }
+
+        // If marking as not booked, delete the connected classroom
+        if (typeof isBooked === "boolean" && !isBooked && availability.classroomId) {
+            await Classroom.findByIdAndDelete(availability.classroomId);
+
+            // Clear the classroomId
+            availability.classroomId = null;
+        }
+
+        // Update the availability fields
+        if (day) availability.day = day;
+        if (hour) availability.hour = hour;
+        if (period) availability.period = period;
+        if (typeof isBooked === "boolean") availability.isBooked = isBooked;
+
+        // Save the updated teacher
+        await teacher.save();
+
+        res.status(200).json({
+            message: "Teacher availability updated successfully.",
+            updatedAvailability: availability,
+        });
+    } catch (error) {
+        console.error("Error updating teacher availability:", error.message);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};

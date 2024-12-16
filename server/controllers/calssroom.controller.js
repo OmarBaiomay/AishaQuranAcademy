@@ -4,83 +4,60 @@ import User from "../models/user.model.js";
 
 
 export const createClassroom = async (req, res) => {
-    const { teacherId, studentId, supervisorId, classTime, notes } = req.body;
+    const { teacherId, studentId, supervisorId, classTimes, numberOfClassesPerMonth, notes } = req.body;
 
     try {
         // Validate required fields
-        if (!teacherId || !studentId || !supervisorId || !classTime) {
+        if (!teacherId || !studentId || !supervisorId || !classTimes || !numberOfClassesPerMonth) {
             return res.status(400).json({ message: "All fields are required." });
         }
 
-        const { day, hour, period } = classTime;
-
-        // Validate classTime fields
-        if (
-            !day ||
-            !hour ||
-            !period ||
-            !["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].includes(day) ||
-            !/^([1-9]|1[0-2]):[0-5][0-9]$/.test(hour) ||
-            !["AM", "PM"].includes(period)
-        ) {
-            return res
-                .status(400)
-                .json({ message: "Invalid classTime. Ensure valid day, hour, and period." });
-        }
-
-        // Fetch teacher, student, and supervisor from database
         const teacher = await User.findById(teacherId);
-        const student = await User.findById(studentId);
-        const supervisor = await User.findById(supervisorId);
 
-        if (!teacher || !student || !supervisor) {
-            return res.status(404).json({ message: "Teacher, Student, or Supervisor not found." });
+        if (!teacher || teacher.role !== "Teacher") {
+            return res.status(400).json({ message: "Invalid teacher ID or role." });
         }
 
-        // Ensure teacher role
-        if (teacher.role !== "Teacher") {
-            return res.status(400).json({ message: "The assigned teacher is not a valid Teacher role." });
-        }
-
-        // Check teacher's availability
-        if (!teacher.availability || !Array.isArray(teacher.availability) || teacher.availability.length === 0) {
-            return res.status(400).json({
-                message: "The teacher does not have availability defined. Please update their availability.",
-            });
-        }
-
-        const slot = teacher.availability.find(
+        // Validate and book the teacher's available times
+        const availableSlots = teacher.availability.filter(
             (slot) =>
-                slot.day === day &&
-                slot.hour === hour &&
-                slot.period === period &&
-                !slot.isBooked
+                classTimes.some(
+                    (time) =>
+                        time.day === slot.day &&
+                        time.hour === slot.hour &&
+                        time.period === slot.period &&
+                        !slot.isBooked
+                )
         );
 
-        if (!slot) {
-            console.log("Teacher's availability:", teacher.availability);
-            console.log("Requested class time:", { day, hour, period });
-        
+        if (availableSlots.length !== classTimes.length) {
             return res.status(400).json({
-                message: "The selected time slot is not available or already booked.",
+                message: "Some or all of the requested times are not available.",
             });
         }
 
-        // Create the new classroom
+        // Book the requested slots
+        availableSlots.forEach((slot) => {
+            slot.isBooked = true;
+        });
+
+        // Create the classroom
         const newClassroom = new Classroom({
             teacher: teacherId,
             student: studentId,
             supervisor: supervisorId,
-            classTime,
+            classTimes,
+            numberOfClassesPerMonth,
             notes,
         });
 
-        // Save the classroom
         const savedClassroom = await newClassroom.save();
 
-        // Update teacher's availability
-        slot.isBooked = true;
-        slot.classroomId = savedClassroom._id;
+        // Link the classroom to the teacher's availability
+        availableSlots.forEach((slot) => {
+            slot.classroomId = savedClassroom._id;
+        });
+
         await teacher.save();
 
         res.status(201).json({
@@ -88,11 +65,10 @@ export const createClassroom = async (req, res) => {
             classroom: savedClassroom,
         });
     } catch (error) {
-        console.error("Error in Create Classroom Controller:", error.message);
+        console.error("Error creating classroom:", error.message);
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
-
 
 // Get all classrooms
 export const getClassrooms = async (req, res) => {
@@ -130,25 +106,63 @@ export const getClassroomById = async (req, res) => {
 
 // Update a classroom by ID
 export const updateClassroom = async (req, res) => {
-    const { teacherId, studentId, supervisorId, classTime, notes } = req.body;
+    const { classroomId } = req.params;
+    const { teacherId, classTimes, notes } = req.body;
 
     try {
-        const classroom = await Classroom.findById(req.params.id);
-
+        const classroom = await Classroom.findById(classroomId);
         if (!classroom) {
             return res.status(404).json({ message: "Classroom not found." });
         }
 
-        // Update fields if provided
-        if (teacherId) classroom.teacher = teacherId;
-        if (studentId) classroom.student = studentId;
-        if (supervisorId) classroom.supervisor = supervisorId;
-        if (classTime) classroom.classTime = classTime;
-        if (notes) classroom.notes = notes;
+        const teacher = await User.findById(teacherId);
+
+        if (!teacher || teacher.role !== "Teacher") {
+            return res.status(400).json({ message: "Invalid teacher ID or role." });
+        }
+
+        // Release previously booked times
+        teacher.availability.forEach((slot) => {
+            if (slot.classroomId?.toString() === classroomId) {
+                slot.isBooked = false;
+                slot.classroomId = null;
+            }
+        });
+
+        // Validate and book new times
+        const availableSlots = teacher.availability.filter(
+            (slot) =>
+                classTimes.some(
+                    (time) =>
+                        time.day === slot.day &&
+                        time.hour === slot.hour &&
+                        time.period === slot.period &&
+                        !slot.isBooked
+                )
+        );
+
+        if (availableSlots.length !== classTimes.length) {
+            return res.status(400).json({
+                message: "Some or all of the requested times are not available.",
+            });
+        }
+
+        availableSlots.forEach((slot) => {
+            slot.isBooked = true;
+            slot.classroomId = classroomId;
+        });
+
+        // Update classroom details
+        classroom.classTimes = classTimes;
+        classroom.notes = notes || classroom.notes;
 
         await classroom.save();
+        await teacher.save();
 
-        res.status(200).json({ message: "Classroom updated successfully.", classroom });
+        res.status(200).json({
+            message: "Classroom updated successfully.",
+            classroom,
+        });
     } catch (error) {
         console.error("Error updating classroom:", error.message);
         res.status(500).json({ message: "Internal Server Error" });
@@ -157,14 +171,35 @@ export const updateClassroom = async (req, res) => {
 
 // Delete a classroom by ID
 export const deleteClassroom = async (req, res) => {
+    const { classroomId } = req.params;
+
     try {
-        const classroom = await Classroom.findByIdAndDelete(req.params.id);
+        const classroom = await Classroom.findById(classroomId);
 
         if (!classroom) {
             return res.status(404).json({ message: "Classroom not found." });
         }
 
-        res.status(200).json({ message: "Classroom deleted successfully." });
+        const teacher = await User.findById(classroom.teacher);
+
+        if (teacher) {
+            // Unbook associated times
+            teacher.availability.forEach((slot) => {
+                if (slot.classroomId?.toString() === classroomId) {
+                    slot.isBooked = false;
+                    slot.classroomId = null;
+                }
+            });
+
+            await teacher.save();
+        }
+
+        // Delete the classroom
+        await Classroom.findByIdAndDelete(classroomId);
+
+        res.status(200).json({
+            message: "Classroom deleted successfully and availability updated.",
+        });
     } catch (error) {
         console.error("Error deleting classroom:", error.message);
         res.status(500).json({ message: "Internal Server Error" });
@@ -260,76 +295,76 @@ export const generateMonthlyClasses = async (req, res) => {
     const { classroomId } = req.params;
 
     try {
-        // Find the classroom and populate related user roles
-        const classroom = await Classroom.findById(classroomId)
-            .populate("teacher")
-            .populate("student")
-            .populate("supervisor");
+        // Find the classroom
+        const classroom = await Classroom.findById(classroomId);
 
         if (!classroom) {
             return res.status(404).json({ message: "Classroom not found." });
         }
 
-        const { classTime, numberOfClassesPerMonth, teacher, student, supervisor } = classroom;
+        const { classTimes, numberOfClassesPerMonth, classes } = classroom;
 
-        if (!classTime) {
-            return res.status(400).json({ message: "Classroom does not have classTime defined." });
+        if (!classTimes || classTimes.length === 0) {
+            return res.status(400).json({ message: "Classroom does not have classTimes defined." });
         }
 
-        const { day, hour, period } = classTime;
+        // Get current month and year
+        const now = DateTime.now();
+        const currentMonth = now.toFormat("yyyy-MM");
 
-        // Get time zones for teacher, student, and supervisor
-        const teacherTimeZone = teacher.timeZone || "UTC";
-        const studentTimeZone = student.timeZone || "UTC";
-        const supervisorTimeZone = supervisor.timeZone || "UTC";
+        // Check if classes for the current month already exist
+        const existingClasses = classes.filter((cls) => cls.month === currentMonth);
 
-        // Generate dates for the current month
-        const today = DateTime.now().setZone(teacherTimeZone); // Base scheduling on teacher's time zone
-        const year = today.year;
-        const month = today.month;
+        if (existingClasses.length > 0) {
+            return res.status(400).json({
+                message: "Monthly classes for the current month have already been created.",
+            });
+        }
 
-        const classes = [];
-        let count = 0;
+        // Distribute the required number of classes across the available classTimes
+        const totalTimes = classTimes.length;
+        const classesPerTime = Math.floor(numberOfClassesPerMonth / totalTimes);
+        const remainder = numberOfClassesPerMonth % totalTimes; // Extra classes to distribute
 
-        for (let date = 1; count < numberOfClassesPerMonth && date <= 31; date++) {
-            const currentDate = DateTime.local(year, month, date, { zone: teacherTimeZone });
+        const newClasses = [];
+        classTimes.forEach(({ day, hour, period }, index) => {
+            // Calculate how many classes to generate for this specific classTime
+            const classesToGenerate = classesPerTime + (index < remainder ? 1 : 0); // Distribute remainder
 
-            // Check if the current date matches the specified day
-            if (currentDate.toFormat("cccc") === day) {
-                // Convert class time to DateTime in teacher's time zone
-                const classDateTime = currentDate.set({
-                    hour: period === "AM" ? parseInt(hour) : parseInt(hour) + 12,
-                    minute: 0,
-                });
+            let count = 0;
+            for (let date = 1; count < classesToGenerate && date <= now.daysInMonth; date++) {
+                const currentDate = DateTime.local(now.year, now.month, date);
 
-                // Convert class time to student and supervisor time zones
-                const studentClassTime = classDateTime.setZone(studentTimeZone);
-                const supervisorClassTime = classDateTime.setZone(supervisorTimeZone);
-
-                classes.push({
-                    day,
-                    time: classDateTime.toFormat("hh:mm a"), // Ensures the time is in hh:mm AM/PM format
-                    period,
-                    date: classDateTime.toJSDate(), // Save as JS Date object
-                    zoomLink: `https://zoom.us/meeting/${classroomId}-${count + 1}`,
-                    times: {
-                        teacher: classDateTime.toFormat("hh:mm a z"),
-                        student: studentClassTime.toFormat("hh:mm a z"),
-                        supervisor: supervisorClassTime.toFormat("hh:mm a z"),
-                    },
-                });
-                count++;
+                // Check if the current date matches the specified day
+                if (currentDate.toFormat("cccc") === day) {
+                    newClasses.push({
+                        day,
+                        time: `${hour} ${period}`, // Format: hh:mm AM/PM
+                        date: currentDate.toJSDate(),
+                        zoomLink: `https://zoom.us/meeting/${classroomId}-${newClasses.length + 1}`,
+                        month: currentMonth,
+                        period,
+                    });
+                    count++;
+                }
             }
+        });
+
+        // Ensure the total number of classes matches `numberOfClassesPerMonth`
+        if (newClasses.length !== numberOfClassesPerMonth) {
+            return res.status(500).json({
+                message: `Unable to generate the exact number of required classes (${numberOfClassesPerMonth}). Generated ${newClasses.length} classes.`,
+            });
         }
 
         // Add generated classes to the classroom
-        classroom.classes = classroom.classes.concat(classes);
+        classroom.classes = classroom.classes.concat(newClasses);
 
         await classroom.save();
 
         res.status(201).json({
-            message: `${classes.length} classes generated for the month.`,
-            classes,
+            message: `${newClasses.length} classes generated for the month.`,
+            classes: newClasses,
         });
     } catch (error) {
         console.error("Error generating monthly classes:", error.message);
