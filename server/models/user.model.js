@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema(
         },
         lastName: {
             type: String,
-            required: true,
+            required: false,
         },
         password: {
             type: String,
@@ -63,6 +63,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
             enum: ["Student", "Teacher", "Supervisor", "Administrator"],
+            default: "Student",
         },
         phone: {
             type: String,
