@@ -156,29 +156,29 @@ export const logout = (req, res) =>{
     }
 };
 
-// export const updateProfile = async (req, res) =>{
-//     try {
-//         const {profilePic} = req.body
+export const updateProfile = async (req, res) =>{
+    try {
+        const {profilePic} = req.body
 
-//         const userId =  req.user._id
+        const userId =  req.user._id
 
-//         if(!profilePic){
-//             return res.status(400).json({message: "Profile pic is required"});
-//         }
+        if(!profilePic){
+            return res.status(400).json({message: "Profile pic is required"});
+        }
 
-//         const uploadRes = await cloudinary.uploader.upload(profilePic)
+        const uploadRes = await cloudinary.uploader.upload(profilePic)
 
-//         const updatedUser = await User.findByIdAndUpdate(userId, {
-//             profilePic: uploadRes.secure_url
-//         }, {new: true})
+        const updatedUser = await User.findByIdAndUpdate(userId, {
+            profilePic: uploadRes.secure_url
+        }, {new: true})
 
-//         return res.status(200).json(updatedUser);
+        return res.status(200).json(updatedUser);
         
-//     } catch (error) {
-//         console.log("Error in Update Profile Controller", error.message)
-//         return res.status(500).json({message: "Internal Server Error"});
-//     }
-// };
+    } catch (error) {
+        console.log("Error in Update Profile Controller", error.message)
+        return res.status(500).json({message: "Internal Server Error"});
+    }
+};
 
 
 export const checkAuth = (req, res) =>{
