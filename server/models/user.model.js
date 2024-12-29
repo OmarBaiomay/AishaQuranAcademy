@@ -42,13 +42,14 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
-        firstName: {
+        fullName: {
             type: String,
             required: true,
         },
-        lastName: {
+        gender: {
             type: String,
-            required: false,
+            required: true,
+            enum: ["Male", "Female"],
         },
         password: {
             type: String,
@@ -78,7 +79,6 @@ const userSchema = new mongoose.Schema(
             required: true,
             default: "UTC", // Default to UTC
         },
-
         availability: {
             type: [availabilitySchema],
             default: [], // Default to an empty array

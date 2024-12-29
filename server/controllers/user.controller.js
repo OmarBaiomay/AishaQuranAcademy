@@ -3,11 +3,11 @@ import bcrypt from "bcryptjs";
 
 // Create a new user
 export const createUser = async (req, res) => {
-    const { firstName, lastName, email, password, phone, country, role, availability } = req.body;
+    const { fullName, email, password, phone, country, role, availability, gender } = req.body;
 
     try {
         // Validate required fields
-        if (!firstName || !lastName || !email || !password || !phone || !country || !role) {
+        if (!fullName || !email || !password || !phone || !country || !role || !gender) {
             return res.status(400).json({ message: "All fields are required." });
         }
 
@@ -23,8 +23,7 @@ export const createUser = async (req, res) => {
 
         // Create the new user
         const newUser = new User({
-            firstName,
-            lastName,
+            fullName,
             email,
             password: hashedPassword,
             phone,
@@ -72,7 +71,7 @@ export const getUserById = async (req, res) => {
 
 // Update a user by ID
 export const updateUser = async (req, res) => {
-    const { firstName, lastName, email, phone, country, role, availability } = req.body;
+    const { fullName, email, phone, country, role, availability, gender } = req.body;
 
     try {
         const user = await User.findById(req.params.id);
@@ -82,12 +81,12 @@ export const updateUser = async (req, res) => {
         }
 
         // Update fields if provided
-        if (firstName) user.firstName = firstName;
-        if (lastName) user.lastName = lastName;
+        if (fullName) user.fullName = fullName;
         if (email) user.email = email;
         if (phone) user.phone = phone;
         if (country) user.country = country;
         if (role) user.role = role;
+        if (gender) user.role = gender;
 
         // Update availability only if role is Teacher
         if (role === "Teacher" && availability) {

@@ -7,8 +7,8 @@ import SignUpPage from './pages/SignUpPage'
 import LogInPage from './pages/LogInPage'
 import SettingsPage from './pages/SettingsPage'
 import ProfilePage from './pages/ProfilePage'
-import { axiosInstance } from './lib/axios'
 import { userAuthStore } from './store/useAuthStore'
+import { Toaster } from 'react-hot-toast'
 
 const App = () => {
 
@@ -17,8 +17,6 @@ const App = () => {
   useEffect(()=>{
     checkAuth();
   }, [checkAuth])
-
-  console.log({authUser});
 
   if(isCheckingAuth && !authUser) return (
     <div className='flex items-center justify-center h-screen'>
@@ -36,6 +34,7 @@ const App = () => {
         <Route path='/settings' element={<SettingsPage/>}/>
         <Route path='/profile' element={<ProfilePage/>}/>
       </Routes>
+      <Toaster />
     </>
   )
 }

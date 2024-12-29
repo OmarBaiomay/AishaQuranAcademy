@@ -5,19 +5,19 @@ import bcrypt from "bcryptjs";
 
 export const signup = async (req, res) => {
     const {
-        firstName,
-        lastName,
+        fullName,
         password,
         email,
         phone,
         country,
         role,
+        gender,
         availability, // Include availability for Teacher role
     } = req.body;
 
     try {
         // Validate required fields
-        if (!firstName || !lastName || !password || !email || !phone || !country || !role) {
+        if (!fullName || !password || !email || !phone || !country || !role || !gender) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
@@ -81,13 +81,13 @@ export const signup = async (req, res) => {
 
         // Create the new user
         const newUser = new User({
-            firstName,
-            lastName,
+            fullName,
             email,
             password: hashPass,
             phone,
             country,
             role,
+            gender,
             availability: role === "Teacher" ? availability : [], // Set availability for Teacher role
         });
 
@@ -106,6 +106,7 @@ export const signup = async (req, res) => {
             country: newUser.country,
             countryCode: newUser.countryCode,
             role: newUser.role,
+            gender: newUser.gender,
             availability: newUser.availability, // Include availability in the response
         });
     } catch (error) {
@@ -136,8 +137,7 @@ export const login = async (req, res) =>{
 
         res.status(200).json({
             _id: user._id,
-            firstName: user.firstName,
-            lastName: user.lastName,
+            fullName: user.fullName,
             email: user.email,
             profilePic: user.profilePic
         })
@@ -156,29 +156,29 @@ export const logout = (req, res) =>{
     }
 };
 
-export const updateProfile = async (req, res) =>{
-    try {
-        const {profilePic} = req.body
+// export const updateProfile = async (req, res) =>{
+//     try {
+//         const {profilePic} = req.body
 
-        const userId =  req.user._id
+//         const userId =  req.user._id
 
-        if(!profilePic){
-            return res.status(400).json({message: "Profile pic is required"});
-        }
+//         if(!profilePic){
+//             return res.status(400).json({message: "Profile pic is required"});
+//         }
 
-        const uploadRes = await cloudinary.uploader.upload(profilePic)
+//         const uploadRes = await cloudinary.uploader.upload(profilePic)
 
-        const updatedUser = await User.findByIdAndUpdate(userId, {
-            profilePic: uploadRes.secure_url
-        }, {new: true})
+//         const updatedUser = await User.findByIdAndUpdate(userId, {
+//             profilePic: uploadRes.secure_url
+//         }, {new: true})
 
-        return res.status(200).json(updatedUser);
+//         return res.status(200).json(updatedUser);
         
-    } catch (error) {
-        console.log("Error in Update Profile Controller", error.message)
-        return res.status(500).json({message: "Internal Server Error"});
-    }
-};
+//     } catch (error) {
+//         console.log("Error in Update Profile Controller", error.message)
+//         return res.status(500).json({message: "Internal Server Error"});
+//     }
+// };
 
 
 export const checkAuth = (req, res) =>{
