@@ -9,6 +9,8 @@ import SettingsPage from './pages/SettingsPage'
 import ProfilePage from './pages/ProfilePage'
 import { userAuthStore } from './store/useAuthStore.js'
 import { Toaster } from 'react-hot-toast'
+import './App.css'
+import Sidebar from './components/Sidebar.jsx'
 
 const App = () => {
 
@@ -27,6 +29,7 @@ const App = () => {
   return (
     <>
       <Navbar />
+      <Sidebar />
       <Routes>
         <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>}/>
         <Route path='/signup' element={!authUser ?  <SignUpPage/> : <Navigate to="/"/>}/>
