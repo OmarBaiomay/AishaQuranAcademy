@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { userAuthStore } from '../store/useAuthStore.js';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
 
@@ -56,16 +57,16 @@ const Navbar = () => {
                   ></path>
                 </svg>
               </button>
-              <a href="https://flowbite.com" className="flex ms-2 md:me-24">
-                <img
-                  src="https://flowbite.com/docs/images/logo.svg"
+              <Link to="/" className="flex ms-2 md:me-24">
+              <img
+                  src="/AishaIcon.svg"
                   className="h-8 me-3"
                   alt="FlowBite Logo"
                 />
-                <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
-                  Flowbite
+                <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white el-messiri-aisha ">
+                  Aisha Academy
                 </span>
-              </a>
+              </Link>
             </div>
             <div className="flex items-center relative">
               <div className="flex items-center ms-3">

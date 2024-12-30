@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=El+Messiri:wght@400..700&display=swap');
+
 
 body {
     margin: 0;
@@ -36,4 +38,9 @@ body {
 
 .form-label{
     @apply block mb-2 text-sm font-medium text-gray-900 dark:text-white
+}
+
+.el-messiri-aisha {
+    font-family: "El Messiri", serif;
+    font-optical-sizing: auto;
 }
