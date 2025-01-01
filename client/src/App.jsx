@@ -11,6 +11,7 @@ import { userAuthStore } from './store/useAuthStore.js'
 import { Toaster } from 'react-hot-toast'
 import './App.css'
 import Sidebar from './components/Sidebar.jsx'
+import Header from './components/Header.jsx'
 
 const App = () => {
 
@@ -28,16 +29,19 @@ const App = () => {
 
   return (
     <>
-      <Navbar />
-      <Sidebar />
+      <Toaster />
+
+      <Header />
       <Routes>
-        <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>}/>
+        <Route path='/' element={<HomePage/>} />
+        {/* <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>}/> */}
         <Route path='/signup' element={!authUser ?  <SignUpPage/> : <Navigate to="/"/>}/>
         <Route path='/login' element={!authUser ? <LogInPage/> : <Navigate to="/"/>}/>
         <Route path='/settings' element={authUser ? <SettingsPage/> : <Navigate to="/"/>}/>
         <Route path='/profile' element={authUser ? <ProfilePage/> : <Navigate to="/"/>}/>
       </Routes>
-      <Toaster />
+      {/* <Sidebar /> */}
+
     </>
   )
 }
