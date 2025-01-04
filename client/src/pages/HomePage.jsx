@@ -1,6 +1,8 @@
 import React from 'react'
 import HeroSection from '../components/home/HeroSection'
 import { Helmet } from 'react-helmet-async'
+import AboutUsSection from '../components/home/AboutUsSection'
+import WhyUsSection from '../components/home/WhyUsSection'
 
 const HomePage = () => {
   return (
@@ -12,6 +14,8 @@ const HomePage = () => {
       </Helmet>
       <main>
         <HeroSection />
+        <AboutUsSection />
+        <WhyUsSection />
       </main>
     </>
   )

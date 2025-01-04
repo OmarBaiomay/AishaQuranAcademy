@@ -1,11 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=El+Messiri:wght@400..700&display=swap');
-
+@import "node_modules/video-react/dist/video-react.css";
 
 body {
     margin: 0;
     padding:0;
     font-family: "Open Sans", sans-serif;
+    height: 35000px;
     @apply bg-slate-100/10 dark:bg-gray-800 dark:text-white transition-colors duration-200 ease-in-out;
 }
 
@@ -85,6 +86,11 @@ body {
     @apply pt-[4rem] lg:pt-[6rem]
 }
 
+.video-react .video-react-big-play-button {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 /* Components */
 .menu-btn{
     @apply w-10 h-10 grid place-items-center text-[20px] leading-5 bg-zinc-50/10 rounded-xl ring-inset ring-1 ring-zinc-50/[0.02] backdrop-blur-2xl hover:bg-zinc-50/15 active:scale-95;

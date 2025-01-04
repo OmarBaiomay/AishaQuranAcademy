@@ -19,8 +19,11 @@ function Navbar( {navOpen} ) {
     window.addEventListener('resize', initActiveBox)
 
     const activeCurrentLink = (e) =>{
+        console.log(`Last One Was Active${lastActiveLink.current.classList}`)
+
         lastActiveLink.current?.classList.remove('active');
         e.target.classList.add('active')
+
         lastActiveLink.current = e.target;
 
         activeBox.current.style.top = e.target.offsetTop+ 'px';
@@ -35,7 +38,7 @@ function Navbar( {navOpen} ) {
             label: 'Home',
             link: '/',
             className: 'nav-link active',
-            ref: lastActiveLink
+            ref: lastActiveLink,
         },
         {
             label: 'Register Course',
