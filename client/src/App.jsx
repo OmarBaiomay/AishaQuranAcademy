@@ -13,6 +13,9 @@ import './App.css'
 import Sidebar from './components/Sidebar.jsx'
 import Header from './components/Header.jsx'
 import Dashboard from './pages/Dashboard.jsx'
+import RegisterCoursePage from './pages/RegisterCoursePage.jsx'
+import CoursesPage from './pages/CoursesPage.jsx'
+import Users from './pages/dashboard/Users.jsx'
 
 const App = () => {
 
@@ -31,20 +34,24 @@ const App = () => {
   return (
     <>
       <Toaster />
-      <Header />
+      {!authUser && <Header />}
+      {authUser && <Navbar />}
+      {authUser && <Sidebar />}
       <Routes>
-        <Route path='/' element={<HomePage/>} />
-        <Route path='/dashboard' element={<Dashboard/>} />``
-        {/* <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>}/> */}
+
+        {/* For Not Logged Is User */}
+        <Route path='/' element={!authUser ? <HomePage/> : <Dashboard />} />
+        <Route path='/dashboard' element={!authUser ? <Navigate to="/"/> : <Dashboard/>} />
         <Route path='/signup' element={!authUser ?  <SignUpPage/> : <Navigate to="/"/>}/>
         <Route path='/login' element={!authUser ? <LogInPage/> : <Navigate to="/"/>}/>
         <Route path='/settings' element={authUser ? <SettingsPage/> : <Navigate to="/"/>}/>
         <Route path='/profile' element={authUser ? <ProfilePage/> : <Navigate to="/"/>}/>
-        <Route path='/register-course' element={authUser ? <ProfilePage/> : <Navigate to="/"/>}/>
-        <Route path='/all-courses' element={authUser ? <ProfilePage/> : <Navigate to="/"/>}/>
-      </Routes>
-      {/* <Sidebar /> */}
+        <Route path='/register-course' element={!authUser ? <RegisterCoursePage /> : <Navigate to="/"/>}/>
+        <Route path='/all-courses' element={!authUser ? <CoursesPage/> : <Navigate to="/"/>}/>
 
+        {/* For Dashboard */}
+        <Route path='/dashboard/users' element={authUser ? <Users/> : <Navigate to="/"/>}/>
+      </Routes>
     </>
   )
 }
