@@ -3,6 +3,9 @@ import HeroSection from '../components/home/HeroSection'
 import { Helmet } from 'react-helmet-async'
 import AboutUsSection from '../components/home/AboutUsSection'
 import WhyUsSection from '../components/home/WhyUsSection'
+import Pricing from '../components/home/PricingPlansSection'
+import TestimonialsSlider from '../components/home/TestimonialsSliderSection'
+import Accordion from '../components/home/AccordionSection'
 
 const HomePage = () => {
   return (
@@ -16,6 +19,9 @@ const HomePage = () => {
         <HeroSection />
         <AboutUsSection />
         <WhyUsSection />
+        <Pricing />
+        <TestimonialsSlider />
+        <Accordion />
       </main>
     </>
   )

@@ -12,6 +12,7 @@ import { Toaster } from 'react-hot-toast'
 import './App.css'
 import Sidebar from './components/Sidebar.jsx'
 import Header from './components/Header.jsx'
+import Dashboard from './pages/Dashboard.jsx'
 
 const App = () => {
 
@@ -30,10 +31,10 @@ const App = () => {
   return (
     <>
       <Toaster />
-
       <Header />
       <Routes>
         <Route path='/' element={<HomePage/>} />
+        <Route path='/dashboard' element={<Dashboard/>} />``
         {/* <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>}/> */}
         <Route path='/signup' element={!authUser ?  <SignUpPage/> : <Navigate to="/"/>}/>
         <Route path='/login' element={!authUser ? <LogInPage/> : <Navigate to="/"/>}/>

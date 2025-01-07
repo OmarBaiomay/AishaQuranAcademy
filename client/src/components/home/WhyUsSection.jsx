@@ -25,9 +25,9 @@ function WhyUsSection() {
   return (
     <section id="whyus" className="pt-20">
         <div className="container flex flex-col items-center justify-center">
-            <h2 className="text-3xl font-bold text-zinc-800 dark:text-zinc-300 mb-4">Why Choose Us</h2>
+            <h2 className="text:2xl md:text-3xl font-bold text-zinc-800 dark:text-zinc-300 mb-4">Why Should You Choose Us....</h2>
             <div className='w-full'>
-                <div className='flex flex-wrap items-center justify-between'>
+                <div className='flex flex-wrap gap-6 items-center justify-center md:items-center md:justify-between'>
                 {
                     whyItems.map(({label, discription, img}, key) =>(
                         <div className='flex flex-col items-center justify-center' key={key}>
