@@ -15,7 +15,7 @@ const HomePage = () => {
         <meta name="description" content="Learn Quran and Arabic Online with Native T tutors" />
         <link rel="canonical" href="/" />
       </Helmet>
-      <main>
+      <main className=''>
         <HeroSection />
         <AboutUsSection />
         <WhyUsSection />

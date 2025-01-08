@@ -1,5 +1,4 @@
 import React from 'react'
-import Mode from '../../utils/mode'
 import { Link } from 'react-router-dom'
 import { FaWhatsapp } from 'react-icons/fa'
 import { MdFreeCancellation } from "react-icons/md";
@@ -26,7 +25,7 @@ const HeroSection = () => {
                     </p>
 
                     <div className="flex justify-center items-center gap-3">
-                        <Link to="/register-course" className="btn primary-purble-btn flex items-center justify-center gap-1 max-md:hidden md:justify-self-end">
+                        <Link to="/register-course" className="btn primary-purple-btn flex items-center justify-center gap-1 max-md:hidden md:justify-self-end">
                         <MdFreeCancellation /> Free Trial
                         </Link>
                         <a href="" className="btn primary-whatsapp-btn flex items-center justify-center gap-1 max-md:hidden md:justify-self-end">

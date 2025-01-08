@@ -125,7 +125,7 @@ function SignUpPage() {
                   </div>
                 </div>
 
-                <button type="submit" className="btn btn-primary w-full primary-purble-btn" disabled={isSigningUp}>
+                <button type="submit" className="btn btn-primary w-full primary-purple-btn" disabled={isSigningUp}>
                   {isSigningUp ? (
                     <>
                       <Loader2 className="size-5 animate-spin" />

@@ -12,11 +12,11 @@ const Navbar = () => {
   }
 
   return (
-    <div>
+    <nav className="fixed w-full top-0 left-0 bg-zinc-500">
       <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-        <input type='submit' value='Log Out' className="btn btn-primary" />
+        <input type='submit' value='Log Out' className="btn btn-purple-primary" />
       </form>
-    </div>
+    </nav>
   )
 }
 

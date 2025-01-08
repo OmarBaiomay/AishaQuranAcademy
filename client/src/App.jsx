@@ -36,22 +36,24 @@ const App = () => {
       <Toaster />
       {!authUser && <Header />}
       {authUser && <Navbar />}
-      {authUser && <Sidebar />}
-      <Routes>
+      <div className=''>
+          {authUser && <Sidebar />}
+        <Routes>
+          {/* For Not Logged Is User */}
+          <Route path='/' element={!authUser ? <HomePage/> : <Dashboard />} />
+          <Route path='/dashboard' element={!authUser ? <Navigate to="/"/> : <Dashboard/>} />
+          <Route path='/signup' element={!authUser ?  <SignUpPage/> : <Navigate to="/"/>}/>
+          <Route path='/login' element={!authUser ? <LogInPage/> : <Navigate to="/"/>}/>
+          <Route path='/settings' element={authUser ? <SettingsPage/> : <Navigate to="/"/>}/>
+          <Route path='/profile' element={authUser ? <ProfilePage/> : <Navigate to="/"/>}/>
+          <Route path='/register-course' element={!authUser ? <RegisterCoursePage /> : <Navigate to="/"/>}/>
+          <Route path='/all-courses' element={!authUser ? <CoursesPage/> : <Navigate to="/"/>}/>
 
-        {/* For Not Logged Is User */}
-        <Route path='/' element={!authUser ? <HomePage/> : <Dashboard />} />
-        <Route path='/dashboard' element={!authUser ? <Navigate to="/"/> : <Dashboard/>} />
-        <Route path='/signup' element={!authUser ?  <SignUpPage/> : <Navigate to="/"/>}/>
-        <Route path='/login' element={!authUser ? <LogInPage/> : <Navigate to="/"/>}/>
-        <Route path='/settings' element={authUser ? <SettingsPage/> : <Navigate to="/"/>}/>
-        <Route path='/profile' element={authUser ? <ProfilePage/> : <Navigate to="/"/>}/>
-        <Route path='/register-course' element={!authUser ? <RegisterCoursePage /> : <Navigate to="/"/>}/>
-        <Route path='/all-courses' element={!authUser ? <CoursesPage/> : <Navigate to="/"/>}/>
-
-        {/* For Dashboard */}
-        <Route path='/dashboard/users' element={authUser ? <Users/> : <Navigate to="/"/>}/>
-      </Routes>
+          {/* For Dashboard */}
+          <Route path='/dashboard/users' element={authUser ? <Users/> : <Navigate to="/"/>}/>
+        </Routes>
+      </div>
+      
     </>
   )
 }

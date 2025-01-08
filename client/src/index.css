@@ -6,7 +6,7 @@ body {
     margin: 0;
     padding:0;
     font-family: "Open Sans", sans-serif;
-    height: 35000px;
+    /* height: 35000px; */
     @apply bg-slate-100/10 dark:bg-gray-800 dark:text-white transition-colors duration-200 ease-in-out;
 }
 
@@ -40,7 +40,7 @@ body {
 
 /***** Utls *****/
 
-.primary-purble-btn{
+.primary-purple-btn{
     @apply transition-all duration-75 ease-in-out text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2
 }
 

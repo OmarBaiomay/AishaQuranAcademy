@@ -31,7 +31,7 @@ const Header = () => {
 
                 <Navbar navOpen={navOpen}/>
             </div>
-            <Link to="/login" className="btn primary-purble-btn max-md:hidden md:justify-self-end">
+            <Link to="/login" className="btn primary-purple-btn max-md:hidden md:justify-self-end">
                 login
             </Link>
            </div>
