@@ -1,13 +1,10 @@
 import React from 'react'
-import Sidebar from '../components/Sidebar'
 
 const Dashboard = () => {
   return (
-    <div className='ml-72'>
-      <div className='flex-1'>
+      <div className='pt-10 pl-7 bg-zinc-100 h-dvh'>
         <h1>Dashboard</h1>
       </div>
-    </div>
   )
 }
 

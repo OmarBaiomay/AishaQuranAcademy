@@ -10,7 +10,7 @@ function Sidebar() {
   const activeMenu = true
 
   return (
-    <div className='h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10 pr-10 w-72 fixed'>
+    <div className=''>
       <Link to='/' className='flex items-center'>
         <img src="../AishaLogo.svg" alt="Aisha Logo" width={150} height={150}/>
       </Link>

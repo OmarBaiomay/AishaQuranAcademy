@@ -12,9 +12,9 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="fixed w-full top-0 left-0 bg-zinc-500">
+    <nav className="fixed flex justify-end items-center shadow-md bg-white w-[-webkit-fill-available] z-10">
       <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-        <input type='submit' value='Log Out' className="btn btn-purple-primary" />
+        <input type='submit' value='Log Out' className="primary-purple-btn cursor-pointer" />
       </form>
     </nav>
   )

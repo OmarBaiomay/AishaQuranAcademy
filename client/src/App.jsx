@@ -35,23 +35,30 @@ const App = () => {
     <>
       <Toaster />
       {!authUser && <Header />}
-      {authUser && <Navbar />}
-      <div className=''>
-          {authUser && <Sidebar />}
-        <Routes>
-          {/* For Not Logged Is User */}
-          <Route path='/' element={!authUser ? <HomePage/> : <Dashboard />} />
-          <Route path='/dashboard' element={!authUser ? <Navigate to="/"/> : <Dashboard/>} />
-          <Route path='/signup' element={!authUser ?  <SignUpPage/> : <Navigate to="/"/>}/>
-          <Route path='/login' element={!authUser ? <LogInPage/> : <Navigate to="/"/>}/>
-          <Route path='/settings' element={authUser ? <SettingsPage/> : <Navigate to="/"/>}/>
-          <Route path='/profile' element={authUser ? <ProfilePage/> : <Navigate to="/"/>}/>
-          <Route path='/register-course' element={!authUser ? <RegisterCoursePage /> : <Navigate to="/"/>}/>
-          <Route path='/all-courses' element={!authUser ? <CoursesPage/> : <Navigate to="/"/>}/>
 
-          {/* For Dashboard */}
-          <Route path='/dashboard/users' element={authUser ? <Users/> : <Navigate to="/"/>}/>
-        </Routes>
+      <div className={`main-container`}>
+        <div className={`bg-white h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10 pr-10 pl-3 w-72 fixed shadow-lg ${!authUser ? 'hidden' : ''}`}>
+          {authUser && <Sidebar />}
+        </div>
+
+        <div className={` ${authUser ? 'ml-72 relative' : ''}`}>
+        {authUser && <Navbar />}
+
+          <Routes>
+            {/* For Not Logged Is User */}
+            <Route path='/' element={!authUser ? <HomePage/> : <Dashboard /> } />
+            <Route path='/dashboard' element={!authUser ? <Navigate to="/"/> : <Dashboard/>} />
+            <Route path='/signup' element={!authUser ?  <SignUpPage/> : <Navigate to="/"/>}/>
+            <Route path='/login' element={!authUser ? <LogInPage/> : <Navigate to="/"/>}/>
+            <Route path='/settings' element={authUser ? <SettingsPage/> : <Navigate to="/"/>}/>
+            <Route path='/profile' element={authUser ? <ProfilePage/> : <Navigate to="/"/>}/>
+            <Route path='/register-course' element={!authUser ? <RegisterCoursePage /> : <Navigate to="/"/>}/>
+            <Route path='/all-courses' element={!authUser ? <CoursesPage/> : <Navigate to="/"/>}/>
+
+            {/* For Dashboard */}
+            <Route path='/dashboard/users' element={authUser ? <Users/> : <Navigate to="/"/>}/>
+          </Routes>
+        </div>
       </div>
       
     </>
