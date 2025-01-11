@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { useStatContext } from './context/ContextProvider'
 import { Loader } from "lucide-react"
 import Navbar from './components/Navbar'
 import { Navigate, Route, Routes } from 'react-router-dom'
@@ -16,8 +17,11 @@ import Dashboard from './pages/Dashboard.jsx'
 import RegisterCoursePage from './pages/RegisterCoursePage.jsx'
 import CoursesPage from './pages/CoursesPage.jsx'
 import Users from './pages/dashboard/Users.jsx'
+import Calender from './pages/dashboard/Calender.jsx'
+import Classrooms from './pages/dashboard/Classrooms.jsx'
 
 const App = () => {
+  const {activeMenu} = useStatContext();
 
   const {authUser, checkAuth, isCheckingAuth} = userAuthStore();
 
@@ -37,11 +41,11 @@ const App = () => {
       {!authUser && <Header />}
 
       <div className={`main-container`}>
-        <div className={`bg-white h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10 pr-10 pl-3 w-72 fixed shadow-lg ${!authUser ? 'hidden' : ''}`}>
+        <div className={`bg-white h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto shadow-lg ${!authUser ? 'hidden' : ''} ${activeMenu ? 'pb-10 pr-10 pl-3 w-72 fixed' : 'w-0 p-0 hidden'} `}>
           {authUser && <Sidebar />}
         </div>
 
-        <div className={` ${authUser ? 'ml-72 relative' : ''}`}>
+        <div className={`w-full ${authUser && activeMenu ? 'md:ml-72 relative' : 'flex-1'}`}>
         {authUser && <Navbar />}
 
           <Routes>
@@ -57,7 +61,9 @@ const App = () => {
 
             {/* For Dashboard */}
             <Route path='/dashboard/users' element={authUser ? <Users/> : <Navigate to="/"/>}/>
-          </Routes>
+            <Route path='/dashboard/calender' element={authUser ? <Calender /> : <Navigate to="/"/>}/>
+            <Route path='/dashboard/classrooms' element={authUser ? <Classrooms /> : <Navigate to="/"/>}/>
+            </Routes>
         </div>
       </div>
       
