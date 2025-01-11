@@ -3,6 +3,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=El+Messiri:wght@400..700&display=swap');
 @import "../node_modules/video-react/dist/video-react.css"; /* Video React */
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
     margin: 0;
     padding:0;
@@ -10,10 +14,6 @@ body {
     /* height: 35000px; */
     @apply bg-slate-100/10 dark:bg-gray-800 dark:text-white transition-colors duration-200 ease-in-out;
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 .mode-container{
     height: 100vh;

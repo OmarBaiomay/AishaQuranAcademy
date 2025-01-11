@@ -45,7 +45,7 @@ const App = () => {
           {authUser && <Sidebar />}
         </div>
 
-        <div className={`w-full ${authUser && activeMenu ? 'md:ml-72 relative' : 'flex-1'}`}>
+        <div className={`${authUser && activeMenu ? ' w-[-webkit-fill-available] md:ml-72 relative' : 'w-full flex-1'}`}>
         {authUser && <Navbar />}
 
           <Routes>
