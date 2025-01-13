@@ -5,10 +5,16 @@ import UserCard from "../../components/dashboard/UserCard.jsx";
 import avatar from "/assets/user.svg";
 import ConfirmDeleteModal from "../../components/dashboard/ConfirmDeleteModal.jsx";
 import EditUserModal from "../../components/dashboard/EditUserModal.jsx"; // Import the EditUserModal
+import { FaList, FaTh } from "react-icons/fa"; // Icons for buttons
+import { Link } from "react-router-dom";
+
+
+
 
 function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState("grid"); // Track the current view mode
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRole, setSelectedRole] = useState("all");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -83,7 +89,7 @@ function Users() {
   };
 
   return (
-    <div className="pt-20 pl-7 w-[-webkit-fill-available]">
+    <div className="pt-20 px-10 w-[-webkit-fill-available]">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-zinc-600">Users</h1>
         <div className="controlles flex gap-5 px-5">
@@ -111,24 +117,97 @@ function Users() {
             <option value="Teacher">Teachers</option>
             <option value="Student">Students</option>
           </select>
+
+           {/* Buttons for List/Grid View */}
+           <div className="flex justify-center items-center rounded-lg overflow-hidden">
+
+           <button
+            onClick={() => setViewMode("grid")}
+            className={`${
+              viewMode === "grid" ? "bg-purple-500 text-white" : "bg-zinc-200 text-zinc-600"
+            } px-3 py-1 flex items-center gap-1 w-full h-full`}
+          >
+            <FaTh />
+          </button>
+          <button
+            onClick={() => setViewMode("list")}
+            className={`${
+              viewMode === "list" ? "bg-purple-500 text-white" : "bg-zinc-200 text-zinc-600"
+            } px-3 py-1 flex items-center gap-1 w-full h-full`}
+          >
+            <FaList />
+          </button>
+
+           </div>
         </div>
       </div>
       <div className="flex justify-start items-center gap-7 flex-wrap mt-10">
         {loading ? (
-          <div>Loading....</div>
-        ) : (
-          filteredUsers.map((user) => (
-            <UserCard
-              key={user._id}
-              image={user.profilePic ? user.profilePic : avatar}
-              firstName={user.firstName}
-              lastName={user.lastName}
-              role={user.role}
-              onEdit={() => handleEdit(user)}
-              onDelete={() => openDeleteModal(user)}
-              onMessage={handleMessage}
-            />
-          ))
+            <div>Loading....</div>
+          ) : (
+            viewMode === "grid" ? 
+            filteredUsers.map((user) =>(
+              <UserCard
+                key={user._id}
+                image={user.profilePic ? user.profilePic : avatar}
+                fullName={user.fullName}
+                role={user.role}
+                _id={user._id}
+                onEdit={() => handleEdit(user)}
+                onDelete={() => openDeleteModal(user)}
+              />
+            )
+          ) : (
+            <table className="table-auto w-full text-left text-zinc-600 border-collapse">
+              <thead>
+                <tr className="bg-zinc-200 text-sm">
+                  <th className="px-4 py-2">Profile</th>
+                  <th className="px-4 py-2">Name</th>
+                  <th className="px-4 py-2">Role</th>
+                  <th className="px-4 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredUsers.map((user) => (
+                  <tr
+                    key={user._id}
+                    className="border-b hover:bg-zinc-100 transition duration-200"
+                  >
+                    <td className="px-4 py-2">
+                      <img
+                        src={user.profilePic ? user.profilePic : avatar}
+                        alt={`${user.fullName} profile`}
+                        className="w-10 h-10 rounded-full"
+                      />
+                    </td>
+                    <td className="px-4 py-2">{user.fullName}</td>
+                    <td className="px-4 py-2">{user.role}</td>
+                    <td className="px-4 py-2 space-x-2">
+                      <button
+                        onClick={() => handleEdit(user)}
+                        className="bg-blue-500 text-white rounded-lg px-3 py-1 text-sm"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => openDeleteModal(user)}
+                        className="bg-red-500 text-white rounded-lg px-3 py-1 text-sm"
+                      >
+                        Delete
+                      </button>
+                      <Link
+                        to={`/dashboard/users/${user._id}`}
+                        className="bg-purple-500 text-white rounded-lg px-3 py-1 text-sm"
+                      >
+                        Details
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+          )
         )}
       </div>
 
