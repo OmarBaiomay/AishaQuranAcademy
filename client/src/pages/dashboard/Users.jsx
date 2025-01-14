@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 import { GridComponent, ColumnsDirective, ColumnDirective, Inject, Filter, VirtualScroll, Sort, Resize, ContextMenu, ExcelExport, Edit, PdfExport } from '@syncfusion/ej2-react-grids';
 
 
-
 function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -99,7 +98,7 @@ function Users() {
 
   const GetUsers = async () => {
     try {
-      const res = await axiosInstance.get("/user");
+      const res = await axiosInstance.get("/users");
       setUsers(res.data);
       setLoading(false);
     } catch (error) {

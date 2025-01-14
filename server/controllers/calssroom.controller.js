@@ -74,9 +74,9 @@ export const createClassroom = async (req, res) => {
 export const getClassrooms = async (req, res) => {
     try {
         const classrooms = await Classroom.find()
-            .populate("teacher", "firstName lastName email")
-            .populate("student", "firstName lastName email")
-            .populate("supervisor", "firstName lastName email");
+            .populate("teacher", "fullName email phone country timeZone")
+            .populate("student", "fullName email phone country timeZone")
+            .populate("supervisor", "fullName email phone country timeZone");
 
         res.status(200).json(classrooms);
     } catch (error) {
@@ -89,9 +89,9 @@ export const getClassrooms = async (req, res) => {
 export const getClassroomById = async (req, res) => {
     try {
         const classroom = await Classroom.findById(req.params.id)
-            .populate("teacher", "firstName lastName email")
-            .populate("student", "firstName lastName email")
-            .populate("supervisor", "firstName lastName email");
+            .populate("teacher", "fullName email phone country timeZone")
+            .populate("student", "fullName email phone country timeZone")
+            .populate("supervisor", "fullName email phone country timeZone");
 
         if (!classroom) {
             return res.status(404).json({ message: "Classroom not found." });
@@ -371,3 +371,31 @@ export const generateMonthlyClasses = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+export const rescheduleClass = async (req, res) => {
+    const { classroomId, classId } = req.params;
+
+    try {
+        const classroom = await Classroom.findById(classroomId);
+        if (!classroom) {
+        return res.status(404).json({ message: "Classroom not found." });
+        }
+
+        // Use find instead of id
+        const classItem = classroom.classes.find((cls) => cls._id.toString() === classId);
+        if (!classItem) {
+        return res.status(404).json({ message: "Class not found." });
+        }
+
+        // Logic to reschedule the class
+        classItem.date = new Date(); // Example: Reschedule to the current date
+        await classroom.save();
+
+        res.status(200).json({ message: "Class rescheduled successfully.", classItem });
+    } catch (error) {
+        console.error("Error rescheduling class:", error.message);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+  

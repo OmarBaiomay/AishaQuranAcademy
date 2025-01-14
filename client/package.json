@@ -40,6 +40,7 @@
     "react-router-dom": "^7.1.1",
     "react-select": "^5.9.0",
     "save": "^2.9.0",
+    "uuid": "^11.0.5",
     "video-react": "^0.16.0",
     "zustand": "^5.0.2"
   },

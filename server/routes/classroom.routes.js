@@ -9,6 +9,7 @@ import {
     updateClassAttendance,
     getAllClasses,
     generateMonthlyClasses,
+    rescheduleClass,
 
 } from "../controllers/calssroom.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
@@ -27,6 +28,7 @@ router.post('/classroom/:classroomId/classes', protectRoute, addClassToClassroom
 router.put('/classroom/:classroomId/classes/:classId', protectRoute, updateClassAttendance); // Update class attendance
 router.get('/classroom/:classroomId/classes', protectRoute, getAllClasses); // Get all classes for a classroom
 router.post('/classroom/:classroomId/generate-classes', protectRoute, generateMonthlyClasses);
+router.post('/classroom/:classroomId/reschedule-class/:classId', protectRoute, rescheduleClass);
 
 
 export default router;

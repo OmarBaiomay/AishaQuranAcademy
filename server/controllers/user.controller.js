@@ -43,16 +43,19 @@ export const createUser = async (req, res) => {
     }
 };
 
-// Get all users
+// Get all users or filter by role
 export const getUsers = async (req, res) => {
     try {
-        const users = await User.find();
+        const { role } = req.query; // Extract role from query parameters
+        const query = role ? { role } : {}; // If role is provided, filter by role
+        const users = await User.find(query);
         res.status(200).json(users);
     } catch (error) {
         console.error("Error fetching users:", error.message);
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
 
 // Get a specific user by ID
 export const getUserById = async (req, res) => {
@@ -69,6 +72,8 @@ export const getUserById = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+
 
 // Update a user by ID
 export const updateUser = async (req, res) => {

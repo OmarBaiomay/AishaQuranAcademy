@@ -20,6 +20,8 @@ import Users from './pages/dashboard/Users.jsx'
 import Calender from './pages/dashboard/Calender.jsx'
 import Classrooms from './pages/dashboard/Classrooms.jsx'
 import UserDetails from './pages/dashboard/UserDetails.jsx'
+import AddClassroomPage from './components/dashboard/AddClassroomPage.jsx'
+import ClassroomDetails from './pages/dashboard/ClassroomDetails.jsx'
 
 const App = () => {
   const {activeMenu} = useStatContext();
@@ -65,6 +67,8 @@ const App = () => {
             <Route path='/dashboard/users/:id' element={authUser ? <UserDetails /> : <Navigate to="/"/>}/>
             <Route path='/dashboard/calender' element={authUser ? <Calender /> : <Navigate to="/"/>}/>
             <Route path='/dashboard/classrooms' element={authUser ? <Classrooms /> : <Navigate to="/"/>}/>
+            <Route path='/dashboard/classrooms/add' element={authUser ? <AddClassroomPage /> : <Navigate to="/"/>}/>
+            <Route path='/dashboard/classrooms/:id' element={authUser ? <ClassroomDetails /> : <Navigate to="/"/>} />
             </Routes>
         </div>
       </div>
