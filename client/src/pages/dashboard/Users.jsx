@@ -7,7 +7,7 @@ import ConfirmDeleteModal from "../../components/dashboard/ConfirmDeleteModal.js
 import EditUserModal from "../../components/dashboard/EditUserModal.jsx"; // Import the EditUserModal
 import { FaList, FaTh } from "react-icons/fa"; // Icons for buttons
 import { Link } from "react-router-dom";
-
+import { GridComponent, ColumnsDirective, ColumnDirective, Inject, Filter, VirtualScroll, Sort, Resize, ContextMenu, ExcelExport, Edit, PdfExport } from '@syncfusion/ej2-react-grids';
 
 
 
@@ -22,6 +22,49 @@ function Users() {
   const [showEditModal, setShowEditModal] = useState(false); // Track edit modal visibility
   const [userToEdit, setUserToEdit] = useState(null); // Store the user to edit
   const [selectedUser, setSelectedUser] = useState(null);
+
+  const userListImageName = (props) => (
+    <Link to={`/dashboard/users/${props._id}`} className="flex gap-2 items-center justify-start">
+      <img className="rounded-xl" height={25} width={25} src={props.profilePic ? props.profilePic : avatar}alt="user avatar"/>
+      <span>{props.fullName}</span>
+    </Link>
+  );
+
+  const userListPhone = (props) => (
+    <div className="w-full flex items-center justify-center">
+      <p>{props.phone.countryCode} {props.phone.number} </p>
+    </div>
+  );
+
+  const userListViewItems = [
+    {
+      headerText: 'User',
+      template: userListImageName,
+      textAlign: 'Start',
+      width: '120',
+    },
+    {
+      field: 'email',
+      headerText: 'Email',
+      width: '150',
+      editType: 'dropdownedit',
+      textAlign: 'Center',
+    },
+    {
+      headerText: 'Phone',
+      template: userListPhone,
+      width: '150',
+      textAlign: 'Center',
+    },
+    {
+      field: 'role',
+      headerText: 'Role',
+      width: '150',
+      editType: 'dropdownedit',
+      textAlign: 'Center',
+    },
+  ];
+
 
   const handleEdit = (user) => {
     setSelectedUser(user); // Set the selected user data
@@ -71,8 +114,8 @@ function Users() {
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
-      (user.firstName && user.firstName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (user.lastName && user.lastName.toLowerCase().includes(searchQuery.toLowerCase()));
+      (user.fullName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (user.fullName.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesRole = selectedRole === "all" || user.role === selectedRole;
     return matchesSearch && matchesRole;
   });
@@ -158,55 +201,23 @@ function Users() {
               />
             )
           ) : (
-            <table className="table-auto w-full text-left text-zinc-600 border-collapse">
-              <thead>
-                <tr className="bg-zinc-200 text-sm">
-                  <th className="px-4 py-2">Profile</th>
-                  <th className="px-4 py-2">Name</th>
-                  <th className="px-4 py-2">Role</th>
-                  <th className="px-4 py-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredUsers.map((user) => (
-                  <tr
-                    key={user._id}
-                    className="border-b hover:bg-zinc-100 transition duration-200"
-                  >
-                    <td className="px-4 py-2">
-                      <img
-                        src={user.profilePic ? user.profilePic : avatar}
-                        alt={`${user.fullName} profile`}
-                        className="w-10 h-10 rounded-full"
-                      />
-                    </td>
-                    <td className="px-4 py-2">{user.fullName}</td>
-                    <td className="px-4 py-2">{user.role}</td>
-                    <td className="px-4 py-2 space-x-2">
-                      <button
-                        onClick={() => handleEdit(user)}
-                        className="bg-blue-500 text-white rounded-lg px-3 py-1 text-sm"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => openDeleteModal(user)}
-                        className="bg-red-500 text-white rounded-lg px-3 py-1 text-sm"
-                      >
-                        Delete
-                      </button>
-                      <Link
-                        to={`/dashboard/users/${user._id}`}
-                        className="bg-purple-500 text-white rounded-lg px-3 py-1 text-sm"
-                      >
-                        Details
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <GridComponent 
+              id="userList" 
+              dataSource={filteredUsers}
+              allowPaging
+              allowSorting
+              allowExcelExport
 
+            >
+              <ColumnsDirective>
+                {
+                  userListViewItems.map((item, index) =>(
+                    <ColumnDirective key={index} {...item} />
+                  ))
+                }
+              </ColumnsDirective>
+              <Inject services={[Resize, Sort, ContextMenu, Filter, ExcelExport, Edit, PdfExport]} />
+            </GridComponent>
           )
         )}
       </div>

@@ -1,35 +1,79 @@
 import React, { useState, useEffect } from "react";
 import { axiosInstance } from "../../lib/axios";
+import axios from "axios";
 import { toast } from "react-hot-toast";
 
 function EditUserModal({ show, user, onClose, onSave }) {
   const [formData, setFormData] = useState({
-    fullName: "",  // Default value is an empty string
+    fullName: "",
     email: "",
-    phone: "",
+    phone: { countryCode: "", number: "" }, // Updated phone structure
     country: "",
     role: "Student", // Default role
-    gender: "",
+    gender: "Male", // Default gender
     profilePic: "",
+    timeZone: "UTC", // Default time zone
   });
 
-  // Initialize form fields if editing an existing user
+  const [countryCodes, setCountryCodes] = useState([]); // Store country codes from API
+  const [timeZones, setTimeZones] = useState([]); // Store time zones
+
+  useEffect(() => {
+    // Fetch country codes when the component mounts
+    const fetchCountryCodes = async () => {
+      try {
+        const response = await axios.get("https://restcountries.com/v3.1/all");
+        const codes = response.data.map((country) => ({
+          name: country.name.common,
+          code: country.idd?.root + (country.idd?.suffixes?.[0] || ""),
+        })).filter((c) => c.code); // Filter valid codes
+        setCountryCodes(codes);
+      } catch (error) {
+        toast.error("Failed to fetch country codes.");
+      }
+    };
+
+    // Fetch time zones (using a simple example API)
+    const fetchTimeZones = async () => {
+      try {
+        const response = await axios.get("https://world-time1.p.rapidapi.com/timezone");
+        setTimeZones(response.data);
+      } catch (error) {
+        toast.error("Failed to fetch time zones.");
+      }
+    };
+
+    fetchCountryCodes();
+    fetchTimeZones();
+  }, []);
+
   useEffect(() => {
     if (user) {
       setFormData({
-        fullName: user.fullName || "",  // Ensure default value is empty string
+        fullName: user.fullName || "",
         email: user.email || "",
-        phone: user.phone || "",
+        phone: user.phone || { countryCode: "", number: "" },
         country: user.country || "",
-        gender: user.gender || "",
-        role: user.role || "Student", // Default to "Student" if undefined
+        gender: user.gender || "Male", // Default to Male if gender is not defined
+        role: user.role || "Student",
         profilePic: user.profilePic || "",
+        timeZone: user.timeZone || "UTC", // Default to UTC if timeZone is not defined
       });
     }
   }, [user]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name.startsWith("phone.")) {
+      const field = name.split(".")[1];
+      setFormData({
+        ...formData,
+        phone: { ...formData.phone, [field]: value },
+      });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -38,26 +82,24 @@ function EditUserModal({ show, user, onClose, onSave }) {
     try {
       let response;
       if (user) {
-        // Editing existing user
         response = await axiosInstance.put(`/user/${user._id}`, formData);
         toast.success("User updated successfully!");
-        onSave(response.data); // Pass the updated user to the parent
+        onSave(response.data);
       } else {
-        // Adding new user
         response = await axiosInstance.post("/user", formData);
         toast.success("New user added successfully!");
-        onSave(response.data); // Pass the new user to the parent
+        onSave(response.data);
       }
     } catch (error) {
       toast.error("Error saving user data.");
     }
   };
 
-  if (!show) return null; // If modal isn't visible, don't render it
+  if (!show) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50" onClick={onClose}>
-      <div className="bg-white p-6 rounded-lg w-96">
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg w-96 relative">
         <h2 className="text-xl font-bold mb-4">{user ? "Edit User" : "Add New User"}</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -89,18 +131,36 @@ function EditUserModal({ show, user, onClose, onSave }) {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-              Phone
+            <label className="block text-sm font-medium text-gray-700">
+              Phone Number
             </label>
-            <input
-              type="text"
-              id="phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-              required
-            />
+            <div className="flex space-x-2">
+              <select
+                name="phone.countryCode"
+                value={formData.phone.countryCode}
+                onChange={handleChange}
+                className="w-1/3 px-3 py-2 border border-gray-300 rounded-md"
+                required
+              >
+                <option value="" disabled>
+                  Code
+                </option>
+                {countryCodes.map((country) => (
+                  <option key={country.code} value={country.code}>
+                    {country.code} ({country.name})
+                  </option>
+                ))}
+              </select>
+              <input
+                type="text"
+                name="phone.number"
+                value={formData.phone.number}
+                onChange={handleChange}
+                className="w-2/3 px-3 py-2 border border-gray-300 rounded-md"
+                placeholder="Phone Number"
+                required
+              />
+            </div>
           </div>
           <div className="mb-4">
             <label htmlFor="country" className="block text-sm font-medium text-gray-700">
@@ -133,21 +193,56 @@ function EditUserModal({ show, user, onClose, onSave }) {
               <option value="Administrator">Administrator</option>
             </select>
           </div>
+          {/* Gender Field */}
           <div className="mb-4">
-            <button
-              type="submit"
-              className="bg-purple-500 text-white px-4 py-2 rounded-md"
+            <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
+              Gender
+            </label>
+            <select
+              id="gender"
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              required
             >
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          {/* Time Zone Field */}
+          <div className="mb-4">
+            <label htmlFor="timeZone" className="block text-sm font-medium text-gray-700">
+              Time Zone
+            </label>
+            <select
+              id="timeZone"
+              name="timeZone"
+              value={formData.timeZone}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              required
+            >
+              <option value="UTC">UTC</option>
+              {timeZones.map((zone) => (
+                <option key={zone} value={zone}>
+                  {zone}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-4">
+            <button type="submit" className="bg-purple-500 text-white px-4 py-2 rounded-md">
               {user ? "Save Changes" : "Add User"}
             </button>
           </div>
+          <button
+            onClick={onClose}
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          >
+            ✖
+          </button>
         </form>
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-        >
-          ✖
-        </button>
       </div>
     </div>
   );

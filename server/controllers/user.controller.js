@@ -28,8 +28,9 @@ export const createUser = async (req, res) => {
             password: hashedPassword,
             phone,
             country,
+            gender,
             role,
-            availability: role === "Teacher" ? availability || [] : [], // Include availability only for Teachers
+            availability, // Include availability only for Teachers
         });
 
         // Save the user

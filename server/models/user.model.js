@@ -67,8 +67,20 @@ const userSchema = new mongoose.Schema(
             default: "Student",
         },
         phone: {
-            type: String,
-            required: true,
+            countryCode: {
+                type: String,
+                required: true,
+            },
+            number: {
+                type: String,
+                required: true,
+                validate: {
+                    validator: function (v) {
+                        return /^\d+$/.test(v); // Validate that the phone number contains only digits
+                    },
+                    message: (props) => `${props.value} is not a valid phone number!`,
+                },
+            },
         },
         country: {
             type: String,
@@ -86,35 +98,6 @@ const userSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
-
-// Middleware to fetch country codes dynamically
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("country")) return next();
-
-    try {
-        // Fetch country codes from external API
-        const response = await axios.get("https://restcountries.com/v3.1/all");
-        const countries = response.data;
-
-        // Map the countries to find the matching one
-        const countryData = countries.find(
-            (country) => country.name.common.toLowerCase() === this.country.toLowerCase()
-        );
-
-        if (!countryData) {
-            return next(new Error("Invalid country selected."));
-        }
-
-        this.countryCode = countryData.idd?.root + (countryData.idd?.suffixes?.[0] || "");
-        if (!this.countryCode) {
-            return next(new Error("Country code not available for the selected country."));
-        }
-
-        next();
-    } catch (error) {
-        next(new Error("Failed to fetch country codes. Please try again later."));
-    }
-});
 
 const User = mongoose.model("User", userSchema);
 

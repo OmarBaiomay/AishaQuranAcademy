@@ -12,6 +12,7 @@ import { useStatContext } from '../context/ContextProvider';
 import Chat from './dashboard/Chat.jsx';
 import Notifications from './dashboard/Notifications.jsx';
 import Profile from './dashboard/Profile.jsx';
+import { LogOutIcon } from 'lucide-react';
 
 
 const Navbar = () => {
@@ -43,19 +44,18 @@ const Navbar = () => {
       <div className='flex gap-2 justify-center items-center'>
         <NavButton title='Chat' icon={<BsChatLeft />} color='purple-600' dotColor='purple' tooltip='Chat' iconStyles={'text-xl'} />
         <NavButton title='Notifications' icon={<IoNotificationsOutline />} color='purple-600' dotColor='purple' tooltip='Notifications' />
-        <Link to='/profile' className='flex items-center gap-1'>
-          <img src={avatar} alt="User Avatar" className='w-5 rounded-full' />
-          <span className='text-zinc-600'>Hi, </span><span className='text-zinc-700 font-bold'>{authUser?.firstName}</span>
-          <MdKeyboardArrowDown className='text-purple-600' />
-        </Link>
+        <NavButton title='Log Out' icon={<LogOutIcon/>} color='purple-600' dotColor='purple' tooltip='Log Out' customFunc={handleSubmit}/>
+        <TooltipComponent content={'profile'} position='BottomCenter'>
+          <Link to='/profile' className='flex items-center gap-1'>
+            <img src={avatar} alt="User Avatar" className='w-5 rounded-full' />
+            <span className='text-zinc-600'>Hi, </span><span className='text-zinc-700 font-bold'>{authUser?.fullName.split(" ")[0]}</span>
+            {/* <MdKeyboardArrowDown className='text-purple-600' /> */}
+          </Link>
+        </TooltipComponent>
+        
       </div>
     </nav>
   )
 }
 
 export default Navbar
-
-
-// <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-//         <input type='submit' value='Log Out' className="primary-purple-btn cursor-pointer" />
-//       </form>
