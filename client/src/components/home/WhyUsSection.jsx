@@ -47,11 +47,11 @@ function WhyUsSection() {
             </div>
 
             <div className="w-full my-20">
-            <Player
+            {/* <Player
                 playsInline
                 poster="/images/video.png"
                 src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
-            />
+            /> */}
             </div>
         </div>
       </section>

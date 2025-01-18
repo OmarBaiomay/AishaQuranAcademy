@@ -398,4 +398,41 @@ export const rescheduleClass = async (req, res) => {
     }
 };
 
-  
+
+// Fetch the upcoming class for a user
+export const getUpcomingClass = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Find the classroom where the user is either a teacher or a student
+        const classroom = await Classroom.findOne({
+            $or: [{ teacher: userId }, { student: userId }],
+        }).populate("student", "fullName").populate("teacher", "fullName");
+
+        if (!classroom || !classroom.classes || classroom.classes.length === 0) {
+            return res.status(404).json({ message: "No classes found." });
+        }
+
+        // Get the upcoming class based on the current date and time
+        const now = new Date();
+        const upcomingClass = classroom.classes
+            .filter((cls) => new Date(cls.date) >= now)
+            .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
+
+        if (!upcomingClass) {
+            return res.status(404).json({ message: "No upcoming classes scheduled." });
+        }
+
+        res.status(200).json({
+            day: upcomingClass.day,
+            time: upcomingClass.time,
+            date: upcomingClass.date,
+            zoomLink: upcomingClass.zoomLink,
+            studentName: classroom.student.fullName,
+            teacherName: classroom.teacher.fullName,
+        });
+    } catch (error) {
+        console.error("Error fetching upcoming class:", error.message);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};

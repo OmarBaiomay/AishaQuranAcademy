@@ -27,9 +27,9 @@ export const signup = async (req, res) => {
         }
 
         // Validate phone number format
-        if (!/^[0-9]{10,15}$/.test(phone)) {
-            return res.status(400).json({ message: "Invalid phone number format" });
-        }
+        // if (!/^[0-9]{10,15}$/.test(phone)) {
+        //     return res.status(400).json({ message: "Invalid phone number format" });
+        // }
 
         // Validate role
         const allowedRoles = ["Student", "Teacher", "Supervisor", "Administrator"];
@@ -88,7 +88,7 @@ export const signup = async (req, res) => {
             country,
             role,
             gender,
-            availability: role === "Teacher" ? availability : [], // Set availability for Teacher role
+            availability,
         });
 
         // Save the user and automatically assign country code

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../lib/axios.js";
 import toast from "react-hot-toast";
-import { v4 as uuidv4 } from "uuid"; // Import UUID
+import { v4 as uuidv4 } from "uuid";
 import {
   GridComponent,
   ColumnsDirective,
@@ -19,16 +19,16 @@ function ClassroomDetails() {
   const navigate = useNavigate();
   const [classroom, setClassroom] = useState(null);
   const [classes, setClasses] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // Fetch Classroom Details
   const getClassroomDetails = async () => {
     try {
       const response = await axiosInstance.get(`/classroom/${id}`);
       const fetchedClasses = response.data.classes || [];
-      // Assign unique IDs dynamically if not present
       const classesWithIds = fetchedClasses.map((cls) => ({
         ...cls,
-        id: uuidv4(), // Assign a temporary unique ID
+        id: uuidv4(), // Assign a unique ID
       }));
       setClassroom(response.data);
       setClasses(classesWithIds);
@@ -37,11 +37,32 @@ function ClassroomDetails() {
     }
   };
 
+  // Add Monthly Classes
+  const addMonthlyClasses = async () => {
+    if (loading) return;
+
+    setLoading(true);
+    try {
+      const response = await axiosInstance.post(`/classroom/${id}/generate-monthly-classes`);
+      const newClasses = response.data.classes.map((cls) => ({
+        ...cls,
+        id: uuidv4(), // Assign a unique ID
+      }));
+      setClasses((prev) => [...prev, ...newClasses]); // Update state with new classes
+      toast.success(`${newClasses.length} monthly classes added successfully!`);
+    } catch (error) {
+      toast.error("Error adding monthly classes!");
+      console.log("Error" , error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Reschedule Class
   const rescheduleClass = async (classId) => {
     try {
-      // Perform reschedule action here (implement backend logic if needed)
-      toast.success(`Class with ID ${classId} rescheduled successfully!`);
+      const response = await axiosInstance.put(`/classroom/${id}/classes/${classId}/reschedule`);
+      toast.success(`Class rescheduled to ${response.data.classItem.date}`);
     } catch (error) {
       toast.error("Error rescheduling class!");
     }
@@ -65,7 +86,7 @@ function ClassroomDetails() {
       template: (props) => (
         <button
           className="bg-blue-500 text-white px-3 py-1 rounded"
-          onClick={() => rescheduleClass(props.id)} // Use the dynamically assigned ID
+          onClick={() => rescheduleClass(props.id)}
         >
           Reschedule
         </button>
@@ -81,14 +102,12 @@ function ClassroomDetails() {
         <h1 className="text-2xl font-bold text-zinc-600 mb-6">Classroom Details</h1>
         <button
           className={`text-white rounded-lg px-4 py-2 ${
-            classroom.classes.length
-              ? "bg-purple-400 cursor-not-allowed"
-              : "bg-purple-500 cursor-pointer"
+            loading || classroom.classes.length > 0 ? "bg-gray-400 cursor-not-allowed" : "bg-purple-500"
           }`}
-          onClick={() => toast("Monthly classes already added.")}
-          disabled={classroom.classes.length > 0}
+          onClick={addMonthlyClasses}
+          disabled={loading || classroom.classes.length > 0}
         >
-          Add Monthly Classes
+          {loading ? "Adding Classes..." : "Add Monthly Classes"}
         </button>
       </header>
 

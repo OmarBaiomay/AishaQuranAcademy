@@ -10,6 +10,7 @@ import {
     getAllClasses,
     generateMonthlyClasses,
     rescheduleClass,
+    getUpcomingClass,
 
 } from "../controllers/calssroom.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
@@ -27,8 +28,10 @@ router.delete('/classroom/:classroomId', protectRoute, deleteClassroom); // Dele
 router.post('/classroom/:classroomId/classes', protectRoute, addClassToClassroom); // Add a class
 router.put('/classroom/:classroomId/classes/:classId', protectRoute, updateClassAttendance); // Update class attendance
 router.get('/classroom/:classroomId/classes', protectRoute, getAllClasses); // Get all classes for a classroom
-router.post('/classroom/:classroomId/generate-classes', protectRoute, generateMonthlyClasses);
+router.post('/classroom/:classroomId/generate-monthly-classes', protectRoute, generateMonthlyClasses);
 router.post('/classroom/:classroomId/reschedule-class/:classId', protectRoute, rescheduleClass);
+
+router.get('/classes/upcoming/:userId', protectRoute, getUpcomingClass); // UpComing Calss
 
 
 export default router;

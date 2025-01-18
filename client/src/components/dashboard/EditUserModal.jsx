@@ -22,7 +22,7 @@ function EditUserModal({ show, user, onClose, onSave }) {
     // Fetch country codes when the component mounts
     const fetchCountryCodes = async () => {
       try {
-        const response = await axios.get("https://restcountries.com/v3.1/all");
+        const response = await axios.get("http://restcountries.com/v3.1/all");
         const codes = response.data.map((country) => ({
           name: country.name.common,
           code: country.idd?.root + (country.idd?.suffixes?.[0] || ""),
@@ -36,7 +36,7 @@ function EditUserModal({ show, user, onClose, onSave }) {
     // Fetch time zones (using a simple example API)
     const fetchTimeZones = async () => {
       try {
-        const response = await axios.get("https://world-time1.p.rapidapi.com/timezone");
+        const response = await axios.get("http://world-time1.p.rapidapi.com/timezone");
         setTimeZones(response.data);
       } catch (error) {
         toast.error("Failed to fetch time zones.");

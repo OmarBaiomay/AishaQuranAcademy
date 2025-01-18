@@ -67,6 +67,7 @@ function AddClassroomPage() {
   const handleAddClassroom = async () => {
     if (!selectedStudent || !selectedTeacher || !selectedSupervisor || classTimes.length === 0) {
       toast.error("Please fill in all required fields!");
+      console.log(selectedStudent, selectedTeacher, selectedSupervisor, classTimes.length);
       return;
     }
 

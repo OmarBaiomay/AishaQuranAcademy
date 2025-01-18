@@ -14,7 +14,7 @@ const HeroSection = () => {
                         <span className="relative w-2 h-2 rounded-full bg-purple-600">
                             <span className="absolute inset-0 rounded-full bg-purple-500 animate-ping"></span>
                         </span>
-                        <sapn className="text-zinc-600 dark:text-zinc-200" >Start Your Journy With Us Now</sapn>
+                        <span className="text-zinc-600 dark:text-zinc-200" >Start Your Journy With Us Now</span>
                     </div>
 
                     <h2 className="headline-1">
@@ -28,7 +28,7 @@ const HeroSection = () => {
                         <Link to="/register-course" className="btn primary-purple-btn flex items-center justify-center gap-1 max-md:hidden md:justify-self-end">
                         <MdFreeCancellation /> Free Trial
                         </Link>
-                        <a href="" className="btn primary-whatsapp-btn flex items-center justify-center gap-1 max-md:hidden md:justify-self-end">
+                        <a href="" className="btn primary-whatsapp-btn flex items-center justify-center gap-1 max-md:hidden md:justify-self-end text-3xl">
                             <FaWhatsapp /> WhatsApp Us
                         </a>
                     </div>

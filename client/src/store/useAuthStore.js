@@ -5,6 +5,7 @@ import { LogOut } from "lucide-react";
 
 export const userAuthStore = create((set)=>({
     authUser: null,
+    isAdmin: false,
     isSigningUp: false,
     isLoggingIn: false,
     isUpdatingProfile: false,
@@ -14,13 +15,15 @@ export const userAuthStore = create((set)=>({
         try {
             const res = await axiosInstance.get("/auth/check")
             set({
-                authUser: res.data
+                authUser: res.data,
+                isAdmin: res.data.role === "Administrator",
             })
             
         } catch (error) {
             console.log("Error In CheckAuth:", error);
             set({
-                authUser: null
+                authUser: null,
+                isAdmin: false,
             })
         } finally{
             set({

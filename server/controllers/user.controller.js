@@ -94,10 +94,7 @@ export const updateUser = async (req, res) => {
         if (role) user.role = role;
         if (gender) user.role = gender;
 
-        // Update availability only if role is Teacher
-        if (role === "Teacher" && availability) {
-            user.availability = availability;
-        }
+        if (availability) user.availability = availability;
 
         await user.save();
 
@@ -169,4 +166,23 @@ export const updateTeacherAvailability = async (req, res) => {
         console.error("Error updating teacher availability:", error.message);
         res.status(500).json({ message: "Internal Server Error" });
     }
+};
+
+export const getProfile = async (req, res) =>{
+    try {
+        const user = await User.findById(req.params.id);
+        res.status(200).json(user);
+      } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch user profile' });
+      }
+};
+
+
+export const updateProfile = async (req, res) =>{
+    try {
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.status(200).json(updatedUser);
+      } catch (error) {
+        res.status(500).json({ error: 'Failed to update user profile' });
+      }
 };

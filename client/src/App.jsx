@@ -26,7 +26,7 @@ import ClassroomDetails from './pages/dashboard/ClassroomDetails.jsx'
 const App = () => {
   const {activeMenu} = useStatContext();
 
-  const {authUser, checkAuth, isCheckingAuth} = userAuthStore();
+  const {authUser, checkAuth, isAdmin, isCheckingAuth} = userAuthStore();
 
   useEffect(()=>{
     checkAuth();
@@ -42,25 +42,30 @@ const App = () => {
     <>
       <Toaster />
       {!authUser && <Header />}
-
+      {authUser && !isAdmin && <Header />}
       <div className={`main-container`}>
-        <div className={`bg-white h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto shadow-lg ${!authUser ? 'hidden' : ''} ${activeMenu ? 'pb-10 pr-10 pl-3 w-72 fixed' : 'w-0 p-0 hidden'} `}>
+        <div className={`bg-white h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto shadow-lg ${!authUser || !isAdmin ? 'hidden' : ''} ${activeMenu ? 'pb-10 pr-10 pl-3 w-72 fixed' : 'w-0 p-0 hidden'} `}>
           {authUser && <Sidebar />}
         </div>
 
-        <div className={`${authUser && activeMenu ? ' w-[-webkit-fill-available] md:ml-72 relative' : 'w-full flex-1'}`}>
-        {authUser && <Navbar />}
+        <div className={`${authUser && isAdmin && activeMenu ? ' w-[-webkit-fill-available] md:ml-72 relative' : 'w-full flex-1'}`}>
+        
+        {authUser && isAdmin && <Navbar />}
 
           <Routes>
             {/* For Not Logged Is User */}
-            <Route path='/' element={!authUser ? <HomePage/> : <Dashboard /> } />
-            <Route path='/dashboard' element={!authUser ? <Navigate to="/"/> : <Dashboard/>} />
+            <Route path='/' element={
+              !authUser ? <HomePage/> : (!isAdmin ? <ProfilePage /> : <Dashboard />) 
+              } />
+            <Route path='/dashboard' element={!authUser || !isAdmin ? <Navigate to="/"/> : <Dashboard/>} />
             <Route path='/signup' element={!authUser ?  <SignUpPage/> : <Navigate to="/"/>}/>
             <Route path='/login' element={!authUser ? <LogInPage/> : <Navigate to="/"/>}/>
             <Route path='/settings' element={authUser ? <SettingsPage/> : <Navigate to="/"/>}/>
             <Route path='/profile' element={authUser ? <ProfilePage/> : <Navigate to="/"/>}/>
             <Route path='/register-course' element={!authUser ? <RegisterCoursePage /> : <Navigate to="/"/>}/>
             <Route path='/all-courses' element={!authUser ? <CoursesPage/> : <Navigate to="/"/>}/>
+            <Route path='/settings' element={!authUser ? <SettingsPage /> : <Navigate to="/"/>}/>
+            <Route path='/calender' element={!authUser ? <CoursesPage/> : <Navigate to="/"/>}/>
 
             {/* For Dashboard */}
             <Route path='/dashboard/users' element={authUser ? <Users/> : <Navigate to="/"/>}/>
