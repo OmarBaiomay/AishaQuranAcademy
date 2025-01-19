@@ -25,10 +25,10 @@ const HeroSection = () => {
                     </p>
 
                     <div className="flex justify-center items-center gap-3">
-                        <Link to="/register-course" className="btn primary-purple-btn flex items-center justify-center gap-1 max-md:hidden md:justify-self-end">
+                        <Link to="/register-course" className="btn primary-purple-btn flex items-center justify-center gap-1 md:justify-self-end">
                         <MdFreeCancellation /> Free Trial
                         </Link>
-                        <a href="" className="btn primary-whatsapp-btn flex items-center justify-center gap-1 max-md:hidden md:justify-self-end text-3xl">
+                        <a href="" className="btn primary-whatsapp-btn flex items-center justify-center gap-1 md:justify-self-end text-3xl">
                             <FaWhatsapp /> WhatsApp Us
                         </a>
                     </div>

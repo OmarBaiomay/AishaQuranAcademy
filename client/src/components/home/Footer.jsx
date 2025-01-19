@@ -45,9 +45,11 @@ const Footer = () => {
                     <h2 className="headline-1 mb-8 lg-max-w-[12ch]">
                         Let&apos;s Start Learning Today!
                     </h2>
-                    <Link to="/register-course" className="btn primary-purple-btn flex items-center justify-center gap-1 max-md:hidden md:justify-self-end">
-                        <MdFreeCancellation /> Free Trial
-                    </Link>
+                    <div className='flex'>
+                      <Link to="/register-course" className="btn primary-purple-btn flex items-center justify-center gap-1 justify-self-start">
+                          <MdFreeCancellation /> Free Trial
+                      </Link>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 lg:pl-20">
