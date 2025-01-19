@@ -7,6 +7,7 @@ import authRoutes from "../routes/auth.routes.js"
 import classroomRoutes from "../routes/classroom.routes.js";
 import userRoutes from "../routes/user.routes.js";
 import testimonialRoutes from "../routes/testimonial.routes.js";
+import courseRoutes from "../routes/course.routes.js";
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/api/auth", authRoutes)
 app.use("/api", classroomRoutes)
 app.use("/api", userRoutes)
 app.use("/api", testimonialRoutes);
+app.use("/api", courseRoutes);
 
 app.listen(PORT, () =>{
     console.log(`Server Is Runing on ${PORT}`)

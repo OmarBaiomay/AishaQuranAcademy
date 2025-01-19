@@ -22,6 +22,7 @@ import Classrooms from './pages/dashboard/Classrooms.jsx'
 import UserDetails from './pages/dashboard/UserDetails.jsx'
 import AddClassroomPage from './components/dashboard/AddClassroomPage.jsx'
 import ClassroomDetails from './pages/dashboard/ClassroomDetails.jsx'
+import Footer from './components/home/Footer.jsx'
 
 const App = () => {
   const {activeMenu} = useStatContext();
@@ -63,9 +64,9 @@ const App = () => {
             <Route path='/settings' element={authUser ? <SettingsPage/> : <Navigate to="/"/>}/>
             <Route path='/profile' element={authUser ? <ProfilePage/> : <Navigate to="/"/>}/>
             <Route path='/register-course' element={!authUser ? <RegisterCoursePage /> : <Navigate to="/"/>}/>
-            <Route path='/all-courses' element={!authUser ? <CoursesPage/> : <Navigate to="/"/>}/>
+            <Route path='/all-courses' element={!authUser ? <CoursesPage /> : <Navigate to="/"/>}/>
             <Route path='/settings' element={!authUser ? <SettingsPage /> : <Navigate to="/"/>}/>
-            <Route path='/calender' element={!authUser ? <CoursesPage/> : <Navigate to="/"/>}/>
+            <Route path='/calender' element={!authUser ? <Calender/> : <Navigate to="/"/>}/>
 
             {/* For Dashboard */}
             <Route path='/dashboard/users' element={authUser ? <Users/> : <Navigate to="/"/>}/>
@@ -75,6 +76,8 @@ const App = () => {
             <Route path='/dashboard/classrooms/add' element={authUser ? <AddClassroomPage /> : <Navigate to="/"/>}/>
             <Route path='/dashboard/classrooms/:id' element={authUser ? <ClassroomDetails /> : <Navigate to="/"/>} />
             </Routes>
+
+            {!authUser && <Footer />}
         </div>
       </div>
       

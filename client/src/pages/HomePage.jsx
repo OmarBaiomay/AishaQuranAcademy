@@ -6,7 +6,6 @@ import WhyUsSection from '../components/home/WhyUsSection'
 import Pricing from '../components/home/PricingPlansSection'
 import TestimonialsSlider from '../components/home/TestimonialsSliderSection'
 import Accordion from '../components/home/AccordionSection'
-import Footer from '../components/home/Footer'
 
 const HomePage = () => {
   return (
@@ -23,7 +22,6 @@ const HomePage = () => {
         <Pricing />
         <TestimonialsSlider />
         <Accordion />
-        <Footer />
       </main>
     </>
   )
