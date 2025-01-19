@@ -6,6 +6,7 @@ import { connectDB } from "../lib/db.js";
 import authRoutes from "../routes/auth.routes.js"
 import classroomRoutes from "../routes/classroom.routes.js";
 import userRoutes from "../routes/user.routes.js";
+import testimonialRoutes from "../routes/testimonial.routes.js";
 
 const app = express();
 
@@ -27,7 +28,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes)
 app.use("/api", classroomRoutes)
 app.use("/api", userRoutes)
-
+app.use("/api", testimonialRoutes);
 
 app.listen(PORT, () =>{
     console.log(`Server Is Runing on ${PORT}`)

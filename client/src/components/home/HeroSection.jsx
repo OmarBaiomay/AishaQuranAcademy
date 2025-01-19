@@ -7,7 +7,7 @@ import { MdFreeCancellation } from "react-icons/md";
 const HeroSection = () => {
   return (
     <section id="home" className="pt-28 lg:pt-36">
-        <div className="container lg:grid lg:grid-cols-2 items-center lg:gap-10">
+        <div className="container lg:grid lg:grid-cols-2 items-center lg:gap-10 place-items-center">
             <div>
                 <div className="flex items-start gap-3 flex-col">
                     <div className="flex items-center gap-1.5 text-sm tracking-wide">

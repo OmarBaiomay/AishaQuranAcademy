@@ -29,7 +29,7 @@ const Header = () => {
     
 
     return (
-        <header className="fixed top-0 left-0 w-full h-auto flex-items-center z-40 py-3 bg-gradient-to-b bg-white shadow-md dark:from-zinc-900 dark:to-zinc-900/0">
+        <header className="fixed top-0 left-0 w-full h-auto flex-items-center z-40 py-3 md:py-0 bg-gradient-to-b bg-white shadow-md dark:from-zinc-900 dark:to-zinc-900/0">
             <div className="container">
                 <div className="max-w-screen-2xl w-full mx-auto py-4 flex justify-between items-center md:grid-cols-[1fr,3fr,1fr]">
                 <h1>
@@ -52,7 +52,7 @@ const Header = () => {
                 {authUser && !isAdmin ?
                     <div className="relative">
                         <button onClick={toggleMenu} className="flex items-center space-x-2">
-                        <img src={avatar} alt={`${authUser?.fullName} Avatar`} className="w-10 h-10 rounded-full" />
+                        <img src={authUser.profilePic || `https://placehold.jp/3d4070/ffffff/150x150.png?text=${authUser.fullName.split(" ")[0][0]}${authUser.fullName.split(" ")[1][0]}`} alt={`${authUser?.fullName} Avatar`} className="w-10 h-10 rounded-full" />
                         <span className="text-gray-700 font-medium">
                             {authUser?.fullName.split(' ')[0]}
                         </span>
