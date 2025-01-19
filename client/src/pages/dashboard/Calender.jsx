@@ -23,24 +23,32 @@ const Calender = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   // Fetch classes from the backend
-  const fetchClasses = async () => {
-    try {
-      const response = await axiosInstance.get("/classroom"); // Adjust the endpoint as necessary
-      const classes = response.data.flatMap((classroom) =>
-        classroom.classes.map((cls) => ({
-          Id: `${classroom._id}-${cls.date}`, // Unique identifier for each event
-          Subject: `Class with ${classroom.student.fullName}`,
-          StartTime: new Date(cls.date),
-          EndTime: new Date(new Date(cls.date).getTime() + 60 * 60 * 1000), // Assuming 1-hour classes
-          Location: cls.zoomLink,
-          Description: `Teacher: ${classroom.teacher.fullName}, Supervisor: ${classroom.supervisor.fullName}`,
-        }))
-      );
-      setScheduleData(classes);
-    } catch (error) {
-      toast.error("Error fetching classes for the calendar!");
-    }
-  };
+  // Fetch classes from the backend
+const fetchClasses = async () => {
+  try {
+    const response = await axiosInstance.get("/classroom"); // Adjust the endpoint if necessary
+    // Process classrooms into calendar events
+    const classes = response.data.flatMap((classroom) =>
+      classroom.classes.map((cls) => ({
+        Id: `${classroom._id}-${cls.date}`, // Unique identifier for each event
+        Subject: `Class with ${classroom.student ? classroom.student.fullName : "Unknown Student"}`,
+        StartTime: new Date(cls.date),
+        EndTime: new Date(new Date(cls.date).getTime() + 60 * 60 * 1000), // Assuming 1-hour classes
+        Location: cls.zoomLink,
+        Description: `
+          Teacher: ${classroom.teacher ? classroom.teacher.fullName : "Unknown Teacher"} 
+          Supervisor: ${classroom.supervisor ? classroom.supervisor.fullName : "Unknown Supervisor"}
+        `,
+      }))
+    );
+
+    // Set the processed schedule data to state
+    setScheduleData(classes);
+  } catch (error) {
+    toast.error("Error fetching classes for the calendar!");
+  }
+};
+
 
   useEffect(() => {
     fetchClasses();
