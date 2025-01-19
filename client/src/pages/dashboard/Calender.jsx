@@ -65,7 +65,7 @@ const fetchClasses = async () => {
 
   return (
     <div className="pt-20 px-10 w-full">
-      <h1 className="text-2xl font-bold text-zinc-600 pb-7">Classrooms</h1>
+      <h1 className="text-2xl font-bold text-zinc-600 pb-7">Calender View</h1>
       <div className="schedule-control-section">
         <div className="col-lg-9 control-section">
           <div className="control-wrapper">

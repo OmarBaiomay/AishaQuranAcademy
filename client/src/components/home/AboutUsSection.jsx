@@ -1,6 +1,6 @@
 import { number } from 'prop-types'
 import React from 'react'
-import logo from "/assets/AishaLogo.svg"
+import logo from "/assets/AishaIcon.png"
 
 
 const aboutItems = [
@@ -43,7 +43,7 @@ function AboutUsSection() {
                         </div>
                         <p className='text-sm text-zinc-700 dark:text-zinc-100'>USD Only Per Hour</p>
                     </div>
-                    <img src={logo} alt='logo' width={150} height={150} className='ml-auto'/>
+                    <img src={logo} alt='logo' width={100} height={100} className='ml-auto'/>
                 </div>
             </div>
         </div>

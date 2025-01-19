@@ -5,6 +5,7 @@ import ClassroomCard from "../../components/dashboard/ClassroomCard.jsx"; // Rep
 import { FaList, FaTh } from "react-icons/fa"; // Icons for buttons
 import { Link, useNavigate } from "react-router-dom";
 import { GridComponent, ColumnsDirective, ColumnDirective, Inject, Filter, VirtualScroll, Sort, Resize, ContextMenu, ExcelExport, Edit, PdfExport } from '@syncfusion/ej2-react-grids';
+import { IoAdd } from "react-icons/io5";
 
 function Classrooms() {
   const navigate = useNavigate();
@@ -62,15 +63,21 @@ function Classrooms() {
   ];
 
   return (
-    <div className="pt-20 px-10 w-full">
+    <div className="pt-20 px-7 w-full">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-zinc-600">Classrooms</h1>
-        <div className="controlles flex gap-5 px-5">
+        <div className="controlles flex gap-2 md:gap-5 px-5">
           <button
-            className="bg-purple-500 text-white rounded-lg px-3 py-1 text-sm"
+            className="bg-purple-500 text-white rounded-lg px-3 py-1 text-sm hidden md:block"
             onClick={() => navigate('/dashboard/classrooms/add')}
           >
             Add Classroom
+          </button>
+          <button
+            className="bg-purple-500 text-white rounded-lg px-3 py-1 text-sm block md:hidden"
+            onClick={() => navigate('/dashboard/classrooms/add')}
+          >
+            <IoAdd />
           </button>
           <input
             type="text"

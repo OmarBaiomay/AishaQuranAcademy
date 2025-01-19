@@ -5,7 +5,7 @@ import { MdOutlineCancel, MdRoom } from 'react-icons/md';
 import { Calendar1Icon, Users } from 'lucide-react';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { useStatContext } from '../context/ContextProvider';
-import logo from '/assets/AishaLogo.svg';
+import logo from '/assets/AishaLogo.png';
 
 function Sidebar() {
 
@@ -15,11 +15,11 @@ function Sidebar() {
   const inactiveLink = 'flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-zinc-700 text-sm m-2 dark:text-zinc-300 dark:hover:text-zinc-900 hover:bg-zinc-200'
 
   return (
-    <div className=''>
+    <div className='pt-5'>
       <Link to='/' className='flex items-center'>
         <img src={logo} alt="Aisha Logo" width={150} height={150}/>
       </Link>
-      <button className='text-2xl rounded-full absolute top-0 right-0 p-3 text-gray-900 dark:text-zinc-300 hover:text-gray-900 dark:hover:text-zinc-900' onClick={() => setActiveMenu(!activeMenu)}> 
+      <button className='block md-hidden  text-2xl rounded-full absolute top-0 right-0 p-3 text-gray-900 dark:text-zinc-300 hover:text-gray-900 dark:hover:text-zinc-900' onClick={() => setActiveMenu(!activeMenu)}> 
         <MdOutlineCancel />
       </button>
       <div className='sidbar-group'>

@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
 import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 function Navbar( {navOpen} ) {
 
     const lastActiveLink = useRef()
     const activeBox = useRef()
+    // const [navOpenHere, setNavOpen] = useState(false);
 
     const initActiveBox = () =>{
         activeBox.current.style.top = lastActiveLink.current.offsetTop+ 'px';
@@ -17,9 +18,7 @@ function Navbar( {navOpen} ) {
     useEffect(initActiveBox, []);
 
     window.addEventListener('resize', initActiveBox)
-
     const activeCurrentLink = (e) =>{
-
         lastActiveLink.current?.classList.remove('active');
         e.target.classList.add('active')
         lastActiveLink.current = e.target;
@@ -57,6 +56,12 @@ function Navbar( {navOpen} ) {
                     {label}
                 </Link>
             ))
+        }
+
+        { 
+            <Link to='/login' className='nav-link block md:hidden' onClick={activeCurrentLink}>
+                Login
+            </Link>
         }
 
         <div className="active-box" ref={activeBox}></div>

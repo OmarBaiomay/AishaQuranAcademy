@@ -3,7 +3,7 @@ import { userAuthStore } from '../store/useAuthStore.js';
 import { Link } from 'react-router-dom';
 import { AiOutlineMenu } from 'react-icons/ai';
 import { BsChatLeft } from "react-icons/bs";
-import { IoNotificationsOutline } from 'react-icons/io5';
+import { IoClose, IoNotificationsOutline } from 'react-icons/io5';
 import { MdAccountCircle } from 'react-icons/md';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups/index.js';
@@ -39,7 +39,7 @@ const Navbar = () => {
   return (
     <nav className="fixed flex justify-between items-center shadow-md bg-white w-[-webkit-fill-available] z-10 py-3 px-5">
 
-      <NavButton title='Menu' icon={<AiOutlineMenu />} color='purple-600' dotColor='purple' tooltip='Chat' customFunc={() => setActiveMenu(!activeMenu)} />
+      <NavButton title='Menu' icon={!activeMenu ? <AiOutlineMenu /> : <IoClose />} color='purple-600' dotColor='purple' tooltip='Menu' customFunc={() => setActiveMenu(!activeMenu)} />
 
       <div className='flex gap-2 justify-center items-center'>
         <NavButton title='Chat' icon={<BsChatLeft />} color='purple-600' dotColor='purple' tooltip='Chat' iconStyles={'text-xl'} />

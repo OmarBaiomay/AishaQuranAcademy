@@ -44,7 +44,7 @@ const App = () => {
       {!authUser && <Header />}
       {authUser && !isAdmin && <Header />}
       <div className={`main-container`}>
-        <div className={`bg-white h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto shadow-lg ${!authUser || !isAdmin ? 'hidden' : ''} ${activeMenu ? 'pb-10 pr-10 pl-3 w-72 fixed' : 'w-0 p-0 hidden'} `}>
+        <div className={`bg-white h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto shadow-lg z-50 ${!authUser || !isAdmin ? 'hidden' : ''} ${activeMenu ? 'pb-10 pr-10 pl-3 w-72 fixed' : 'w-0 p-0 hidden'} `}>
           {authUser && <Sidebar />}
         </div>
 

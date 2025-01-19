@@ -6,7 +6,7 @@ import { useState } from "react";
 import Navbar from "./HomeNavbar";
 import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "/assets/AishaLogo.svg"
+import logo from "/assets/AishaLogo.png"
 import { userAuthStore } from "../store/useAuthStore";
 import avatar from '/assets/user.svg';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
@@ -25,11 +25,11 @@ const Header = () => {
     const handleLogout = () => {
         LogOut();
         setMenuOpen(false);
-      };
+    };
     
 
     return (
-        <header className="fixed top-0 left-0 w-full h-20 flex-items-center z-40 dark:bg-gradient-to-b dark:from-zinc-900 dark:to-zinc-900/0">
+        <header className="fixed top-0 left-0 w-full h-auto flex-items-center z-40 py-3 bg-gradient-to-b bg-white shadow-md dark:from-zinc-900 dark:to-zinc-900/0">
             <div className="container">
                 <div className="max-w-screen-2xl w-full mx-auto py-4 flex justify-between items-center md:grid-cols-[1fr,3fr,1fr]">
                 <h1>
@@ -37,7 +37,7 @@ const Header = () => {
                         <img src={logo} width={150} alt="Aisha Quran Academy"/>
                     </a>
                 </h1>
-
+                {!authUser &&
                 <div className="relative md:justify-self-center">
                     <button className="menu-btn md:hidden" onClick={()=> setNavOpen((open) => !open)}>
                         <span className="m-icon">
@@ -46,10 +46,9 @@ const Header = () => {
                     </button>
 
                     {/* Navbar */}
-                    {!authUser &&
-                        <Navbar navOpen={navOpen}/>
-                    }
+                    <Navbar navOpen={navOpen}/>
                 </div>
+                }
                 {authUser && !isAdmin ?
                     <div className="relative">
                         <button onClick={toggleMenu} className="flex items-center space-x-2">
