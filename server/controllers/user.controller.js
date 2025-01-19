@@ -3,11 +3,11 @@ import bcrypt from "bcryptjs";
 
 // Create a new user
 export const createUser = async (req, res) => {
-    const { fullName, email, password, phone, country, role, availability, gender } = req.body;
+    const { fullName, email, password, phone, country, role, availability, gender, age } = req.body;
 
     try {
         // Validate required fields
-        if (!fullName || !email || !password || !phone || !country || !role || !gender) {
+        if (!fullName || !email || !password || !phone || !country || !role || !gender || !age) {
             return res.status(400).json({ message: "All fields are required." });
         }
 
@@ -29,8 +29,9 @@ export const createUser = async (req, res) => {
             phone,
             country,
             gender,
+            age,
             role,
-            availability, // Include availability only for Teachers
+            availability,
         });
 
         // Save the user
@@ -77,7 +78,7 @@ export const getUserById = async (req, res) => {
 
 // Update a user by ID
 export const updateUser = async (req, res) => {
-    const { fullName, email, phone, country, role, availability, gender } = req.body;
+    const { fullName, email, phone, country, role, availability, gender, age } = req.body;
 
     try {
         const user = await User.findById(req.params.id);
@@ -92,8 +93,8 @@ export const updateUser = async (req, res) => {
         if (phone) user.phone = phone;
         if (country) user.country = country;
         if (role) user.role = role;
-        if (gender) user.role = gender;
-
+        if (gender) user.gender = gender;
+        if (age) user.age = age;
         if (availability) user.availability = availability;
 
         await user.save();
@@ -122,20 +123,20 @@ export const deleteUser = async (req, res) => {
 };
 
 // Updating Availability
-export const updateTeacherAvailability = async (req, res) => {
-    const { teacherId, availabilityId } = req.params;
+export const updateUserAvailability = async (req, res) => {
+    const { userId, availabilityId } = req.params;
     const { day, hour, period, isBooked } = req.body;
 
     try {
         // Find the teacher by ID
-        const teacher = await User.findById(teacherId);
+        const user = await User.findById(userId);
 
-        if (!teacher || teacher.role !== "Teacher") {
-            return res.status(404).json({ message: "Teacher not found or invalid role." });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
         }
 
         // Find the specific availability slot by its ID
-        const availability = teacher.availability.id(availabilityId);
+        const availability = user.availability.id(availabilityId);
 
         if (!availability) {
             return res.status(404).json({ message: "Availability slot not found." });
@@ -144,7 +145,6 @@ export const updateTeacherAvailability = async (req, res) => {
         // If marking as not booked, delete the connected classroom
         if (typeof isBooked === "boolean" && !isBooked && availability.classroomId) {
             await Classroom.findByIdAndDelete(availability.classroomId);
-
             // Clear the classroomId
             availability.classroomId = null;
         }
@@ -159,30 +159,93 @@ export const updateTeacherAvailability = async (req, res) => {
         await teacher.save();
 
         res.status(200).json({
-            message: "Teacher availability updated successfully.",
+            message: "User availability updated successfully.",
             updatedAvailability: availability,
         });
     } catch (error) {
-        console.error("Error updating teacher availability:", error.message);
+        console.error("Error updating user availability:", error.message);
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
 
-export const getProfile = async (req, res) =>{
+export const addUserAvailability = async (req, res) => {
+    const { userId } = req.params;
+    const { day, hour, period } = req.body;
+  
     try {
-        const user = await User.findById(req.params.id);
-        res.status(200).json(user);
-      } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch user profile' });
+      // Validate input
+      if (!day || !hour || !period) {
+        return res.status(400).json({ message: "Day, hour, and period are required." });
       }
-};
-
-
-export const updateProfile = async (req, res) =>{
+  
+      // Find the user
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+  
+      // Add the new availability slot
+      const newAvailability = { day, hour, period };
+      user.availability.push(newAvailability);
+  
+      await user.save();
+  
+      res.status(201).json({
+        message: "Availability added successfully.",
+        availability: newAvailability,
+      });
+    } catch (error) {
+      console.error("Error adding availability:", error.message);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+  
+  export const getUserAvailability = async (req, res) => {
+    const { userId } = req.params;
+  
     try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.status(200).json(updatedUser);
-      } catch (error) {
-        res.status(500).json({ error: 'Failed to update user profile' });
+      // Find the user
+      const user = await User.findById(userId).select("availability");
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
       }
-};
+  
+      res.status(200).json({
+        message: "User availability retrieved successfully.",
+        availability: user.availability,
+      });
+    } catch (error) {
+      console.error("Error fetching availability:", error.message);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+  
+  export const deleteUserAvailability = async (req, res) => {
+    const { userId, availabilityId } = req.params;
+  
+    try {
+      // Find the user
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+  
+      // Find and remove the availability slot
+      const availabilityIndex = user.availability.findIndex(
+        (slot) => slot._id.toString() === availabilityId
+      );
+  
+      if (availabilityIndex === -1) {
+        return res.status(404).json({ message: "Availability slot not found." });
+      }
+  
+      user.availability.splice(availabilityIndex, 1);
+      await user.save();
+  
+      res.status(200).json({ message: "Availability deleted successfully." });
+    } catch (error) {
+      console.error("Error deleting availability:", error.message);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+  
