@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { SiShopware } from 'react-icons/si';
-import { MdOutlineCancel, MdRoom } from 'react-icons/md';
+import { MdOutlineCancel, MdOutlineClass, MdRoom } from 'react-icons/md';
 import { Calendar1Icon, Users } from 'lucide-react';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { useStatContext } from '../context/ContextProvider';
@@ -19,7 +19,7 @@ function Sidebar() {
       <Link to='/' className='flex items-center'>
         <img src={logo} alt="Aisha Logo" width={150} height={150}/>
       </Link>
-      <button className='block md-hidden  text-2xl rounded-full absolute top-0 right-0 p-3 text-gray-900 dark:text-zinc-300 hover:text-gray-900 dark:hover:text-zinc-900' onClick={() => setActiveMenu(!activeMenu)}> 
+      <button className='block md:hidden text-2xl rounded-full absolute top-0 right-0 p-3 text-gray-900 dark:text-zinc-300 hover:text-gray-900 dark:hover:text-zinc-900' onClick={() => setActiveMenu(!activeMenu)}> 
         <MdOutlineCancel />
       </button>
       <div className='sidbar-group'>
@@ -37,6 +37,10 @@ function Sidebar() {
           <NavLink to={'/dashboard/classrooms'} className={({isActive}) => isActive ? activeLink : inactiveLink}> 
            <MdRoom className='text-[20px]'/>
            <span className='capitalize'>classrooms</span>
+          </NavLink>
+          <NavLink to={'/dashboard/courses'} className={({isActive}) => isActive ? activeLink : inactiveLink}> 
+           <MdOutlineClass className='text-[20px]'/>
+           <span className='capitalize'>Courses</span>
           </NavLink>
       </div>
     </div>

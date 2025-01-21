@@ -183,7 +183,7 @@ function Users() {
            </div>
         </div>
       </div>
-      <div className="flex justify-start items-center gap-7 flex-wrap mt-10">
+      <div className="flex justify-start gap-5 items-center flex-wrap mt-10">
         {loading ? (
             <div>Loading....</div>
           ) : (

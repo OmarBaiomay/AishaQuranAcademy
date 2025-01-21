@@ -20,8 +20,8 @@ const UserCard = ({
   };
 
   return (
-    <div className="sm:w-1/2 md:w-1/3 lg:w-1/6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 relative">
-      <div className="flex justify-end px-4 pt-4">
+    <div className="px-5 mb-5 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 relative">
+      <div className="flex justify-end pt-4">
         <button
           onClick={toggleDropdown} // Handle the button click to toggle dropdown
           id="dropdownButton"
