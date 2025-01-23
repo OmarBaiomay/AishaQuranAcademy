@@ -7,11 +7,12 @@ import {
   deleteTestimonial,
 } from "../controllers/testimonial.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
+import upload from "../lib/multer.js";
 
 const router = express.Router();
 
 // Create a new testimonial
-router.post("/testimonials",protectRoute, createTestimonial);
+router.post("/testimonials",protectRoute, upload.single("userImage"), createTestimonial);
 
 // Get all testimonials
 router.get("/testimonials", getAllTestimonials);
@@ -20,7 +21,7 @@ router.get("/testimonials", getAllTestimonials);
 router.get("/testimonials/:id", getTestimonialById);
 
 // Update a testimonial
-router.put("/testimonials/:id",protectRoute, updateTestimonial);
+router.put("/testimonials/:id",protectRoute, upload.single("userImage"), updateTestimonial);
 
 // Delete a testimonial
 router.delete("/testimonials/:id",protectRoute, deleteTestimonial);

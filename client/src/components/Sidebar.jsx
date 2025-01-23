@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { SiShopware } from 'react-icons/si';
+import { BiSolidCommentCheck } from "react-icons/bi";
 import { MdOutlineCancel, MdOutlineClass, MdRoom } from 'react-icons/md';
 import { Calendar1Icon, Users } from 'lucide-react';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -41,6 +42,10 @@ function Sidebar() {
           <NavLink to={'/dashboard/courses'} className={({isActive}) => isActive ? activeLink : inactiveLink}> 
            <MdOutlineClass className='text-[20px]'/>
            <span className='capitalize'>Courses</span>
+          </NavLink>
+          <NavLink to={'/dashboard/testimonials'} className={({isActive}) => isActive ? activeLink : inactiveLink}> 
+           <BiSolidCommentCheck  className='text-[20px]'/>
+           <span className='capitalize'>Testimonials</span>
           </NavLink>
       </div>
     </div>

@@ -26,6 +26,8 @@ import Footer from './components/home/Footer.jsx'
 import Courses from './pages/dashboard/Courses.jsx'
 import AddCourse from './pages/dashboard/AddCourse.jsx'
 import UpdateCourse from './pages/dashboard/UpdateCourse.jsx'
+import Testimonials from './pages/dashboard/Testimonials.jsx'
+import AddEditTestimonial from './pages/dashboard/AddEditTestimonial.jsx'
 
 const App = () => {
   const {activeMenu} = useStatContext();
@@ -84,8 +86,11 @@ const App = () => {
             <Route path='/dashboard/courses' element={authUser ? <Courses /> : <Navigate to="/"/>}/>
             <Route path='/dashboard/courses/add' element={authUser ? <AddCourse /> : <Navigate to="/"/>}/>
             <Route path='/dashboard/courses/edit/:id' element={authUser ? <UpdateCourse /> : <Navigate to="/"/>}/>
-
-            </Routes>
+            
+            <Route path='/dashboard/testimonials' element={authUser ? <Testimonials /> : <Navigate to="/"/>}/>
+            <Route path='/dashboard/testimonials/add' element={authUser ? <AddEditTestimonial /> : <Navigate to="/"/>}/>
+            <Route path='/dashboard/testimonials/edit/:id' element={authUser ? <AddEditTestimonial /> : <Navigate to="/"/>}/>
+          </Routes>
 
             {!authUser && <Footer />}
         </div>
