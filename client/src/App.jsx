@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useStatContext } from './context/ContextProvider'
 import { Loader } from "lucide-react"
 import Navbar from './components/Navbar'
@@ -28,11 +28,29 @@ import AddCourse from './pages/dashboard/AddCourse.jsx'
 import UpdateCourse from './pages/dashboard/UpdateCourse.jsx'
 import Testimonials from './pages/dashboard/Testimonials.jsx'
 import AddEditTestimonial from './pages/dashboard/AddEditTestimonial.jsx'
+import { requestFCMToken } from './utils/firebaseUtils.js'
 
 const App = () => {
   const {activeMenu} = useStatContext();
 
   const {authUser, checkAuth, isAdmin, isCheckingAuth} = userAuthStore();
+
+  const [fcmTocken, setFcmToken] = useState(null);
+
+  useEffect(()=>{
+    const fetchFCMToken = async () =>{
+      try {
+        const token = await requestFCMToken();
+        setFcmToken(token)
+        console.log(token)
+
+      } catch (error) {
+        console.error("Error getting FCM token : ", error)
+        throw error;
+      }
+    }
+    fetchFCMToken();
+  })
 
   useEffect(()=>{
     checkAuth();

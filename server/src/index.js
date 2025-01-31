@@ -9,6 +9,7 @@ import userRoutes from "../routes/user.routes.js";
 import testimonialRoutes from "../routes/testimonial.routes.js";
 import courseRoutes from "../routes/course.routes.js";
 import blogRoutes from "../routes/blog.routes.js";
+import notificationRoutes from "../routes/notification.routes.js"
 
 const app = express();
 
@@ -26,7 +27,7 @@ const PORT = process.env.PORT
 // Middleware to parse cookies
 app.use(express.json());
 
-
+app.use("/api/notifications", notificationRoutes);
 app.use("/api/auth", authRoutes)
 app.use("/api", classroomRoutes)
 app.use("/api", userRoutes)

@@ -20,11 +20,18 @@ export const userAuthStore = create((set)=>({
             })
             
         } catch (error) {
-            console.log("Error In CheckAuth:", error);
-            set({
-                authUser: null,
-                isAdmin: false,
-            })
+            if (error.code === "ERR_BAD_REQUEST"){
+                set({
+                    authUser: null,
+                    isAdmin: false,
+                })
+            }else{
+                console.log("Error In CheckAuth:", error);
+                set({
+                    authUser: null,
+                    isAdmin: false,
+                })
+            }
         } finally{
             set({
                 isCheckingAuth: false
