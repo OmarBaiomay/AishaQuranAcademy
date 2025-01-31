@@ -249,3 +249,53 @@ export const addUserAvailability = async (req, res) => {
     }
   };
   
+// Add FCM Token
+export const addFCMToken = async (req, res) => {
+  const { userId } = req.params;
+  const { device, token } = req.body;
+
+  if (!device || !token) {
+      return res.status(400).json({ message: "Device and token are required" });
+  }
+
+  try {
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check if the token already exists for the user
+      const tokenExists = user.fcmTokens.some((t) => t.token === token);
+      if (tokenExists) {
+          return res.status(400).json({ message: "Token already exists for this user" });
+      }
+
+      // Add the new FCM token
+      user.fcmTokens.push({ device, token });
+      await user.save();
+
+      res.status(200).json({ message: "FCM token added successfully", user });
+  } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Remove FCM Token
+export const removeFCMToken = async (req, res) => {
+  const { userId, token } = req.params;
+
+  try {
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: "User not found" });
+      }
+
+      // Remove the FCM token
+      user.fcmTokens = user.fcmTokens.filter((t) => t.token !== token);
+      await user.save();
+
+      res.status(200).json({ message: "FCM token removed successfully", user });
+  } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

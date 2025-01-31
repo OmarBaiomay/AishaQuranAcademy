@@ -55,6 +55,7 @@ const userSchema = new mongoose.Schema(
             type: Number, 
             min: 0,
             required: true,
+            default: 0,
         },
         password: {
             type: String,
@@ -100,6 +101,7 @@ const userSchema = new mongoose.Schema(
             type: [availabilitySchema],
             default: [], // Default to an empty array
         },
+        fcmTokens: [{ device: String, token: String }],
     },
     { timestamps: true }
 );

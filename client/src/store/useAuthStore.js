@@ -2,6 +2,7 @@ import {create} from "zustand"
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { LogOut } from "lucide-react";
+import { requestFCMToken } from "../utils/firebaseUtils.js";
 
 export const userAuthStore = create((set)=>({
     authUser: null,
@@ -62,32 +63,56 @@ export const userAuthStore = create((set)=>({
 
     logIn: async (data) => {
         set({
-            isLoggingIn: true
-        })
+            isLoggingIn: true,
+        });
 
         try {
-            const res = await axiosInstance.post("/auth/login", data)
+            const res = await axiosInstance.post("/auth/login", data);
             toast.success("Logged In Successfully");
-            set({authUser: res.data})
+
+            // Fetch the FCM token after successful login
+            const fcmToken = await requestFCMToken();
+            console.log(fcmToken)
+            if (fcmToken) {
+                // Add the FCM token to the user
+                await axiosInstance.post(`/user/${res.data._id}/fcm-tokens`, {
+                    device: "Web",
+                    token: fcmToken,
+                });
+            }
+
+            set({ authUser: res.data });
         } catch (error) {
             toast.error("Error In LogIn");
             console.log("Error In LogIn:", error);
-        } finally{
+        } finally {
             set({
-                isLoggingIn: false
-            })
+                isLoggingIn: false,
+            });
         }
     },
 
     LogOut: async () => {
         try {
-            await axiosInstance.post("/auth/logout")
-            set({authUser: null})
+            const { authUser } = userAuthStore.getState();
+
+            // Remove the FCM token before logging out
+            if (authUser) {
+                const fcmToken = await requestFCMToken();
+                if (fcmToken) {
+                    await axiosInstance.delete(
+                        `/user/${authUser._id}/fcm-tokens/${fcmToken}`
+                    );
+                }
+            }
+
+            await axiosInstance.post("/auth/logout");
+            set({ authUser: null });
             toast.success("Logged Out Successfully");
         } catch (error) {
             toast.error("Error In LogOut");
             console.log("Error In LogOut:", error);
         }
-    }
+    },
 
 }));
