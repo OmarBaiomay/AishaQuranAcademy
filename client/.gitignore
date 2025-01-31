@@ -23,4 +23,4 @@ dist-ssr
 *.sln
 *.sw?
 
-./firebase-messaging-sw.js
+client/puplic/firebase-messaging-sw.js
