@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { axiosInstance } from "../lib/axios";
+import { axiosInstance } from "../../lib/axios";
 import { useNavigate, useParams } from "react-router-dom";
 
 const ReportFormPage = () => {
   const { classId, reportId } = useParams();
   const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Fetch report if editing
   useEffect(() => {
     if (reportId) {
       const fetchReport = async () => {
@@ -19,28 +17,21 @@ const ReportFormPage = () => {
           console.error("Error fetching report:", error.message);
         }
       };
-
       fetchReport();
     }
   }, [reportId]);
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
     try {
       if (reportId) {
         await axiosInstance.put(`/reports/${reportId}`, { content });
       } else {
         await axiosInstance.post("/reports", { classId, content });
       }
-
-      navigate("/reports"); // Redirect to reports page
+      navigate("/dashboard/reports");
     } catch (error) {
       console.error("Error saving report:", error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -64,10 +55,9 @@ const ReportFormPage = () => {
 
         <button
           type="submit"
-          className={`w-full bg-green-500 text-white py-2 rounded ${loading ? "opacity-50" : "hover:bg-green-600"}`}
-          disabled={loading}
+          className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
         >
-          {loading ? "Saving..." : "Save Report"}
+          Save Report
         </button>
       </form>
     </div>

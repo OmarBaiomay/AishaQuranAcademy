@@ -4,10 +4,10 @@ const reportSchema = new mongoose.Schema(
   {
     classId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Classroom",
+      ref: "Classroom.classes", // Reference a specific class inside the classroom
       required: true,
     },
-    classroomName: {
+    className: {
       type: String,
       required: true,
     },
@@ -17,6 +17,15 @@ const reportSchema = new mongoose.Schema(
       required: true,
     },
     teacherName: {
+      type: String,
+      required: true,
+    },
+    studentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    studentName: {
       type: String,
       required: true,
     },

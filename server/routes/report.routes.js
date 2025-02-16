@@ -10,7 +10,7 @@ import { protectRoute } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-// Create a new report
+// Create a new report for a class
 router.post("/reports", protectRoute, createReport);
 
 // Get all reports
