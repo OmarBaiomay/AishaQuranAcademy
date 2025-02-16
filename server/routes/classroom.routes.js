@@ -1,5 +1,6 @@
 import express from "express";
 import {
+    updateClassIdsForClasses,
     createClassroom,
     getClassrooms,
     getClassroomById,
@@ -16,6 +17,8 @@ import {
 import { protectRoute } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
+
+router.get("/classroom/update-class-ids", protectRoute, updateClassIdsForClasses);
 
 // Classroom Routes
 router.post('/classroom', protectRoute, createClassroom); // Create a new classroom

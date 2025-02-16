@@ -2,57 +2,51 @@ import Report from "../models/report.model.js";
 import Classroom from "../models/classroom.model.js";
 import User from "../models/user.model.js";
 
-<<<<<<< HEAD
-// Create a new report
-export const createReport = async (req, res) => {
-  const { classId, content } = req.body;
-  try {
-    const classroom = await Classroom.findById(classId).populate("teacher").populate("student");
-
-    if (!classroom) {
-      return res.status(404).json({ message: "Classroom not found" });
-=======
 // Create a new report for a specific class
 export const createReport = async (req, res) => {
-  const { classId, content } = req.body;
+  const { classId, assessment, classActivity, homework } = req.body;
+
+  if (!classId || !assessment || !classActivity || !homework) {
+      return res.status(400).json({ message: "All fields are required." });
+  }
+
   try {
-    const classroom = await Classroom.findOne({ "classes._id": classId }).populate("teacher student");
+      const classroom = await Classroom.findOne({ "classes._id": classId })
+          .populate("teacher", "fullName")
+          .populate("student", "fullName");
 
-    if (!classroom) {
-      return res.status(404).json({ message: "Class not found" });
-    }
+      if (!classroom) {
+          return res.status(404).json({ message: "Class not found inside any classroom." });
+      }
 
-    const classData = classroom.classes.find((cls) => cls._id.toString() === classId);
+      const classData = classroom.classes.find(cls => cls._id.toString() === classId);
 
-    if (!classData) {
-      return res.status(404).json({ message: "Class not found inside the classroom" });
->>>>>>> d7096a9828ddc98a17cf45e43b20c93b2602ba68
-    }
+      if (!classData) {
+          return res.status(404).json({ message: "Class not found." });
+      }
 
-    const newReport = new Report({
-      classId,
-<<<<<<< HEAD
-      classroomName: `${classroom.student.fullName} & ${classroom.teacher.fullName}'s Class`,
-      teacherId: classroom.teacher._id,
-      teacherName: classroom.teacher.fullName,
-=======
-      className: `${classData.day} - ${classData.time}`,
-      teacherId: classroom.teacher._id,
-      teacherName: classroom.teacher.fullName,
-      studentId: classroom.student._id,
-      studentName: classroom.student.fullName,
->>>>>>> d7096a9828ddc98a17cf45e43b20c93b2602ba68
-      content,
-    });
+      const newReport = new Report({
+          classId,
+          className: `${classData.day} - ${classData.time}`,
+          teacherId: classroom.teacher._id,
+          teacherName: classroom.teacher.fullName,
+          studentId: classroom.student._id,
+          studentName: classroom.student.fullName,
+          assessment,
+          classActivity,
+          homework,
+      });
 
-    const savedReport = await newReport.save();
+      await newReport.save();
+      res.status(201).json({ message: "Report created successfully", report: newReport });
 
-    res.status(201).json({ message: "Report created successfully", report: savedReport });
   } catch (error) {
-    console.error("Error creating report:", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
+      console.error("Error creating report:", error.message);
+      res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
 
 // Get all reports
 export const getAllReports = async (req, res) => {
@@ -83,23 +77,29 @@ export const getReportById = async (req, res) => {
 // Update a report by ID
 export const updateReport = async (req, res) => {
   const { id } = req.params;
-  const { content } = req.body;
+  const { classId, content } = req.body;
+
+  if (!classId) {
+      return res.status(400).json({ message: "Class ID is required." });
+  }
 
   try {
-    const report = await Report.findById(id);
-    if (!report) {
-      return res.status(404).json({ message: "Report not found" });
-    }
+      const report = await Report.findById(id);
+      if (!report) {
+          return res.status(404).json({ message: "Report not found" });
+      }
 
-    report.content = content;
-    await report.save();
+      report.content = content;
+      report.classId = classId; // ✅ Ensure classId is updated
+      await report.save();
 
-    res.status(200).json({ message: "Report updated successfully", report });
+      res.status(200).json({ message: "Report updated successfully", report });
   } catch (error) {
-    console.error("Error updating report:", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
+      console.error("Error updating report:", error.message);
+      res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 
 // Delete a report by ID
 export const deleteReport = async (req, res) => {

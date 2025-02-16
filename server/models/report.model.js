@@ -4,7 +4,7 @@ const reportSchema = new mongoose.Schema(
   {
     classId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Classroom.classes", // Reference a specific class inside the classroom
+      ref: "Classroom.classes",
       required: true,
     },
     className: {
@@ -29,7 +29,17 @@ const reportSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    content: {
+    assessment: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
+    },
+    classActivity: {
+      type: String,
+      required: true,
+    },
+    homework: {
       type: String,
       required: true,
     },
@@ -38,5 +48,4 @@ const reportSchema = new mongoose.Schema(
 );
 
 const Report = mongoose.model("Report", reportSchema);
-
 export default Report;

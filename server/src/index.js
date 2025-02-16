@@ -10,6 +10,7 @@ import testimonialRoutes from "../routes/testimonial.routes.js";
 import courseRoutes from "../routes/course.routes.js";
 import blogRoutes from "../routes/blog.routes.js";
 import notificationRoutes from "../routes/notification.routes.js"
+import reportsRoutes from "../routes/report.routes.js";
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use("/api", userRoutes)
 app.use("/api", testimonialRoutes);
 app.use("/api", courseRoutes);
 app.use("/api", blogRoutes);
+app.use("/api", reportsRoutes);
 
 app.listen(PORT, () =>{
     console.log(`Server Is Runing on ${PORT}`)

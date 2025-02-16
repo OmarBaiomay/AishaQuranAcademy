@@ -28,6 +28,8 @@ import AddCourse from './pages/dashboard/AddCourse.jsx'
 import UpdateCourse from './pages/dashboard/UpdateCourse.jsx'
 import Testimonials from './pages/dashboard/Testimonials.jsx'
 import AddEditTestimonial from './pages/dashboard/AddEditTestimonial.jsx'
+import ReportsPage from './pages/dashboard/ReportsPage.jsx'
+import ReportFormPage from './pages/dashboard/ReportFormPage.jsx'
 
 const App = () => {
   const {activeMenu} = useStatContext();
@@ -90,6 +92,10 @@ const App = () => {
             <Route path='/dashboard/testimonials' element={authUser ? <Testimonials /> : <Navigate to="/"/>}/>
             <Route path='/dashboard/testimonials/add' element={authUser ? <AddEditTestimonial /> : <Navigate to="/"/>}/>
             <Route path='/dashboard/testimonials/edit/:id' element={authUser ? <AddEditTestimonial /> : <Navigate to="/"/>}/>
+
+            <Route path='/dashboard/reports' element={authUser ? <ReportsPage /> : <Navigate to="/"/>}/>
+            <Route path='/dashboard/reports/add/:classId' element={authUser ? <ReportFormPage /> : <Navigate to="/"/>}/>
+            <Route path='/dashboard/reports/edit/:classId/:reportId' element={authUser ? <ReportFormPage /> : <Navigate to="/"/>}/>
           </Routes>
 
             {!authUser && <Footer />}

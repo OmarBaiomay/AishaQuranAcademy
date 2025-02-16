@@ -3,6 +3,43 @@ import Classroom from "../models/classroom.model.js";
 import User from "../models/user.model.js";
 
 
+// ✅ Function to update missing _id for classes
+export const updateClassIdsForClasses = async (req, res) => {
+    try {
+        const classrooms = await Classroom.find();
+
+        console.log(classrooms)
+
+        let updatedCount = 0;
+
+        for (const classroom of classrooms) {
+            let updated = false;
+
+            // ✅ Fix: Use map() to update classes correctly
+            classroom.classes = classroom.classes.map(cls => {
+                if (!cls._id) {
+                    cls._id = new mongoose.Types.ObjectId(); // Assign new ID
+                    updated = true;
+                }
+                console.log(cls)
+            });
+
+            if (updated) {
+                await classroom.save(); // ✅ Force save with new _id values
+                updatedCount++;
+            }
+        }
+
+        return res.status(200).json({
+            message: `✅ Updated ${updatedCount} classrooms with missing class IDs!`,
+        });
+
+    } catch (error) {
+        console.error("Error updating class IDs:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
 export const createClassroom = async (req, res) => {
     const { teacherId, studentId, supervisorId, classTimes, numberOfClassesPerMonth, notes } = req.body;
 
@@ -436,3 +473,4 @@ export const getUpcomingClass = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+

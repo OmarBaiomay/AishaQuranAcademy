@@ -3,6 +3,10 @@ import mongoose from "mongoose";
 
 // Class Schema for individual class details
 const classSchema = new mongoose.Schema({
+    _id: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        auto: true 
+    }, // ✅ Ensure each class gets an ID
     day: {
         type: String,
         required: true,
@@ -92,10 +96,7 @@ const classroomSchema = new mongoose.Schema(
             required: true,
             default: 0,
         },
-        classes: {
-            type: Array,
-            default: [],
-        },
+        classes: [classSchema],
         notes: {
             type: String,
             default: "",
