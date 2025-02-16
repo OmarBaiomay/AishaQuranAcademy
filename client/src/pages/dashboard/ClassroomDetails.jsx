@@ -22,53 +22,17 @@ function ClassroomDetails() {
   const [loading, setLoading] = useState(false);
 
   // Fetch Classroom Details
-  const getClassroomDetails = async () => {
-    try {
-      const response = await axiosInstance.get(`/classroom/${id}`);
-      const fetchedClasses = response.data.classes || [];
-      const classesWithIds = fetchedClasses.map((cls) => ({
-        ...cls,
-        id: uuidv4(), // Assign a unique ID
-      }));
-      setClassroom(response.data);
-      setClasses(classesWithIds);
-    } catch (error) {
-      toast.error("Error fetching classroom details!");
-    }
-  };
-
-  // Add Monthly Classes
-  const addMonthlyClasses = async () => {
-    if (loading) return;
-
-    setLoading(true);
-    try {
-      const response = await axiosInstance.post(`/classroom/${id}/generate-monthly-classes`);
-      const newClasses = response.data.classes.map((cls) => ({
-        ...cls,
-        id: uuidv4(), // Assign a unique ID
-      }));
-      setClasses((prev) => [...prev, ...newClasses]); // Update state with new classes
-      toast.success(`${newClasses.length} monthly classes added successfully!`);
-    } catch (error) {
-      toast.error("Error adding monthly classes!");
-      console.log("Error" , error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Reschedule Class
-  const rescheduleClass = async (classId) => {
-    try {
-      const response = await axiosInstance.put(`/classroom/${id}/classes/${classId}/reschedule`);
-      toast.success(`Class rescheduled to ${response.data.classItem.date}`);
-    } catch (error) {
-      toast.error("Error rescheduling class!");
-    }
-  };
-
   useEffect(() => {
+    const getClassroomDetails = async () => {
+      try {
+        const response = await axiosInstance.get(`/classroom/${id}`);
+        setClassroom(response.data);
+        setClasses(response.data.classes || []);
+      } catch (error) {
+        toast.error("Error fetching classroom details!");
+      }
+    };
+
     getClassroomDetails();
   }, [id]);
 
@@ -76,39 +40,10 @@ function ClassroomDetails() {
     return <div>Loading...</div>;
   }
 
-  const classColumns = [
-    { headerText: "Day", field: "day", width: "100", textAlign: "Center" },
-    { headerText: "Time", field: "time", width: "100", textAlign: "Center" },
-    { headerText: "Date", field: "date", width: "150", format: "yMd", textAlign: "Center" },
-    { headerText: "Zoom Link", field: "zoomLink", width: "200", textAlign: "Center" },
-    {
-      headerText: "Actions",
-      template: (props) => (
-        <button
-          className="bg-blue-500 text-white px-3 py-1 rounded"
-          onClick={() => rescheduleClass(props.id)}
-        >
-          Reschedule
-        </button>
-      ),
-      width: "150",
-      textAlign: "Center",
-    },
-  ];
-
   return (
     <div className="pt-20 px-10 w-full">
       <header className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-zinc-600 mb-6">Classroom Details</h1>
-        <button
-          className={`text-white rounded-lg px-4 py-2 ${
-            loading || classroom.classes.length > 0 ? "bg-gray-400 cursor-not-allowed" : "bg-purple-500"
-          }`}
-          onClick={addMonthlyClasses}
-          disabled={loading || classroom.classes.length > 0}
-        >
-          {loading ? "Adding Classes..." : "Add Monthly Classes"}
-        </button>
       </header>
 
       <div className="bg-white shadow rounded-lg p-6 mb-6">
@@ -129,9 +64,23 @@ function ClassroomDetails() {
           height={400}
         >
           <ColumnsDirective>
-            {classColumns.map((col, index) => (
-              <ColumnDirective key={index} {...col} />
-            ))}
+            <ColumnDirective field="day" headerText="Day" width="100" textAlign="Center" />
+            <ColumnDirective field="time" headerText="Time" width="100" textAlign="Center" />
+            <ColumnDirective field="date" headerText="Date" width="150" format="yMd" textAlign="Center" />
+            <ColumnDirective field="zoomLink" headerText="Zoom Link" width="200" textAlign="Center" />
+            <ColumnDirective
+              headerText="Actions"
+              template={(props) => (
+                <button
+                  className="bg-blue-500 text-white px-3 py-1 rounded"
+                  onClick={() => navigate(`/dashboard/reports/add/${props._id}`)}
+                >
+                  Add Report
+                </button>
+              )}
+              width="150"
+              textAlign="Center"
+            />
           </ColumnsDirective>
           <Inject services={[Resize, Sort, Filter, Page]} />
         </GridComponent>

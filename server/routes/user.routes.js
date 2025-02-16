@@ -30,7 +30,7 @@ router.get('/user/:userId/availability', protectRoute, getUserAvailability); // 
 router.delete('/user/:userId/availability/:availabilityId', protectRoute, deleteUserAvailability); // Delete a specific availability slot
 
 // FCM Token Routes
-router.post('/user/:userId/fcm-tokens',protectRoute, addFCMToken); // Add an FCM token for a user
-router.delete('/user/:userId/fcm-tokens/:token',protectRoute, removeFCMToken); // Remove an FCM token for a user
+router.post("/user/:userId/fcm-tokens", protectRoute, addFCMToken);
+router.delete("/user/:userId/fcm-tokens/:token", protectRoute, removeFCMToken);
 
 export default router;
