@@ -128,7 +128,9 @@ function Classrooms() {
               <p className="text-gray-600">Teacher: {classroom.teacher?.fullName}</p>
               <p className="text-gray-600">Supervisor: {classroom.supervisor?.fullName}</p>
               <p className="text-gray-600">Notes: {classroom.notes}</p>
-
+              <p>Status: <strong>{classroom.status}</strong></p>
+              <p>Last Payment: {classroom.lastPaymentDate || "N/A"}</p>
+              <p>Next Payment: {classroom.nextPaymentDate || "N/A"}</p>
               {/* Buttons: Details & Add Report */}
               <div className="flex gap-3 mt-4">
                 <button
@@ -136,12 +138,6 @@ function Classrooms() {
                   onClick={() => navigate(`/dashboard/classrooms/${classroom._id}`)}
                 >
                   Details
-                </button>
-                <button
-                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-                  onClick={() => navigate(`/dashboard/reports/add/${classroom._id}`)}
-                >
-                  Add Report
                 </button>
               </div>
             </div>

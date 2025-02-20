@@ -411,29 +411,26 @@ export const generateMonthlyClasses = async (req, res) => {
 
 export const rescheduleClass = async (req, res) => {
     const { classroomId, classId } = req.params;
+    const { newDate, newStartTime, newEndTime } = req.body;
 
     try {
         const classroom = await Classroom.findById(classroomId);
-        if (!classroom) {
-        return res.status(404).json({ message: "Classroom not found." });
-        }
+        if (!classroom) return res.status(404).json({ message: "Classroom not found." });
 
-        // Use find instead of id
-        const classItem = classroom.classes.find((cls) => cls._id.toString() === classId);
-        if (!classItem) {
-        return res.status(404).json({ message: "Class not found." });
-        }
+        const classToReschedule = classroom.classes.id(classId);
+        if (!classToReschedule) return res.status(404).json({ message: "Class not found." });
 
-        // Logic to reschedule the class
-        classItem.date = new Date(); // Example: Reschedule to the current date
+        classToReschedule.date = newDate;
+        classToReschedule.startTime = newStartTime;
+        classToReschedule.endTime = newEndTime;
+
         await classroom.save();
-
-        res.status(200).json({ message: "Class rescheduled successfully.", classItem });
+        res.status(200).json({ message: "Class rescheduled successfully.", classroom });
     } catch (error) {
-        console.error("Error rescheduling class:", error.message);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({ message: "Internal Server Error", error });
     }
 };
+
 
 
 // Fetch the upcoming class for a user

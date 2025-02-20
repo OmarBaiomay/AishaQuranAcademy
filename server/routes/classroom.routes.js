@@ -32,7 +32,7 @@ router.post('/classroom/:classroomId/classes', protectRoute, addClassToClassroom
 router.put('/classroom/:classroomId/classes/:classId', protectRoute, updateClassAttendance); // Update class attendance
 router.get('/classroom/:classroomId/classes', protectRoute, getAllClasses); // Get all classes for a classroom
 router.post('/classroom/:classroomId/generate-monthly-classes', protectRoute, generateMonthlyClasses);
-router.post('/classroom/:classroomId/reschedule-class/:classId', protectRoute, rescheduleClass);
+router.put('/classroom/:classroomId/class/:classId/reschedule', protectRoute, rescheduleClass);
 
 router.get('/classes/upcoming/:userId', protectRoute, getUpcomingClass); // UpComing Calss
 

@@ -94,7 +94,9 @@ function ClassroomDetails() {
         <p><strong>Teacher:</strong> {classroom.teacher.fullName}</p>
         <p><strong>Supervisor:</strong> {classroom.supervisor.fullName}</p>
         <p><strong>Notes:</strong> {classroom.notes || "No notes available"}</p>
-        <p><strong>Number of Classes:</strong> {classroom.classes?.length || 0}</p>
+        <p>Status: <strong>{classroom.status}</strong></p>
+        <p>Last Payment: {classroom.lastPaymentDate || "N/A"}</p>
+        <p>Next Payment: {classroom.nextPaymentDate || "N/A"}</p>
       </div>
 
       {/* ✅ Action Buttons for Adding Classes */}
