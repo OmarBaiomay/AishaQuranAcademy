@@ -4,98 +4,23 @@ import { axiosInstance } from "../../lib/axios.js";
 import UserCard from "../../components/dashboard/UserCard.jsx";
 import avatar from "/assets/user.svg";
 import ConfirmDeleteModal from "../../components/dashboard/ConfirmDeleteModal.jsx";
-import EditUserModal from "../../components/dashboard/EditUserModal.jsx"; // Import the EditUserModal
-import { FaList, FaTh } from "react-icons/fa"; // Icons for buttons
-import { Link } from "react-router-dom";
+import EditUserModal from "../../components/dashboard/EditUserModal.jsx";
+import PageHeader from "../../components/dashboard/PageHeader.jsx"; 
 import { GridComponent, ColumnsDirective, ColumnDirective, Inject, Filter, VirtualScroll, Sort, Resize, ContextMenu, ExcelExport, Edit, PdfExport } from '@syncfusion/ej2-react-grids';
-
+import { Link } from "react-router-dom";
 
 function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState("grid"); // Track the current view mode
+  const [viewMode, setViewMode] = useState("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRole, setSelectedRole] = useState("all");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false); // Track edit modal visibility
-  const [userToEdit, setUserToEdit] = useState(null); // Store the user to edit
+  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const userListImageName = (props) => (
-    <Link to={`/dashboard/users/${props._id}`} className="flex gap-2 items-center justify-start">
-      <img className="rounded-xl" height={25} width={25} src={props.profilePic ? props.profilePic : avatar}alt="user avatar"/>
-      <span>{props.fullName}</span>
-    </Link>
-  );
-
-  const userListPhone = (props) => (
-    <div className="w-full flex items-center justify-center">
-      <p>{props.phone.countryCode} {props.phone.number} </p>
-    </div>
-  );
-
-  const userListViewItems = [
-    {
-      headerText: 'User',
-      template: userListImageName,
-      textAlign: 'Start',
-      width: '120',
-    },
-    {
-      field: 'email',
-      headerText: 'Email',
-      width: '150',
-      editType: 'dropdownedit',
-      textAlign: 'Center',
-    },
-    {
-      headerText: 'Phone',
-      template: userListPhone,
-      width: '150',
-      textAlign: 'Center',
-    },
-    {
-      field: 'role',
-      headerText: 'Role',
-      width: '150',
-      editType: 'dropdownedit',
-      textAlign: 'Center',
-    },
-  ];
-
-
-  const handleEdit = (user) => {
-    setSelectedUser(user); // Set the selected user data
-    setShowEditModal(true); // Open the modal
-  };
-  
-  const handleSaveUser = (updatedUser) => {
-    setUsers(users.map(user => user._id === updatedUser._id ? updatedUser : user)); // Update the user list with the updated user
-    setShowEditModal(false); // Close the modal
-  };
-
-  const handleExport = () => {
-    toast.success("Export Data clicked!");
-  };
-
-  const handleDelete = async () => {
-    if (userToDelete) {
-      try {
-        await axiosInstance.delete(`/user/${userToDelete._id}`);
-        toast.success(`${userToDelete.firstName} ${userToDelete.lastName} deleted successfully!`);
-        setUsers(users.filter(user => user._id !== userToDelete._id));
-      } catch (error) {
-        toast.error("Error deleting user!");
-      }
-    }
-    setShowDeleteModal(false);
-  };
-
-  const handleMessage = () => {
-    toast.success("Message clicked!");
-  };
-
+  // ✅ Fetch Users from API
   const GetUsers = async () => {
     try {
       const res = await axiosInstance.get("/users");
@@ -111,132 +36,145 @@ function Users() {
     GetUsers();
   }, []);
 
+  // ✅ Filtering Users
   const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      (user.fullName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (user.fullName.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesSearch = user.fullName.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesRole = selectedRole === "all" || user.role === selectedRole;
     return matchesSearch && matchesRole;
   });
 
+  // ✅ Open Delete Modal
   const openDeleteModal = (user) => {
     setUserToDelete(user);
     setShowDeleteModal(true);
   };
 
-  // Add new user modal handling
-  const openAddUserModal = () => {
-    setShowEditModal(true); // Same modal for adding a new user, just with empty fields
-    setUserToEdit(null); // Empty user object to add a new one
+  // ✅ Handle User Deletion
+  const handleDelete = async () => {
+    if (userToDelete) {
+      try {
+        await axiosInstance.delete(`/user/${userToDelete._id}`);
+        toast.success(`${userToDelete.fullName} deleted successfully!`);
+        setUsers(users.filter(user => user._id !== userToDelete._id));
+      } catch (error) {
+        toast.error("Error deleting user!");
+      }
+    }
+    setShowDeleteModal(false);
   };
 
+  // ✅ Open Add/Edit User Modal
+  const openEditUserModal = (user = null) => {
+    setSelectedUser(user);
+    setShowEditModal(true);
+  };
+
+  // ✅ Handle User Save (After Edit)
+  const handleSaveUser = (updatedUser) => {
+    setUsers(users.map(user => (user._id === updatedUser._id ? updatedUser : user)));
+    setShowEditModal(false);
+  };
+
+  // ✅ User List Columns for Syncfusion Grid
+  const userListViewItems = [
+    {
+      headerText: 'User',
+      template: (props) => (
+        <Link to={`/dashboard/users/${props._id}`} className="flex gap-2 items-center">
+          <img className="rounded-xl" height={25} width={25} src={props.profilePic || avatar} alt="user avatar" />
+          <span>{props.fullName}</span>
+        </Link>
+      ),
+      textAlign: 'Start',
+      width: '150',
+    },
+    {
+      field: 'email',
+      headerText: 'Email',
+      width: '200',
+      textAlign: 'Center',
+    },
+    {
+      field: 'role',
+      headerText: 'Role',
+      width: '150',
+      textAlign: 'Center',
+    },
+  ];
+
   return (
-    <div className="pt-20 px-10 w-[-webkit-fill-available]">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-zinc-600">Users</h1>
-        <div className="controlles flex gap-5 px-5">
-          <button
-            className="bg-purple-500 text-white rounded-lg px-3 py-1 text-sm"
-            onClick={openAddUserModal} // Open add user modal
-          >
-            Add User
-          </button>
-          <input
-            type="text"
-            placeholder="Search by name"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-zinc-200 text-zinc-600 rounded-lg px-3 py-1 text-sm"
-          />
-          <select
-            className="bg-zinc-200 text-zinc-600 rounded-lg px-3 py-1 text-sm"
-            value={selectedRole}
-            onChange={(e) => setSelectedRole(e.target.value)}
-          >
-            <option value="all">All</option>
-            <option value="Administrator">Admins</option>
-            <option value="Supervisor">Supervisors</option>
-            <option value="Teacher">Teachers</option>
-            <option value="Student">Students</option>
-          </select>
+    <div className="pt-20 px-10 w-full">
+      
+      {/* ✅ Using PageHeader Component */}
+      <PageHeader
+        title="Users"
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        filterOptions={[
+          { value: "all", label: "All" },
+          { value: "Administrator", label: "Admins" },
+          { value: "Supervisor", label: "Supervisors" },
+          { value: "Teacher", label: "Teachers" },
+          { value: "Student", label: "Students" },
+        ]}
+        selectedFilter={selectedRole}
+        setSelectedFilter={setSelectedRole}
+        onAddClick={() => openEditUserModal(null)} // Open Add User Modal
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+      />
 
-           {/* Buttons for List/Grid View */}
-           <div className="flex justify-center items-center rounded-lg overflow-hidden">
-
-           <button
-            onClick={() => setViewMode("grid")}
-            className={`${
-              viewMode === "grid" ? "bg-purple-500 text-white" : "bg-zinc-200 text-zinc-600"
-            } px-3 py-1 flex items-center gap-1 w-full h-full`}
-          >
-            <FaTh />
-          </button>
-          <button
-            onClick={() => setViewMode("list")}
-            className={`${
-              viewMode === "list" ? "bg-purple-500 text-white" : "bg-zinc-200 text-zinc-600"
-            } px-3 py-1 flex items-center gap-1 w-full h-full`}
-          >
-            <FaList />
-          </button>
-
-           </div>
-        </div>
-      </div>
+      {/* ✅ User List */}
       <div className="flex justify-start gap-5 items-center flex-wrap mt-10">
         {loading ? (
-            <div>Loading....</div>
-          ) : (
-            viewMode === "grid" ? 
-            filteredUsers.map((user) =>(
-              <UserCard
-                key={user._id}
-                image={user.profilePic ? user.profilePic : avatar}
-                fullName={user.fullName}
-                role={user.role}
-                _id={user._id}
-                onEdit={() => handleEdit(user)}
-                onDelete={() => openDeleteModal(user)}
-              />
-            )
-          ) : (
-            <GridComponent 
-              id="userList" 
-              dataSource={filteredUsers}
-              allowPaging
-              allowSorting
-              allowExcelExport
-
-            >
-              <ColumnsDirective>
-                {
-                  userListViewItems.map((item, index) =>(
-                    <ColumnDirective key={index} {...item} />
-                  ))
-                }
-              </ColumnsDirective>
-              <Inject services={[Resize, Sort, ContextMenu, Filter, ExcelExport, Edit, PdfExport]} />
-            </GridComponent>
-          )
+          <div>Loading...</div>
+        ) : (
+          viewMode === "grid"
+            ? filteredUsers.map((user) => (
+                <UserCard
+                  key={user._id}
+                  image={user.profilePic || avatar}
+                  fullName={user.fullName}
+                  role={user.role}
+                  _id={user._id}
+                  onEdit={() => openEditUserModal(user)} // ✅ Open Edit Modal
+                  onDelete={() => openDeleteModal(user)}
+                />
+              ))
+            : (
+                <GridComponent 
+                  id="userList" 
+                  dataSource={filteredUsers}
+                  allowPaging
+                  allowSorting
+                  allowExcelExport
+                >
+                  <ColumnsDirective>
+                    {userListViewItems.map((item, index) => (
+                      <ColumnDirective key={index} {...item} />
+                    ))}
+                  </ColumnsDirective>
+                  <Inject services={[Resize, Sort, ContextMenu, Filter, ExcelExport, Edit, PdfExport]} />
+                </GridComponent>
+              )
         )}
       </div>
 
-      {/* Confirmation Delete Modal */}
+      {/* ✅ Confirmation Delete Modal */}
       <ConfirmDeleteModal
         show={showDeleteModal}
-        userName={userToDelete ? `${userToDelete.firstName} ${userToDelete.lastName}` : ""}
+        userName={userToDelete ? `${userToDelete.fullName}` : ""}
         onConfirm={handleDelete}
         onCancel={() => setShowDeleteModal(false)}
       />
 
-      {/* Edit/Add User Modal */}
+      {/* ✅ Edit/Add User Modal */}
       <EditUserModal
         show={showEditModal}
         user={selectedUser}
         onClose={() => setShowEditModal(false)}
-        onSave={handleSaveUser}
+        onSave={handleSaveUser} // ✅ Updates the user list after edit
       />
-
     </div>
   );
 }

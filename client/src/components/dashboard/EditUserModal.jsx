@@ -7,44 +7,45 @@ function EditUserModal({ show, user, onClose, onSave }) {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    phone: { countryCode: "", number: "" }, // Updated phone structure
+    phone: { countryCode: "", number: "" },
     country: "",
-    role: "Student", // Default role
-    gender: "Male", // Default gender
+    role: "Student",
+    gender: "Male",
+    age: "",
     profilePic: "",
-    timeZone: "UTC", // Default time zone
+    timeZone: "UTC",
   });
 
-  const [countryCodes, setCountryCodes] = useState([]); // Store country codes from API
-  const [timeZones, setTimeZones] = useState([]); // Store time zones
+  const [countries, setCountries] = useState([]);
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [showCountryNameDropdown, setShowCountryNameDropdown] = useState(false);
+  const [showTimeZoneDropdown, setShowTimeZoneDropdown] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [timezoneSearch, setTimezoneSearch] = useState("");
+  const [countrySearch, setCountrySearch] = useState("");
+  const [countryNameSearch, setCountryNameSearch] = useState("");
 
   useEffect(() => {
-    // Fetch country codes when the component mounts
-    const fetchCountryCodes = async () => {
+    const fetchCountryData = async () => {
       try {
-        const response = await axios.get("http://restcountries.com/v3.1/all");
-        const codes = response.data.map((country) => ({
-          name: country.name.common,
-          code: country.idd?.root + (country.idd?.suffixes?.[0] || ""),
-        })).filter((c) => c.code); // Filter valid codes
-        setCountryCodes(codes);
+        const response = await axios.get("https://restcountries.com/v3.1/all");
+        const countryData = response.data
+          .map((country) => ({
+            name: country.name.common,
+            flag: country.flags?.png,
+            code: country.idd?.root + (country.idd?.suffixes?.[0] || ""),
+            timeZones: country.timezones || [],
+          }))
+          .filter((c) => c.code && c.timeZones.length > 0)
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        setCountries(countryData);
       } catch (error) {
-        toast.error("Failed to fetch country codes.");
+        toast.error("Failed to fetch country data.");
       }
     };
-
-    // Fetch time zones (using a simple example API)
-    const fetchTimeZones = async () => {
-      try {
-        const response = await axios.get("http://world-time1.p.rapidapi.com/timezone");
-        setTimeZones(response.data);
-      } catch (error) {
-        toast.error("Failed to fetch time zones.");
-      }
-    };
-
-    fetchCountryCodes();
-    fetchTimeZones();
+    fetchCountryData();
   }, []);
 
   useEffect(() => {
@@ -54,17 +55,94 @@ function EditUserModal({ show, user, onClose, onSave }) {
         email: user.email || "",
         phone: user.phone || { countryCode: "", number: "" },
         country: user.country || "",
-        gender: user.gender || "Male", // Default to Male if gender is not defined
+        gender: user.gender || "Male",
         role: user.role || "Student",
+        age: user.age || "",
         profilePic: user.profilePic || "",
-        timeZone: user.timeZone || "UTC", // Default to UTC if timeZone is not defined
+        timeZone: user.timeZone || "UTC",
       });
+      if (user.profilePic) setImagePreview(user.profilePic);
     }
   }, [user]);
 
+  const filteredCountries = countries.filter(country =>
+    `${country.name} ${country.code}`
+      .toLowerCase()
+      .includes(countrySearch.toLowerCase())
+  );
+
+  const filteredCountryNames = countries.filter(country =>
+    country.name.toLowerCase().includes(countryNameSearch.toLowerCase())
+  );
+
+  const filteredTimezones = countries
+    .flatMap(country =>
+      country.timeZones.map(tz => ({
+        ...country,
+        timeZone: tz,
+      }))
+    )
+    .filter(item =>
+      `${item.name} ${item.timeZone}`
+        .toLowerCase()
+        .includes(timezoneSearch.toLowerCase())
+    );
+
+  const getCountryForTimezone = (timezone) => {
+    return countries.find(country => 
+      country.timeZones.includes(timezone)
+    );
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleTimeZoneChange = (selectedTimeZone) => {
+    setFormData({
+      ...formData,
+      timeZone: selectedTimeZone,
+    });
+    setShowTimeZoneDropdown(false);
+    setTimezoneSearch("");
+  };
+
+  const handleCountryChange = (countryCode) => {
+    const country = countries.find(c => c.code === countryCode);
+    if (!country) return;
+
+    setFormData({
+      ...formData,
+      country: country.name,
+      phone: { ...formData.phone, countryCode: countryCode },
+    });
+    setShowCountryDropdown(false);
+    setCountrySearch("");
+  };
+
+  const handleCountryNameChange = (countryName) => {
+    const country = countries.find(c => c.name === countryName);
+    if (!country) return;
+
+    setFormData({
+      ...formData,
+      country: country.name,
+      phone: { ...formData.phone, countryCode: country.code },
+    });
+    setShowCountryNameDropdown(false);
+    setCountryNameSearch("");
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name.startsWith("phone.")) {
       const field = name.split(".")[1];
       setFormData({
@@ -78,18 +156,31 @@ function EditUserModal({ show, user, onClose, onSave }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("fullName", formData.fullName);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("phone", JSON.stringify(formData.phone));
+      formDataToSend.append("country", formData.country);
+      formDataToSend.append("role", formData.role);
+      formDataToSend.append("gender", formData.gender);
+      formDataToSend.append("age", formData.age);
+      formDataToSend.append("timeZone", formData.timeZone);
+      if (selectedImage) formDataToSend.append("profilePic", selectedImage);
+
       let response;
       if (user) {
-        response = await axiosInstance.put(`/user/${user._id}`, formData);
+        response = await axiosInstance.put(`/user/${user._id}`, formDataToSend, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         toast.success("User updated successfully!");
-        onSave(response.data);
       } else {
-        response = await axiosInstance.post("/user", formData);
+        response = await axiosInstance.post("/user", formDataToSend, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         toast.success("New user added successfully!");
-        onSave(response.data);
       }
+      onSave(response.data);
     } catch (error) {
       toast.error("Error saving user data.");
     }
@@ -99,16 +190,41 @@ function EditUserModal({ show, user, onClose, onSave }) {
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg w-96 relative">
+      <div className="bg-white p-6 rounded-lg w-[500px] relative">
+        <button 
+          onClick={onClose} 
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+        >
+          ✖
+        </button>
+
         <h2 className="text-xl font-bold mb-4">{user ? "Edit User" : "Add New User"}</h2>
         <form onSubmit={handleSubmit}>
+          {/* Profile Picture Upload */}
           <div className="mb-4">
-            <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
-              Full Name
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Profile Picture</label>
+            <input
+              type="file"
+              className="form-input w-full border-gray-300 rounded-md shadow-sm"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+            {imagePreview && (
+              <div className="mt-4">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="w-32 h-32 object-cover rounded-md shadow-md"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Full Name */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Full Name</label>
             <input
               type="text"
-              id="fullName"
               name="fullName"
               value={formData.fullName}
               onChange={handleChange}
@@ -116,13 +232,12 @@ function EditUserModal({ show, user, onClose, onSave }) {
               required
             />
           </div>
+
+          {/* Email */}
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
-              id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
@@ -130,58 +245,129 @@ function EditUserModal({ show, user, onClose, onSave }) {
               required
             />
           </div>
+
+          {/* Age */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Phone Number
-            </label>
-            <div className="flex space-x-2">
-              <select
-                name="phone.countryCode"
-                value={formData.phone.countryCode}
-                onChange={handleChange}
-                className="w-1/3 px-3 py-2 border border-gray-300 rounded-md"
-                required
+            <label className="block text-sm font-medium text-gray-700">Age</label>
+            <input
+              type="number"
+              name="age"
+              value={formData.age}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+
+          {/* Country Selection */}
+          <div className="mb-4 relative">
+            <label className="block text-sm font-medium text-gray-700">Country</label>
+            <div className="relative">
+              <button
+                type="button"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-left flex items-center"
+                onClick={() => setShowCountryNameDropdown(!showCountryNameDropdown)}
               >
-                <option value="" disabled>
-                  Code
-                </option>
-                {countryCodes.map((country) => (
-                  <option key={country.code} value={country.code}>
-                    {country.code} ({country.name})
-                  </option>
-                ))}
-              </select>
+                {formData.country ? (
+                  <>
+                    <img
+                      src={countries.find(c => c.name === formData.country)?.flag}
+                      alt=""
+                      className="w-5 h-5 mr-2"
+                    />
+                    {formData.country}
+                  </>
+                ) : "Select Country"}
+              </button>
+              {showCountryNameDropdown && (
+                <div className="absolute top-12 left-0 w-full bg-white border rounded-md shadow-lg max-h-60 overflow-auto z-50">
+                  <div className="sticky top-0 p-2 bg-white border-b">
+                    <input
+                      type="text"
+                      placeholder="Search countries..."
+                      className="w-full px-2 py-1 border rounded"
+                      value={countryNameSearch}
+                      onChange={(e) => setCountryNameSearch(e.target.value)}
+                    />
+                  </div>
+                  {filteredCountryNames.map((country) => (
+                    <div
+                      key={country.code}
+                      className="flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
+                      onClick={() => handleCountryNameChange(country.name)}
+                    >
+                      <img src={country.flag} alt="" className="w-5 h-5 mr-2" />
+                      <div className="text-sm">{country.name}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Phone Number */}
+          <div className="mb-4 relative w-full">
+            <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+            <div className="flex space-x-2 items-center w-full">
+              <div className="relative">
+                <button
+                  type="button"
+                  className="w-28 px-3 py-2 border border-gray-300 rounded-md flex items-center"
+                  onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                >
+                  {formData.phone.countryCode ? (
+                    <>
+                      <img
+                        src={countries.find(c => c.code === formData.phone.countryCode)?.flag}
+                        alt=""
+                        className="w-5 h-5 mr-2"
+                      />
+                      {formData.phone.countryCode}
+                    </>
+                  ) : "Code"}
+                </button>
+                {showCountryDropdown && (
+                  <div className="absolute top-12 left-0 w-40 bg-white border rounded-md shadow-lg max-h-60 overflow-auto z-50">
+                    <div className="sticky top-0 p-2 bg-white border-b">
+                      <input
+                        type="text"
+                        placeholder="Search codes..."
+                        className="w-full px-2 py-1 border rounded"
+                        value={countrySearch}
+                        onChange={(e) => setCountrySearch(e.target.value)}
+                      />
+                    </div>
+                    {filteredCountries.map((country) => (
+                      <div
+                        key={country.code}
+                        className="flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
+                        onClick={() => handleCountryChange(country.code)}
+                      >
+                        <img src={country.flag} alt="" className="w-5 h-5 mr-2" />
+                        <div>
+                          <div className="text-sm">{country.code}</div>
+                          <div className="text-xs text-gray-500 truncate">{country.name}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
               <input
                 type="text"
                 name="phone.number"
                 value={formData.phone.number}
                 onChange={handleChange}
-                className="w-2/3 px-3 py-2 border border-gray-300 rounded-md"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 placeholder="Phone Number"
                 required
               />
             </div>
           </div>
+
+          {/* Role */}
           <div className="mb-4">
-            <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-              Country
-            </label>
-            <input
-              type="text"
-              id="country"
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-              Role
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Role</label>
             <select
-              id="role"
               name="role"
               value={formData.role}
               onChange={handleChange}
@@ -193,55 +379,91 @@ function EditUserModal({ show, user, onClose, onSave }) {
               <option value="Administrator">Administrator</option>
             </select>
           </div>
-          {/* Gender Field */}
+
+          {/* Gender */}
           <div className="mb-4">
-            <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
-              Gender
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Gender</label>
             <select
-              id="gender"
               name="gender"
               value={formData.gender}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-              required
             >
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
           </div>
-          {/* Time Zone Field */}
+
+          {/* Time Zone */}
           <div className="mb-4">
-            <label htmlFor="timeZone" className="block text-sm font-medium text-gray-700">
-              Time Zone
-            </label>
-            <select
-              id="timeZone"
-              name="timeZone"
-              value={formData.timeZone}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-              required
-            >
-              <option value="UTC">UTC</option>
-              {timeZones.map((zone) => (
-                <option key={zone} value={zone}>
-                  {zone}
-                </option>
-              ))}
-            </select>
+            <label className="block text-sm font-medium text-gray-700">Time Zone</label>
+            <div className="relative">
+              <button
+                type="button"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-left flex items-center"
+                onClick={() => setShowTimeZoneDropdown(!showTimeZoneDropdown)}
+              >
+                {formData.timeZone && (
+                  <>
+                    <img
+                      src={getCountryForTimezone(formData.timeZone)?.flag}
+                      alt=""
+                      className="w-5 h-5 mr-2"
+                    />
+                    <div>
+                      <span className="font-medium">
+                        {getCountryForTimezone(formData.timeZone)?.name}
+                      </span>
+                      <span className="ml-2 text-gray-600">{formData.timeZone}</span>
+                    </div>
+                  </>
+                )}
+              </button>
+              {showTimeZoneDropdown && (
+                <div className="absolute top-12 left-0 w-full bg-white border rounded-md shadow-lg max-h-60 overflow-auto z-50">
+                  <div className="sticky top-0 p-2 bg-white border-b">
+                    <input
+                      type="text"
+                      placeholder="Search timezones..."
+                      className="w-full px-2 py-1 border rounded"
+                      value={timezoneSearch}
+                      onChange={(e) => setTimezoneSearch(e.target.value)}
+                    />
+                  </div>
+                  {filteredTimezones.map(({ flag, name, timeZone }) => (
+                    <div
+                      key={timeZone}
+                      className="flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
+                      onClick={() => handleTimeZoneChange(timeZone)}
+                    >
+                      <img src={flag} alt="" className="w-5 h-5 mr-2" />
+                      <div className="flex-1">
+                        <div className="font-medium">{name}</div>
+                        <div className="text-sm text-gray-500">{timeZone}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-          <div className="mb-4">
-            <button type="submit" className="bg-purple-500 text-white px-4 py-2 rounded-md">
+
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600"
+            >
               {user ? "Save Changes" : "Add User"}
             </button>
           </div>
-          <button
-            onClick={onClose}
-            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-          >
-            ✖
-          </button>
         </form>
       </div>
     </div>

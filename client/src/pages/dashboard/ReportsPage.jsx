@@ -85,7 +85,7 @@ const ReportsPage = () => {
 
   // Report Columns for Grid View
   const reportColumns = [
-    { field: "className", headerText: "Class", width: "180", textAlign: "Center" },
+    { field: "className", headerText: "Class", width: "150", textAlign: "Center" },
     { field: "teacherName", headerText: "Teacher", width: "150", textAlign: "Center" },
     { field: "studentName", headerText: "Student", width: "150", textAlign: "Center" },
     {
