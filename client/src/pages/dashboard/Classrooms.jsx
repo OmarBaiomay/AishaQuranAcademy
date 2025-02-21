@@ -123,12 +123,20 @@ function Classrooms() {
           <div>Loading...</div>
         ) : viewMode === "grid" ? (
           filteredClassrooms.map((classroom) => (
-            <div key={classroom._id} className="bg-white shadow-lg rounded-lg p-6 w-full md:w-1/3">
+            <div key={classroom._id} className={`bg-white shadow-lg rounded-lg p-6 ${classroom.status}`}>
               <h2 className="text-xl font-bold">{classroom.student?.fullName}'s Class</h2>
               <p className="text-gray-600">Teacher: {classroom.teacher?.fullName}</p>
               <p className="text-gray-600">Supervisor: {classroom.supervisor?.fullName}</p>
               <p className="text-gray-600">Notes: {classroom.notes}</p>
-              <p>Status: <strong>{classroom.status}</strong></p>
+              <p>
+                Status: 
+                <strong>
+                  {classroom.status
+                    .split("_")  // Replace underscores with spaces
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
+                    .join(" ")}
+                </strong>
+              </p>
               <p>Last Payment: {classroom.lastPaymentDate || "N/A"}</p>
               <p>Next Payment: {classroom.nextPaymentDate || "N/A"}</p>
               {/* Buttons: Details & Add Report */}

@@ -45,7 +45,7 @@ export const createClassroom = async (req, res) => {
 
     try {
         // Validate required fields
-        if (!teacherId || !studentId || !supervisorId || !classTimes || !numberOfClassesPerMonth) {
+        if (!teacherId || !studentId || !supervisorId || !classTimes || !numberOfClassesPerMonth || !zoomLink) {
             return res.status(400).json({ message: "All fields are required." });
         }
 
@@ -86,6 +86,7 @@ export const createClassroom = async (req, res) => {
             classTimes,
             numberOfClassesPerMonth,
             notes,
+            zoomLink
         });
 
         const savedClassroom = await newClassroom.save();
@@ -246,11 +247,11 @@ export const deleteClassroom = async (req, res) => {
 
 export const addClassToClassroom = async (req, res) => {
     const { classroomId } = req.params;
-    const { day, time, period, zoomLink } = req.body;
+    const { day, time, period, date } = req.body;
 
     try {
         // Validate input
-        if (!day || !time || !period || !zoomLink) {
+        if (!day || !time || !period || !date) {
             return res.status(400).json({ message: "All fields are required." });
         }
 
@@ -262,7 +263,7 @@ export const addClassToClassroom = async (req, res) => {
         }
 
         // Add the new class
-        const newClass = { day, time, period, zoomLink };
+        const newClass = { day, time, period, date };
         classroom.classes.push(newClass);
 
         await classroom.save();
@@ -471,3 +472,37 @@ export const getUpcomingClass = async (req, res) => {
     }
 };
 
+// ✅ Function to update classroom status
+export const updateClassroomStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  // Allowed statuses
+  const validStatuses = ["free_trial", "ongoing", "overdue_bill", "freeze", "suspended"];
+
+  try {
+    // ✅ Validate status
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status provided." });
+    }
+
+    // ✅ Find and update classroom
+    const classroom = await Classroom.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true } // ✅ Return updated classroom
+    );
+
+    if (!classroom) {
+      return res.status(404).json({ message: "Classroom not found." });
+    }
+
+    res.status(200).json({
+      message: "Classroom status updated successfully.",
+      classroom,
+    });
+  } catch (error) {
+    console.error("Error updating classroom status:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};

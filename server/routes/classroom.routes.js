@@ -12,6 +12,7 @@ import {
     generateMonthlyClasses,
     rescheduleClass,
     getUpcomingClass,
+    updateClassroomStatus,
 
 } from "../controllers/calssroom.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
@@ -36,5 +37,6 @@ router.put('/classroom/:classroomId/class/:classId/reschedule', protectRoute, re
 
 router.get('/classes/upcoming/:userId', protectRoute, getUpcomingClass); // UpComing Calss
 
+router.put("/classroom/:id/status", protectRoute, updateClassroomStatus);
 
 export default router;

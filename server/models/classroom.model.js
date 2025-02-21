@@ -1,7 +1,6 @@
 import { DateTime } from "luxon";
 import mongoose from "mongoose";
 
-// Class Schema for individual class details
 const classSchema = new mongoose.Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     day: { type: String, required: true },
@@ -10,7 +9,6 @@ const classSchema = new mongoose.Schema({
     date: { type: Date, required: true },
     studentAttendance: { attended: { type: Boolean, default: false }, time: { type: String, default: null } },
     teacherAttendance: { attended: { type: Boolean, default: false }, time: { type: String, default: null } },
-    zoomLink: { type: String, required: true },
 });
 
 const classroomSchema = new mongoose.Schema({
@@ -20,6 +18,7 @@ const classroomSchema = new mongoose.Schema({
     status: { type: String, enum: ["free_trial", "ongoing", "overdue_bill", "freeze", "suspended"], default: "free_trial" },
     lastPaymentDate: { type: Date, default: null },
     nextPaymentDate: { type: Date, default: null },
+    zoomLink: { type: String, required: true }, 
     classTimes: [{ day: String, hour: String, period: String }],
     numberOfClassesPerMonth: { type: Number, default: 4 },
     pricePerMonth: { type: Number, default: 8 },

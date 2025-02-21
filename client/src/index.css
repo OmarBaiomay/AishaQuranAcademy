@@ -118,6 +118,37 @@ body {
     @apply absolute bg-zinc-50 rounded-lg -z-10 transition-all duration-500
   }
 
+  .free_trial{
+    @apply bg-purple-500/30
+  }
+
+  .ongoing{
+    @apply bg-green-500/30
+  }
+
+  .overdue_bill{
+    @apply bg-yellow-500/30
+  }
+
+  .freeze{
+    @apply bg-blue-500/30
+  }
+
+  .suspended{
+    @apply bg-red-500/30
+  }
+
+  .btns-group{
+    button{
+
+      @apply border-r-2 border-zinc-600;
+
+      &:last-child{
+        @apply border-x-0 ring-0
+      }
+    }
+  }
+
   @keyframes spin {
     0% {
       transform: rotate(0deg);
