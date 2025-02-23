@@ -13,13 +13,14 @@ import {
     rescheduleClass,
     getUpcomingClass,
     updateClassroomStatus,
+    deleteClassFromClassroom,
 
 } from "../controllers/calssroom.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/classroom/update-class-ids", protectRoute, updateClassIdsForClasses);
+router.get('/classroom/update-class-ids', protectRoute, updateClassIdsForClasses);
 
 // Classroom Routes
 router.post('/classroom', protectRoute, createClassroom); // Create a new classroom
@@ -37,6 +38,7 @@ router.put('/classroom/:classroomId/class/:classId/reschedule', protectRoute, re
 
 router.get('/classes/upcoming/:userId', protectRoute, getUpcomingClass); // UpComing Calss
 
-router.put("/classroom/:id/status", protectRoute, updateClassroomStatus);
+router.put('/classroom/:id/status', protectRoute, updateClassroomStatus);
+router.delete('/classroom/:classroomId/classes/:classId', protectRoute, deleteClassFromClassroom); // Delete a class
 
 export default router;

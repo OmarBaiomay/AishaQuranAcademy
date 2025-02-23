@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../lib/axios.js";
 import toast from "react-hot-toast";
 import ClassFormModal from "../../components/dashboard/ClassFormModal";
+import ConfirmDeleteModal from "../../components/dashboard/ConfirmDeleteModal";
+
 import {
   GridComponent,
   ColumnsDirective,
@@ -20,7 +22,9 @@ function ClassroomDetails() {
   const [classroom, setClassroom] = useState(null);
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showClassModal, setShowClassModal] = useState(false);
+  const [classToDelete, setClassToDelete] = useState(null);
   const [selectedClass, setSelectedClass] = useState(null);
   const [generatingClasses, setGeneratingClasses] = useState(false);
   const [classroomStatus, setClassroomStatus] = useState("");
@@ -88,6 +92,18 @@ function ClassroomDetails() {
     setShowClassModal(false);
   };
 
+  const handleDeleteClass = async () => {
+    try {
+      await axiosInstance.delete(`/classroom/${id}/classes/${classToDelete._id}`);
+      setClasses((prev) => prev.filter(cls => cls._id !== classToDelete._id));
+      toast.success("Class deleted successfully!");
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error("Error deleting class:", error);
+      toast.error("Error deleting class!");
+    }
+  };
+
   if (!classroom) {
     return <div>Loading...</div>;
   }
@@ -101,7 +117,7 @@ function ClassroomDetails() {
         </button>
       </header>
 
-      <div className="bg-white shadow rounded-lg p-6 mb-6 relative">
+      <div className="bg-white shadow-md rounded-lg p-6 mb-6 relative">
         <div className="absolute top-0 right-0 btns-group">
           {status.map((stat) => (
             <button
@@ -122,18 +138,16 @@ function ClassroomDetails() {
         <p><strong>Next Payment:</strong> {classroom.nextPaymentDate || "N/A"}</p>
         <p><strong>Zoom Link:</strong> <a href={classroom.zoomLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">{classroom.zoomLink}</a></p>
       </div>
-
-      {/* ✅ Action Buttons */}
       <div className="flex gap-4 mb-6">
-        <button className="bg-green-500 text-white px-4 py-2 rounded-lg" onClick={handleAddClass}>
-          Add New Class
+        <button className="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600" onClick={handleAddClass}>
+          Add {classroomStatus !== "free_trial" ? "New Class" : "The First Class"}
         </button>
-        <button className={`text-white px-4 py-2 rounded-lg ${generatingClasses ? "bg-gray-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"}`} onClick={handleGenerateMonthlyClasses} disabled={generatingClasses}>
-          {generatingClasses ? "Generating Classes..." : "Add Monthly Classes"}
-        </button>
+        {classroomStatus !== "free_trial" && 
+          <button className={`text-white px-4 py-2 rounded-lg ${generatingClasses ? "bg-gray-400 cursor-not-allowed" : "bg-purple-500 hover:bg-purple-600"}`} onClick={handleGenerateMonthlyClasses} disabled={generatingClasses}>
+            {generatingClasses ? "Generating Classes..." : "Add Monthly Classes"}
+          </button>
+        }
       </div>
-
-      {/* ✅ Table of Classes */}
       <div className="bg-white shadow rounded-lg p-6">
         <h2 className="text-xl font-bold text-zinc-600 mb-4">Classes</h2>
         <GridComponent dataSource={classes} allowPaging allowSorting pageSettings={{ pageSize: 5 }} height={400}>
@@ -148,6 +162,7 @@ function ClassroomDetails() {
                   <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => handleRescheduleClass(props)}>
                     Reschedule
                   </button>
+                  <button className="bg-red-500 text-white px-3 py-1 rounded" onClick={() => { setClassToDelete(props); setShowDeleteModal(true); }}>Delete</button>
                 </div>
               )}
               width="150"
@@ -157,8 +172,7 @@ function ClassroomDetails() {
           <Inject services={[Resize, Sort, Filter, Page]} />
         </GridComponent>
       </div>
-
-      {/* ✅ Class Form Modal */}
+      <ConfirmDeleteModal show={showDeleteModal} onConfirm={handleDeleteClass} onCancel={() => setShowDeleteModal(false)} />
       <ClassFormModal show={showClassModal} onClose={() => setShowClassModal(false)} onSave={handleClassSave} classroomId={id} classData={selectedClass} />
     </div>
   );

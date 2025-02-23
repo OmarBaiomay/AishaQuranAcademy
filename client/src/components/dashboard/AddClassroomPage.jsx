@@ -15,6 +15,7 @@ function AddClassroomPage() {
   const [classTimes, setClassTimes] = useState([]);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [notes, setNotes] = useState("");
+  const [zoomLink, setZoomLink] = useState("");
   const [numberOfClassesPerMonth, setNumberOfClassesPerMonth] = useState(4);
 
   // Fetch students, teachers, and supervisors
@@ -79,6 +80,7 @@ function AddClassroomPage() {
         classTimes,
         notes,
         numberOfClassesPerMonth,
+        zoomLink,
       });
       toast.success("Classroom added successfully!");
       navigate("/dashboard/classrooms");
@@ -177,6 +179,15 @@ function AddClassroomPage() {
             className="form-input"
             value={numberOfClassesPerMonth}
             onChange={(e) => setNumberOfClassesPerMonth(Number(e.target.value))}
+          />
+        </div>
+        <div>
+          <label className="form-label">Zoom Link</label>
+          <input
+            type="text"
+            className="form-input"
+            value={zoomLink}
+            onChange={(e) => setZoomLink(e.target.value)}
           />
         </div>
         <div>

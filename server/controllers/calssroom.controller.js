@@ -41,7 +41,7 @@ export const updateClassIdsForClasses = async (req, res) => {
 };
 
 export const createClassroom = async (req, res) => {
-    const { teacherId, studentId, supervisorId, classTimes, numberOfClassesPerMonth, notes } = req.body;
+    const { teacherId, studentId, supervisorId, classTimes, numberOfClassesPerMonth, notes, zoomLink } = req.body;
 
     try {
         // Validate required fields
@@ -257,18 +257,17 @@ export const addClassToClassroom = async (req, res) => {
 
         // Find the classroom
         const classroom = await Classroom.findById(classroomId);
-
         if (!classroom) {
             return res.status(404).json({ message: "Classroom not found." });
         }
 
-        // Add the new class
+        // ✅ Add the new class WITHOUT zoomLink
         const newClass = { day, time, period, date };
         classroom.classes.push(newClass);
 
         await classroom.save();
 
-        res.status(201).json({ message: "Class added to classroom successfully.", classroom });
+        res.status(201).json({ message: "Class added to classroom successfully.", class: newClass });
     } catch (error) {
         console.error("Error adding class to classroom:", error.message);
         res.status(500).json({ message: "Internal Server Error" });
@@ -432,6 +431,26 @@ export const rescheduleClass = async (req, res) => {
     }
 };
 
+export const deleteClassFromClassroom = async (req, res) => {
+    const { classroomId, classId } = req.params;
+
+    try {
+        const classroom = await Classroom.findById(classroomId);
+        if (!classroom) {
+            return res.status(404).json({ message: "Classroom not found." });
+        }
+
+        // Filter out the class
+        classroom.classes = classroom.classes.filter(cls => cls._id.toString() !== classId);
+
+        await classroom.save();
+
+        res.status(200).json({ message: "Class deleted successfully.", classroom });
+    } catch (error) {
+        console.error("Error deleting class:", error.message);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
 
 
 // Fetch the upcoming class for a user
