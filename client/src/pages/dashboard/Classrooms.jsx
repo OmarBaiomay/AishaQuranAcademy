@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../../lib/axios.js";
-import ClassroomCard from "../../components/dashboard/ClassroomCard.jsx"; // Replace with your ClassroomCard component
-import { FaList, FaTh } from "react-icons/fa"; // Icons for buttons
+import EmptyState from "../../components/common/EmptyState.jsx"; // Import EmptyState
+import ClassroomCard from "../../components/dashboard/ClassroomCard.jsx"; 
+import { FaList, FaTh } from "react-icons/fa"; 
 import { IoAdd } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import {
@@ -32,9 +33,9 @@ function Classrooms() {
     try {
       const response = await axiosInstance.get("/classroom");
       setClassrooms(response.data);
-      setLoading(false);
     } catch (error) {
       toast.error("Error fetching classrooms!");
+    } finally {
       setLoading(false);
     }
   };
@@ -121,6 +122,15 @@ function Classrooms() {
       <div className="flex justify-start items-center gap-7 flex-wrap mt-10">
         {loading ? (
           <div>Loading...</div>
+        ) : classrooms.length === 0 ? (
+          <div className="flex justify-center items-center w-full">
+            <EmptyState
+              title="No Classrooms Yet"
+              message="Start by creating a new classroom and managing your students easily."
+              btnText="Create Your First Classroom"
+              btnLink="/dashboard/classrooms/add"
+            />
+          </div>
         ) : viewMode === "grid" ? (
           filteredClassrooms.map((classroom) => (
             <div key={classroom._id} className={`bg-white shadow-lg rounded-lg p-6 ${classroom.status}`}>

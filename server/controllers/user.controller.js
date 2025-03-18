@@ -3,46 +3,56 @@ import bcrypt from "bcryptjs";
 
 // Create a new user
 export const createUser = async (req, res) => {
-    const { fullName, email, password, phone, country, role, availability, gender, age } = req.body;
+  const { fullName, email, password, phone, country, role, availability, gender, age, classroomId } = req.body;
 
-    try {
-        // Validate required fields
-        if (!fullName || !email || !password || !phone || !country || !role || !gender || !age) {
-            return res.status(400).json({ message: "All fields are required." });
-        }
+  try {
+      // Validate required fields
+      if (!fullName || !email || !password || !phone || !country || !role || !gender || !age) {
+          return res.status(400).json({ message: "All fields are required." });
+      }
 
-        // Check if user already exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: "Email already exists." });
-        }
+      // Check if user already exists
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+          return res.status(400).json({ message: "Email already exists." });
+      }
 
-        // Hash the password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+      // Prevent students from having multiple classrooms
+      if (role === "Student" && classroomId) {
+          const existingClassroom = await User.findOne({ classroomId });
+          if (existingClassroom) {
+              return res.status(400).json({ message: "This classroom is already assigned to another student." });
+          }
+      }
 
-        // Create the new user
-        const newUser = new User({
-            fullName,
-            email,
-            password: hashedPassword,
-            phone,
-            country,
-            gender,
-            age,
-            role,
-            availability,
-        });
+      // Hash the password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Save the user
-        await newUser.save();
+      // Create the new user
+      const newUser = new User({
+          fullName,
+          email,
+          password: hashedPassword,
+          phone,
+          country,
+          gender,
+          age,
+          role,
+          availability,
+          classroomId: role === "Student" ? classroomId || null : null, // Only assign classroomId if Student
+      });
 
-        res.status(201).json({ message: "User created successfully.", user: newUser });
-    } catch (error) {
-        console.error("Error in Create User Controller:", error.message);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
+      // Save the user
+      await newUser.save();
+
+      res.status(201).json({ message: "User created successfully.", user: newUser });
+  } catch (error) {
+      console.error("Error in Create User Controller:", error.message);
+      res.status(500).json({ message: "Internal Server Error" });
+  }
 };
+
 
 // Get all users or filter by role
 export const getUsers = async (req, res) => {
@@ -78,33 +88,40 @@ export const getUserById = async (req, res) => {
 
 // Update a user by ID
 export const updateUser = async (req, res) => {
-    const { fullName, email, phone, country, role, availability, gender, age } = req.body;
+  const { fullName, email, phone, country, role, availability, gender, age, classroomId } = req.body;
 
-    try {
-        const user = await User.findById(req.params.id);
+  try {
+      const user = await User.findById(req.params.id);
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found." });
-        }
+      if (!user) {
+          return res.status(404).json({ message: "User not found." });
+      }
 
-        // Update fields if provided
-        if (fullName) user.fullName = fullName;
-        if (email) user.email = email;
-        if (phone) user.phone = phone;
-        if (country) user.country = country;
-        if (role) user.role = role;
-        if (gender) user.gender = gender;
-        if (age) user.age = age;
-        if (availability) user.availability = availability;
+      // Prevent students from switching classrooms
+      if (role === "Student" && classroomId && user.classroomId && classroomId !== user.classroomId.toString()) {
+          return res.status(400).json({ message: "Students cannot be assigned to multiple classrooms." });
+      }
 
-        await user.save();
+      // Update fields if provided
+      if (fullName) user.fullName = fullName;
+      if (email) user.email = email;
+      if (phone) user.phone = phone;
+      if (country) user.country = country;
+      if (role) user.role = role;
+      if (gender) user.gender = gender;
+      if (age) user.age = age;
+      if (availability) user.availability = availability;
+      if (role === "Student") user.classroomId = classroomId || user.classroomId; // Only update if not assigned
 
-        res.status(200).json({ message: "User updated successfully.", user });
-    } catch (error) {
-        console.error("Error updating user:", error.message);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
+      await user.save();
+
+      res.status(200).json({ message: "User updated successfully.", user });
+  } catch (error) {
+      console.error("Error updating user:", error.message);
+      res.status(500).json({ message: "Internal Server Error" });
+  }
 };
+
 
 // Delete a user by ID
 export const deleteUser = async (req, res) => {
@@ -264,7 +281,7 @@ export const addFCMToken = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // ✅ Check if token already exists
+    // Check if token already exists
     if (user.fcmTokens.some((t) => t.token === token)) {
       return res.status(400).json({ message: "Token already exists for this user" });
     }

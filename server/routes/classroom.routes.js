@@ -14,6 +14,7 @@ import {
     getUpcomingClass,
     updateClassroomStatus,
     deleteClassFromClassroom,
+    removeStudentFromClassroom,
 
 } from "../controllers/calssroom.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
@@ -28,6 +29,7 @@ router.get('/classroom', protectRoute, getClassrooms); // Get all classrooms
 router.get('/classroom/:id', protectRoute, getClassroomById); // Get a specific classroom by ID
 router.put('/classroom/:id', protectRoute, updateClassroom); // Update a classroom by ID
 router.delete('/classroom/:classroomId', protectRoute, deleteClassroom); // Delete a classroom by ID
+router.put('/user/:studentId/remove-classroom', protectRoute, removeStudentFromClassroom);
 
 
 router.post('/classroom/:classroomId/classes', protectRoute, addClassToClassroom); // Add a class

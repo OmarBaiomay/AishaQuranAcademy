@@ -50,9 +50,22 @@ export const createClassroom = async (req, res) => {
         }
 
         const teacher = await User.findById(teacherId);
+        const student = await User.findById(studentId);
+        const supervisor = await User.findById(supervisorId);
 
         if (!teacher || teacher.role !== "Teacher") {
             return res.status(400).json({ message: "Invalid teacher ID or role." });
+        }
+        if (!student || student.role !== "Student") {
+            return res.status(400).json({ message: "Invalid student ID or role." });
+        }
+        if (!supervisor || supervisor.role !== "Supervisor") {
+            return res.status(400).json({ message: "Invalid supervisor ID or role." });
+        }
+
+        // ✅ Check if student already has a classroom
+        if (student.classroomId) {
+            return res.status(400).json({ message: "This student is already assigned to a classroom." });
         }
 
         // Validate and book the teacher's available times
@@ -91,7 +104,11 @@ export const createClassroom = async (req, res) => {
 
         const savedClassroom = await newClassroom.save();
 
-        // Link the classroom to the teacher's availability
+        // ✅ Assign classroom to student
+        student.classroomId = savedClassroom._id;
+        await student.save();
+
+        // ✅ Link classroom to teacher's availability
         availableSlots.forEach((slot) => {
             slot.classroomId = savedClassroom._id;
         });
@@ -107,6 +124,7 @@ export const createClassroom = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
 
 // Get all classrooms
 export const getClassrooms = async (req, res) => {
@@ -524,4 +542,33 @@ export const updateClassroomStatus = async (req, res) => {
     console.error("Error updating classroom status:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
+};
+
+export const removeStudentFromClassroom = async (req, res) => {
+    const { studentId } = req.params;
+
+    try {
+        const student = await User.findById(studentId);
+        if (!student || student.role !== "Student") {
+            return res.status(404).json({ message: "Student not found or invalid role." });
+        }
+
+        if (!student.classroomId) {
+            return res.status(400).json({ message: "Student is not assigned to any classroom." });
+        }
+
+        const classroom = await Classroom.findById(student.classroomId);
+        if (classroom) {
+            classroom.student = null; // Remove student from classroom
+            await classroom.save();
+        }
+
+        student.classroomId = null; // Remove classroom reference from student
+        await student.save();
+
+        res.status(200).json({ message: "Student removed from classroom successfully." });
+    } catch (error) {
+        console.error("Error removing student from classroom:", error.message);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
 };
