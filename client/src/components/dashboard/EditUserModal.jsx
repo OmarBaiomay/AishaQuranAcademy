@@ -14,6 +14,7 @@ function EditUserModal({ show, user, onClose, onSave }) {
     age: "",
     profilePic: "",
     timeZone: "UTC",
+    classroomId: "",
   });
 
   const [countries, setCountries] = useState([]);
@@ -60,6 +61,7 @@ function EditUserModal({ show, user, onClose, onSave }) {
         age: user.age || "",
         profilePic: user.profilePic || "",
         timeZone: user.timeZone || "UTC",
+        classroomId: user.classroomId || "",
       });
       if (user.profilePic) setImagePreview(user.profilePic);
     }
@@ -143,16 +145,23 @@ function EditUserModal({ show, user, onClose, onSave }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name.startsWith("phone.")) {
-      const field = name.split(".")[1];
-      setFormData({
-        ...formData,
-        phone: { ...formData.phone, [field]: value },
-      });
-    } else {
-      setFormData({ ...formData, [name]: value });
+    
+    if (name === "classroomId" && formData.role === "Student" && formData.classroomId) {
+        toast.error("Students cannot change their assigned classroom.");
+        return;
     }
-  };
+
+    if (name.startsWith("phone.")) {
+        const field = name.split(".")[1];
+        setFormData({
+            ...formData,
+            phone: { ...formData.phone, [field]: value },
+        });
+    } else {
+        setFormData({ ...formData, [name]: value });
+    }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -166,6 +175,7 @@ function EditUserModal({ show, user, onClose, onSave }) {
       formDataToSend.append("gender", formData.gender);
       formDataToSend.append("age", formData.age);
       formDataToSend.append("timeZone", formData.timeZone);
+      formDataToSend.append("classroomId", formData.classroomId);
       if (selectedImage) formDataToSend.append("profilePic", selectedImage);
 
       let response;

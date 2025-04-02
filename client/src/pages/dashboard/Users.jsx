@@ -100,6 +100,13 @@ function Users() {
       width: '150',
       textAlign: 'Center',
     },
+    {
+      field: 'classroomId',
+      headerText: 'Classroom ID',
+      width: '200',
+      textAlign: 'Center',
+      template: (props) => props.role === "Student" ? props.classroomId || "Not Assigned" : "N/A",
+    },
   ];
 
   return (

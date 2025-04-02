@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema(
     availability: { type: Array, default: [] },
     fcmTokens: [fcmTokenSchema],
     // ✅ Ensure one classroom per student
-    classroomId: { type: mongoose.Schema.Types.ObjectId, ref: "Classroom", unique: true, sparse: true, required: false } 
+    classroomId: { type: mongoose.Schema.Types.ObjectId, ref: "Classroom", unique: true, sparse: true, required: false, default: null }, 
   },
   { timestamps: true }
 );
