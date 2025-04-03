@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { axiosInstance } from "../../lib/axios.js";
-import UserCard from "../../components/dashboard/UserCard.jsx";
+import { axiosInstance } from "../../../lib/axios.js";
+import UserCard from "../../../components/dashboard/users/UserCard.jsx";
 import avatar from "/assets/user.svg";
-import ConfirmDeleteModal from "../../components/dashboard/ConfirmDeleteModal.jsx";
-import EditUserModal from "../../components/dashboard/EditUserModal.jsx";
-import PageHeader from "../../components/dashboard/PageHeader.jsx"; 
+import ConfirmDeleteModal from "../../../components/dashboard/modals/ConfirmDeleteModal.jsx";
+import PageHeader from "../../../components/dashboard/PageHeader.jsx"; 
 import { GridComponent, ColumnsDirective, ColumnDirective, Inject, Filter, VirtualScroll, Sort, Resize, ContextMenu, ExcelExport, Edit, PdfExport } from '@syncfusion/ej2-react-grids';
 import { Link } from "react-router-dom";
 
@@ -17,7 +16,6 @@ function Users() {
   const [selectedRole, setSelectedRole] = useState("all");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
   // ✅ Fetch Users from API
@@ -61,12 +59,6 @@ function Users() {
       }
     }
     setShowDeleteModal(false);
-  };
-
-  // ✅ Open Add/Edit User Modal
-  const openEditUserModal = (user = null) => {
-    setSelectedUser(user);
-    setShowEditModal(true);
   };
 
   // ✅ Handle User Save (After Edit)
@@ -119,7 +111,7 @@ function Users() {
         ]}
         selectedFilter={selectedRole}
         setSelectedFilter={setSelectedRole}
-        onAddClick={() => openEditUserModal(null)} // Open Add User Modal
+        onAddClick={() => {}} // Open Add User Modal
         viewMode={viewMode}
         setViewMode={setViewMode}
       />
@@ -137,7 +129,7 @@ function Users() {
                   fullName={user.fullName}
                   role={user.role}
                   _id={user._id}
-                  onEdit={() => openEditUserModal(user)} // ✅ Open Edit Modal
+                  onEdit={() => {}} // ✅ Open Edit Modal
                   onDelete={() => openDeleteModal(user)}
                 />
               ))
@@ -166,14 +158,6 @@ function Users() {
         userName={userToDelete ? `${userToDelete.fullName}` : ""}
         onConfirm={handleDelete}
         onCancel={() => setShowDeleteModal(false)}
-      />
-
-      {/* ✅ Edit/Add User Modal */}
-      <EditUserModal
-        show={showEditModal}
-        user={selectedUser}
-        onClose={() => setShowEditModal(false)}
-        onSave={handleSaveUser} // ✅ Updates the user list after edit
       />
     </div>
   );

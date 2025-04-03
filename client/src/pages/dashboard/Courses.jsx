@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../../lib/axios.js";
-import CourseCard from "../../components/dashboard/CourseCard.jsx";
+import CourseCard from "../../components/dashboard/course/CourseCard.jsx";
 import { FaList, FaTh } from "react-icons/fa";
 import {
   GridComponent,

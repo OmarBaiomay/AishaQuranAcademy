@@ -1,7 +1,7 @@
 import React from "react";
 import { FaQuestionCircle } from "react-icons/fa"; // Import the question mark icon
 
-const ConfirmDeleteModal = ({ show, userName, onConfirm, onCancel }) => {
+const ConfirmLogOutModal = ({ show, onConfirm, onCancel }) => {
   if (!show) return null;
 
   return (
@@ -11,10 +11,10 @@ const ConfirmDeleteModal = ({ show, userName, onConfirm, onCancel }) => {
           <FaQuestionCircle className="text-red-500 text-4xl" />
         </div>
         <h3 className="text-xl font-semibold text-gray-800 text-center mb-4">
-          Are you sure you want to delete <p className="font-bold">{userName}?</p>
+          Are you sure you want to log out?
         </h3>
         <p className="text-center text-gray-600 mb-6">
-          This action cannot be undone.
+            You will be redirected to the login page.
         </p>
         <div className="flex justify-between gap-4">
           <button
@@ -27,7 +27,7 @@ const ConfirmDeleteModal = ({ show, userName, onConfirm, onCancel }) => {
             onClick={onConfirm}
             className="w-full px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
           >
-            Delete
+            Logout
           </button>
         </div>
       </div>
@@ -35,4 +35,4 @@ const ConfirmDeleteModal = ({ show, userName, onConfirm, onCancel }) => {
   );
 };
 
-export default ConfirmDeleteModal;
+export default ConfirmLogOutModal;

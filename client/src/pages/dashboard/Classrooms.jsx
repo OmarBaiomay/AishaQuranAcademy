@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../../lib/axios.js";
-import ClassroomCard from "../../components/dashboard/ClassroomCard.jsx"; // Replace with your ClassroomCard component
+import ClassroomCard from "../../components/dashboard/calssroom/ClassroomCard.jsx"; // Replace with your ClassroomCard component
 import { FaList, FaTh } from "react-icons/fa"; // Icons for buttons
 import { IoAdd } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
