@@ -27,7 +27,11 @@ function AddClassroomPage() {
           axiosInstance.get("/users?role=Teacher"),
           axiosInstance.get("/users?role=Supervisor"),
         ]);
-        setStudents(studentsRes.data);
+
+        // ✅ Filter students who already have a classroom
+        const availableStudents = studentsRes.data.filter(student => !student.classroomId);
+
+        setStudents(availableStudents);
         setTeachers(teachersRes.data);
         setSupervisors(supervisorsRes.data);
       } catch (error) {
@@ -68,7 +72,6 @@ function AddClassroomPage() {
   const handleAddClassroom = async () => {
     if (!selectedStudent || !selectedTeacher || !selectedSupervisor || classTimes.length === 0) {
       toast.error("Please fill in all required fields!");
-      console.log(selectedStudent, selectedTeacher, selectedSupervisor, classTimes.length);
       return;
     }
 
@@ -85,8 +88,8 @@ function AddClassroomPage() {
       toast.success("Classroom added successfully!");
       navigate("/dashboard/classrooms");
     } catch (error) {
-      console.error("Error creating classroom:", error.message);
-      toast.error("Error adding classroom!");
+      console.error("Error creating classroom:", error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || "Error adding classroom!");
     }
   };
 
@@ -129,6 +132,9 @@ function AddClassroomPage() {
               </option>
             ))}
           </select>
+          {students.length === 0 && (
+            <p className="text-red-500 text-sm mt-1">All students are already assigned to a classroom.</p>
+          )}
         </div>
         <div>
           <label className="form-label">Select Teacher</label>

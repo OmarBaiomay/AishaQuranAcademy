@@ -32,9 +32,9 @@ function Classrooms() {
     try {
       const response = await axiosInstance.get("/classroom");
       setClassrooms(response.data);
-      setLoading(false);
     } catch (error) {
       toast.error("Error fetching classrooms!");
+    } finally {
       setLoading(false);
     }
   };
@@ -121,6 +121,15 @@ function Classrooms() {
       <div className="flex justify-start items-center gap-7 flex-wrap mt-10">
         {loading ? (
           <div>Loading...</div>
+        ) : classrooms.length === 0 ? (
+          <div className="flex justify-center items-center w-full">
+            <EmptyState
+              title="No Classrooms Yet"
+              message="Start by creating a new classroom and managing your students easily."
+              btnText="Create Your First Classroom"
+              btnLink="/dashboard/classrooms/add"
+            />
+          </div>
         ) : viewMode === "grid" ? (
           filteredClassrooms.map((classroom) => (
             <div key={classroom._id} className={`bg-white shadow-lg rounded-lg p-6 ${classroom.status}`}>
