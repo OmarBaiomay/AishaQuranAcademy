@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { axiosInstance } from "../../lib/axios.js";
+import { axiosInstance } from "../../../lib/axios.js";
 import toast from "react-hot-toast";
-import ClassFormModal from "../../components/dashboard/class/ClassFormModal";
-import ConfirmDeleteModal from "../../components/dashboard/modals/ConfirmDeleteModal";
+import ClassFormModal from "../../../components/dashboard/class/ClassFormModal.jsx";
+import ConfirmDeleteModal from "../../../components/dashboard/modals/ConfirmDeleteModal.jsx";
 
 import {
   GridComponent,

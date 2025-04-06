@@ -11,6 +11,10 @@ import {
     deleteUserAvailability,
     addFCMToken,
     removeFCMToken,
+    createFirstPassword,
+    requestPasswordReset,
+    resetPasswordWithToken,
+    updateUserPassword,
 } from "../controllers/user.controller.js"; // Import the new controller functions
 import { protectRoute } from "../middleware/auth.middleware.js";
 
@@ -34,6 +38,29 @@ router.put('/user/:id', protectRoute, updateUser);
 
 // Delete a user by ID
 router.delete('/user/:id', protectRoute, deleteUser); 
+
+
+/*
+    Password Routes
+*/
+
+// Create the first password for a user
+router.post("/user/:userId/create-password", createFirstPassword);
+
+// Request password reset
+// This route is used when the user requests a password reset
+// It sends an email with a reset link to the user
+router.post("/user/request-password-reset", requestPasswordReset);
+
+// Reset password with token
+// This route is used when the user clicks the link in the password reset email
+router.post("/user/reset-password-with-token", resetPasswordWithToken);
+
+// Update user password
+// This route is used to update the user's password after they have logged in
+// It requires the user to be authenticated (protected route)
+router.put("/user/:userId/password", protectRoute, updateUserPassword);
+
 
 
 /* 

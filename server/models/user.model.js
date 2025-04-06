@@ -16,15 +16,19 @@ const userSchema = new mongoose.Schema(
     role: { type: String, required: true, enum: ["Student", "Teacher", "Supervisor", "Administrator"], default: "Student" },
     phone: {
       countryCode: { type: String, required: true },
-      number: { type: String, required: true, validate: (v) => /^\d+$/.test(v) },
+      number: { type: String, required: true, validate: (pn) => /^\d+$/.test(pn) },
     },
     country: { type: String, required: true },
     timeZone: { type: String, required: true, default: "UTC" },
     availability: { type: Array, default: [] },
     fcmTokens: [fcmTokenSchema],
-    // ✅ Ensure one classroom per student
-    classroomId: { type: mongoose.Schema.Types.ObjectId, ref: "Classroom", unique: true, sparse: true, required: false, default: null }, 
-  },
+    resetPasswordToken: { type: Stringm, default: null },
+    resetPasswordExpires: { type: Date, default: null },
+    isOnline: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: false },
+    isBlocked: { type: Boolean, default: false },
+    lastLogin: { type: Date, default: null },
+    },
   { timestamps: true }
 );
 

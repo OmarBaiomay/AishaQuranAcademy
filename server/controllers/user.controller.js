@@ -1,9 +1,12 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import Classroom from "../models/classroom.model.js";
+import { sendResetEmail } from "../lib/mailer.js"; // Adjust the import path as necessary
 
 // Create a new user
 export const createUser = async (req, res) => {
-  const { fullName, email, password, phone, country, role, availability, gender, age, classroomId } = req.body;
+  const { fullName, email, password, phone, country, role, gender, age, timeZone } = req.body;
 
   try {
       // Validate required fields
@@ -17,31 +20,27 @@ export const createUser = async (req, res) => {
           return res.status(400).json({ message: "Email already exists." });
       }
 
-      // Prevent students from having multiple classrooms
-      if (role === "Student" && classroomId) {
-          const existingClassroom = await User.findOne({ classroomId });
-          if (existingClassroom) {
-              return res.status(400).json({ message: "This classroom is already assigned to another student." });
-          }
-      }
-
-      // Hash the password
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-
       // Create the new user
       const newUser = new User({
           fullName,
           email,
-          password: hashedPassword,
-          phone,
+          phone: {
+            countryCode: phone.countryCode,
+            number: phone.number,
+          },
           country,
           gender,
           age,
           role,
-          availability,
-          classroomId: role === "Student" ? classroomId || null : null, // Only assign classroomId if Student
-      });
+          availability : [], // Initialize with an empty array 
+          isVerified: false,
+          isBlocked: false,
+          lastLogin: null,
+          profilePic: "", // Default profile picture or set it to a placeholder
+          isOnline: false,
+          fcmTokens: [], // Initialize with an empty array 
+          timeZone: timeZone || "UTC", // Default to UTC if not provided
+        });
 
       // Save the user
       await newUser.save();
@@ -50,6 +49,133 @@ export const createUser = async (req, res) => {
   } catch (error) {
       console.error("Error in Create User Controller:", error.message);
       res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const createFirstPassword = async (req, res) => {
+  const { userId } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+    // 1. Find user
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found." });
+
+    // 2. Check if user already has a password
+    if (user.password && user.password.length > 0) {
+      return res.status(400).json({ message: "Password has already been set." });
+    }
+
+    // 3. Validate new password
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters." });
+    }
+
+    // 4. Hash and save password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+
+    await user.save();
+
+    res.status(200).json({ message: "Password created successfully." });
+  } catch (error) {
+    console.error("Error in createFirstPassword:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const updateUserPassword = async (req, res) => {
+  const { userId } = req.params;
+  const { currentPassword, newPassword } = req.body;
+
+  try {
+    // 1. Find the user
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found." });
+
+    // 2. Check if current password is correct
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Current password is incorrect." });
+    }
+
+    // 3. Validate new password (length check)
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ message: "New password must be at least 6 characters long." });
+    }
+
+    // 4. Hash new password and save
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+
+    await user.save();
+
+    res.status(200).json({ message: "Password updated successfully." });
+  } catch (error) {
+    console.error("Error updating password:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+export const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found." });
+
+    // Generate secure token
+    const token = crypto.randomBytes(32).toString("hex");
+
+    // Set token and expiry (e.g., 1 hour)
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+    await user.save();
+
+    const resetLink = `http://yourfrontend.com/reset-password?token=${token}&id=${user._id}`;
+
+    await sendResetEmail(user.email, resetLink);
+
+    res.status(200).json({ message: "Password reset email sent." });
+  } catch (error) {
+    console.error("requestPasswordReset error:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const resetPasswordWithToken = async (req, res) => {
+  const { userId, token, newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({
+      _id: userId,
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token." });
+    }
+
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters." });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+
+    // Clear token
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successful." });
+  } catch (error) {
+    console.error("resetPasswordWithToken error:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -88,18 +214,13 @@ export const getUserById = async (req, res) => {
 
 // Update a user by ID
 export const updateUser = async (req, res) => {
-  const { fullName, email, phone, country, role, availability, gender, age, classroomId } = req.body;
+  const { fullName, email, phone, country, role, gender, age, timeZone } = req.body;
 
   try {
       const user = await User.findById(req.params.id);
 
       if (!user) {
           return res.status(404).json({ message: "User not found." });
-      }
-
-      // Prevent students from switching classrooms
-      if (role === "Student" && classroomId && user.classroomId && classroomId !== user.classroomId.toString()) {
-          return res.status(400).json({ message: "Students cannot be assigned to multiple classrooms." });
       }
 
       // Update fields if provided
@@ -110,8 +231,7 @@ export const updateUser = async (req, res) => {
       if (role) user.role = role;
       if (gender) user.gender = gender;
       if (age) user.age = age;
-      if (availability) user.availability = availability;
-      if (role === "Student") user.classroomId = classroomId || user.classroomId; // Only update if not assigned
+      if (timeZone) user.timeZone = timeZone;
 
       await user.save();
 
@@ -172,8 +292,8 @@ export const updateUserAvailability = async (req, res) => {
         if (period) availability.period = period;
         if (typeof isBooked === "boolean") availability.isBooked = isBooked;
 
-        // Save the updated teacher
-        await teacher.save();
+        // Save the updated user
+        await user.save();
 
         res.status(200).json({
             message: "User availability updated successfully.",

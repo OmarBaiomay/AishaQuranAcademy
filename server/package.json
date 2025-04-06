@@ -28,9 +28,11 @@
     "mongoose": "^8.8.3",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
+    "nodemailer": "^6.10.0",
     "soket.io": "^0.0.1-security"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "nodemon": "^3.1.7"
   }
 }

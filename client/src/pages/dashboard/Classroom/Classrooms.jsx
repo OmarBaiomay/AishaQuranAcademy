@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { axiosInstance } from "../../lib/axios.js";
-import ClassroomCard from "../../components/dashboard/calssroom/ClassroomCard.jsx"; // Replace with your ClassroomCard component
+import { axiosInstance } from "../../../lib/axios.js";
 import { FaList, FaTh } from "react-icons/fa"; // Icons for buttons
 import { IoAdd } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +10,6 @@ import {
   ColumnDirective,
   Inject,
   Filter,
-  VirtualScroll,
   Sort,
   Resize,
   ContextMenu,
@@ -19,6 +17,7 @@ import {
   Edit,
   PdfExport,
 } from "@syncfusion/ej2-react-grids";
+import EmptyState from "../../../components/common/EmptyState.jsx";
 
 function Classrooms() {
   const navigate = useNavigate();
