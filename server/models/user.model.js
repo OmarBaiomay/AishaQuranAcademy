@@ -28,6 +28,8 @@ const userSchema = new mongoose.Schema(
     isVerified: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
     lastLogin: { type: Date, default: null },
+    unpaidClasses: { },
+    slaryRate: { type: Number, default: 0 },
     },
   { timestamps: true }
 );
