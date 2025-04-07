@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import axios from "axios";
 import { axiosInstance } from "../../../lib/axios.js";
 import UserCard from "../../../components/dashboard/users/UserCard.jsx";
 import avatar from "/assets/user.svg";
@@ -7,8 +8,10 @@ import ConfirmDeleteModal from "../../../components/dashboard/modals/ConfirmDele
 import PageHeader from "../../../components/dashboard/PageHeader.jsx"; 
 import { GridComponent, ColumnsDirective, ColumnDirective, Inject, Filter, VirtualScroll, Sort, Resize, ContextMenu, ExcelExport, Edit, PdfExport } from '@syncfusion/ej2-react-grids';
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Users() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState("grid");
@@ -118,7 +121,7 @@ function Users() {
         ]}
         selectedFilter={selectedRole}
         setSelectedFilter={setSelectedRole}
-        onAddClick={() => {}} // Open Add User Modal
+        onAddClick={() => navigate(`/dashboard/users/add`)} // Open Add User Page
         viewMode={viewMode}
         setViewMode={setViewMode}
       />

@@ -30,6 +30,7 @@ import Testimonials from './pages/dashboard/Testimonials.jsx'
 import AddEditTestimonial from './pages/dashboard/AddEditTestimonial.jsx'
 import ReportsPage from './pages/dashboard/ReportsPage.jsx'
 import ReportFormPage from './pages/dashboard/ReportFormPage.jsx'
+import AddUserPage from './pages/dashboard/Users/AddUserPage.jsx'
 
 const App = () => {
   const {activeMenu} = useStatContext();
@@ -77,6 +78,7 @@ const App = () => {
 
             {/* For Dashboard */}
             <Route path='/dashboard/users' element={authUser ? <Users/> : <Navigate to="/"/>}/>
+            <Route path='/dashboard/users/add' element={authUser ? <AddUserPage /> : <Navigate to="/"/>}/>
             <Route path='/dashboard/users/:id' element={authUser ? <UserDetails /> : <Navigate to="/"/>}/>
 
             <Route path='/dashboard/calender' element={authUser ? <Calender /> : <Navigate to="/"/>}/>

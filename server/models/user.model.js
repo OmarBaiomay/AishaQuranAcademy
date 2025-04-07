@@ -22,14 +22,14 @@ const userSchema = new mongoose.Schema(
     timeZone: { type: String, required: true, default: "UTC" },
     availability: { type: Array, default: [] },
     fcmTokens: [fcmTokenSchema],
-    resetPasswordToken: { type: Stringm, default: null },
+    resetPasswordToken: { type: String, default: null },
     resetPasswordExpires: { type: Date, default: null },
     isOnline: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
     lastLogin: { type: Date, default: null },
     unpaidClasses: { },
-    slaryRate: { type: Number, default: 0 },
+    salaryRate: { type: Number, default: 0 },
     },
   { timestamps: true }
 );

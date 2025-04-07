@@ -6,11 +6,11 @@ import { sendResetEmail } from "../lib/mailer.js"; // Adjust the import path as 
 
 // Create a new user
 export const createUser = async (req, res) => {
-  const { fullName, email, password, phone, country, role, gender, age, timeZone } = req.body;
+  const { fullName, email, phone, country, role, gender, age, timeZone } = req.body;
 
   try {
       // Validate required fields
-      if (!fullName || !email || !password || !phone || !country || !role || !gender || !age) {
+      if (!fullName || !email || !phone || !country || !role || !gender || !age) {
           return res.status(400).json({ message: "All fields are required." });
       }
 

@@ -11,6 +11,8 @@ import courseRoutes from "../routes/course.routes.js";
 import blogRoutes from "../routes/blog.routes.js";
 import notificationRoutes from "../routes/notification.routes.js"
 import reportsRoutes from "../routes/report.routes.js";
+import studentPaymentRoutes from "../routes/studentPayment.routes.js";
+
 
 const app = express();
 
@@ -36,7 +38,7 @@ app.use("/api", testimonialRoutes);
 app.use("/api", courseRoutes);
 app.use("/api", blogRoutes);
 app.use("/api", reportsRoutes);
-
+app.use("/api", studentPaymentRoutes);
 app.listen(PORT, () =>{
     console.log(`Server Is Runing on ${PORT}`)
     connectDB();
