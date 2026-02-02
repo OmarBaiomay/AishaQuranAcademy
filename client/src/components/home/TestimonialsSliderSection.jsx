@@ -18,7 +18,7 @@ const TestimonialsSlider = () => {
       const response = await axiosInstance.get("/testimonials");
       setTestimonials(response.data); // Assuming the API returns an array of testimonials
     } catch (error) {
-      toast.error("Failed to load testimonials.");
+      toast.error(`Failed to load testimonials. ${error}`);
     }
   };
 

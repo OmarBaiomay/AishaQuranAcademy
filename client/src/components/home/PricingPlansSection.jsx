@@ -14,8 +14,7 @@ const Pricing = () => {
                 Our Pricing Plan
               </h2>
               <p className="text-base text-body-color dark:text-dark-6">
-                There are many variations of passages of Lorem Ipsum available
-                but the majority have suffered alteration in some form.
+                Choose the plan that suits your learning pace and budget. All plans include a free trial.
               </p>
             </div>
           </div>
@@ -24,47 +23,43 @@ const Pricing = () => {
         <div className="-mx-4 flex flex-wrap justify-center">
           <div className="-mx-4 flex flex-wrap">
             <PricingCard
-              type="Personal"
-              price="$59"
-              subscription="year"
-              description="Perfect for using in a personal website or a client project."
-              buttonText="Choose Personal"
+              type="Standard"
+              price="$64"
+              subscription="month"
+              description="2 hours/week - Ideal for consistent progress."
+              buttonText="Choose Standard"
+              link="https://wa.me/201227307646?text=Hello!%20I'm%20interested%20in%20the%20Standard%20Plan%20($64/month)%20with%202%20hours%20per%20week.%20I'd%20like%20to%20know%20more%20and%20try%20the%20Free%20Trial%20Lesson."
             >
-              <List>1 User</List>
-              <List>All UI components</List>
-              <List>Lifetime access</List>
-              <List>Free updates</List>
-              <List>Use on 1 (one) project</List>
-              <List>3 Months support</List>
+              <List>Monthly Reports</List>
+              <List>Rewards</List>
+              <List>Free Trial Lesson</List>
             </PricingCard>
+
             <PricingCard
-              type="Business"
-              price="$199"
-              subscription="year"
-              description="Perfect for using in a personal website or a client project."
-              buttonText="Choose Business"
-              active
+              type="Regular"
+              price="$96"
+              subscription="month"
+              description="3 hours/week - A balanced and flexible option."
+              buttonText="Choose Regular"
+              active={true}
+              link="https://wa.me/201227307646?text=Hello!%20I'm%20interested%20in%20the%20Regular%20Plan%20($96/month)%20with%203%20hours%20per%20week.%20I'd%20like%20to%20know%20more%20and%20try%20the%20Free%20Trial%20Lesson."
             >
-              <List>5 User</List>
-              <List>All UI components</List>
-              <List>Lifetime access</List>
-              <List>Free updates</List>
-              <List>Use on31 (Three) project</List>
-              <List>4 Months support</List>
+              <List>Monthly Reports</List>
+              <List>Rewards</List>
+              <List>Free Trial Lesson</List>
             </PricingCard>
+
             <PricingCard
-              type="Professional"
-              price="$256"
-              subscription="year"
-              description="Perfect for using in a personal website or a client project."
-              buttonText="Choose Professional"
+              type="Condensed"
+              price="$128"
+              subscription="month"
+              description="4 hours/week - Best for fast-track learners."
+              buttonText="Choose Condensed"
+              link="https://wa.me/201227307646?text=Hello!%20I'm%20interested%20in%20the%20Condensed%20Plan%20($128/month)%20with%204%20hours%20per%20week.%20I'd%20like%20to%20know%20more%20and%20try%20the%20Free%20Trial%20Lesson."
             >
-              <List>Unlimited User</List>
-              <List>All UI components</List>
-              <List>Lifetime access</List>
-              <List>Free updates</List>
-              <List>Unlimited project</List>
-              <List>12 Months support</List>
+              <List>Monthly Reports</List>
+              <List>Rewards</List>
+              <List>Free Trial Lesson</List>
             </PricingCard>
           </div>
         </div>
@@ -83,6 +78,7 @@ const PricingCard = ({
   subscription,
   buttonText,
   active,
+  link
 }) => {
   return (
     <>
@@ -102,11 +98,14 @@ const PricingCard = ({
           </p>
           <div className="mb-9 flex flex-col gap-[14px]">{children}</div>
           <a
-            href="/#"
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Choose Plan"
             className={` ${
               active
-                ? "block w-full rounded-md border border-primary bg-primary p-3 text-center text-base font-medium text-white transition hover:bg-opacity-90"
-                : "block w-full rounded-md border border-stroke bg-transparent p-3 text-center text-base font-medium text-primary transition hover:border-primary hover:bg-primary hover:text-white dark:border-dark-3"
+                ? "btn primary-purple-btn block w-full rounded-md border border-primary bg-primary p-3 text-center text-base font-medium text-white transition hover:bg-opacity-90"
+                : "block w-full rounded-md border border-stroke bg-transparent p-3 text-center text-base text-zinc-900 bg-zinc-200 hover:text-zinc-200 hover:bg-zinc-900 font-medium text-primary transition dark:border-dark-3"
             } `}
           >
             {buttonText}
@@ -144,230 +143,18 @@ const PricingCard = ({
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <circle
-                  cx="38.9138"
-                  cy="87.4849"
-                  r="1.42021"
-                  transform="rotate(180 38.9138 87.4849)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="38.9138"
-                  cy="74.9871"
-                  r="1.42021"
-                  transform="rotate(180 38.9138 74.9871)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="38.9138"
-                  cy="62.4892"
-                  r="1.42021"
-                  transform="rotate(180 38.9138 62.4892)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="38.9138"
-                  cy="38.3457"
-                  r="1.42021"
-                  transform="rotate(180 38.9138 38.3457)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="38.9138"
-                  cy="13.634"
-                  r="1.42021"
-                  transform="rotate(180 38.9138 13.634)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="38.9138"
-                  cy="50.2754"
-                  r="1.42021"
-                  transform="rotate(180 38.9138 50.2754)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="38.9138"
-                  cy="26.1319"
-                  r="1.42021"
-                  transform="rotate(180 38.9138 26.1319)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="38.9138"
-                  cy="1.42021"
-                  r="1.42021"
-                  transform="rotate(180 38.9138 1.42021)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="26.4157"
-                  cy="87.4849"
-                  r="1.42021"
-                  transform="rotate(180 26.4157 87.4849)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="26.4157"
-                  cy="74.9871"
-                  r="1.42021"
-                  transform="rotate(180 26.4157 74.9871)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="26.4157"
-                  cy="62.4892"
-                  r="1.42021"
-                  transform="rotate(180 26.4157 62.4892)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="26.4157"
-                  cy="38.3457"
-                  r="1.42021"
-                  transform="rotate(180 26.4157 38.3457)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="26.4157"
-                  cy="13.634"
-                  r="1.42021"
-                  transform="rotate(180 26.4157 13.634)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="26.4157"
-                  cy="50.2754"
-                  r="1.42021"
-                  transform="rotate(180 26.4157 50.2754)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="26.4157"
-                  cy="26.1319"
-                  r="1.42021"
-                  transform="rotate(180 26.4157 26.1319)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="26.4157"
-                  cy="1.4202"
-                  r="1.42021"
-                  transform="rotate(180 26.4157 1.4202)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="13.9177"
-                  cy="87.4849"
-                  r="1.42021"
-                  transform="rotate(180 13.9177 87.4849)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="13.9177"
-                  cy="74.9871"
-                  r="1.42021"
-                  transform="rotate(180 13.9177 74.9871)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="13.9177"
-                  cy="62.4892"
-                  r="1.42021"
-                  transform="rotate(180 13.9177 62.4892)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="13.9177"
-                  cy="38.3457"
-                  r="1.42021"
-                  transform="rotate(180 13.9177 38.3457)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="13.9177"
-                  cy="13.634"
-                  r="1.42021"
-                  transform="rotate(180 13.9177 13.634)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="13.9177"
-                  cy="50.2754"
-                  r="1.42021"
-                  transform="rotate(180 13.9177 50.2754)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="13.9177"
-                  cy="26.1319"
-                  r="1.42021"
-                  transform="rotate(180 13.9177 26.1319)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="13.9177"
-                  cy="1.42019"
-                  r="1.42021"
-                  transform="rotate(180 13.9177 1.42019)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="1.41963"
-                  cy="87.4849"
-                  r="1.42021"
-                  transform="rotate(180 1.41963 87.4849)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="1.41963"
-                  cy="74.9871"
-                  r="1.42021"
-                  transform="rotate(180 1.41963 74.9871)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="1.41963"
-                  cy="62.4892"
-                  r="1.42021"
-                  transform="rotate(180 1.41963 62.4892)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="1.41963"
-                  cy="38.3457"
-                  r="1.42021"
-                  transform="rotate(180 1.41963 38.3457)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="1.41963"
-                  cy="13.634"
-                  r="1.42021"
-                  transform="rotate(180 1.41963 13.634)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="1.41963"
-                  cy="50.2754"
-                  r="1.42021"
-                  transform="rotate(180 1.41963 50.2754)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="1.41963"
-                  cy="26.1319"
-                  r="1.42021"
-                  transform="rotate(180 1.41963 26.1319)"
-                  fill="#a855f7"
-                />
-                <circle
-                  cx="1.41963"
-                  cy="1.4202"
-                  r="1.42021"
-                  transform="rotate(180 1.41963 1.4202)"
-                  fill="#a855f7"
-                />
+                <g fill="#a855f7">
+                  {[...Array(4)].map((_, row) =>
+                    [...Array(4)].map((_, col) => (
+                      <circle
+                        key={`${row}-${col}`}
+                        cx={38.9138 - 12.5 * col}
+                        cy={87.4849 - 12.5 * row}
+                        r={1.42}
+                      />
+                    ))
+                  )}
+                </g>
               </svg>
             </span>
           </div>

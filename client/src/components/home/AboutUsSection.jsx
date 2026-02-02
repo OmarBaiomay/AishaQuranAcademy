@@ -43,7 +43,7 @@ function AboutUsSection() {
                         </div>
                         <p className='text-sm text-zinc-700 dark:text-zinc-100'>USD Only Per Hour</p>
                     </div>
-                    <img src={logo} alt='logo' width={100} height={100} className='ml-auto'/>
+                    <img src={logo} alt='logo' width={100} height={100} className='ml-auto hidden md:block'/>
                 </div>
             </div>
         </div>

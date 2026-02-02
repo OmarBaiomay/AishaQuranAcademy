@@ -1,6 +1,9 @@
 import React from 'react'
 import { MdFreeCancellation } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import FreeTrialButton from '../common/FreeTrialButton';
+import CallUsButton from '../common/CallUsButton';
+import { FaPhoneAlt } from 'react-icons/fa';
 
 const sitemap = [
     {
@@ -13,30 +16,58 @@ const sitemap = [
     },
     {
       label: 'All Courses',
-      href: '/all-courses'
+      href: '/courses'
+    },
+    {
+      label: 'Blogs',
+      href: '/blogs'
+    },
+    {
+      label: 'Privacy Policy',
+      href: '/privacy-policy'
+    },
+    {
+      label: 'Terms of Use and Policy',
+      href: '/terms'
     },
   ];
   
   const socials = [
     {
       label: 'Facebook',
-      href: ''
+      href: 'https://www.facebook.com/profile.php?id=100086610662274&mibextid=ZbWKwL'
     },
     {
       label: 'LinkedIn',
-      href: ''
+      href: 'https://www.linkedin.com/company/aisha-quran-academy'
     },
     {
       label: 'Twitter X',
-      href: ''
+      href: 'https://x.com/AishaAcademy1?t=a2BtsSzcHkxOMVjvpze3Bw&s=09'
     },
     {
       label: 'Instagram',
-      href: ''
+      href: 'https://www.instagram.com/aisha_academy1/'
+    },
+    {
+      label: 'Whatsapp',
+      href: 'https://wa.me/201227307646?text=Hello%20I%20Want%20To%20Know%20More%20About%20The%20Academy%20Courses%20and%20Offers'
+    },
+    {
+      label: 'Youtube',
+      href: 'https://www.youtube.com/@Aisha_Quran_Academy'
     },
   ];
 
 const Footer = () => {
+
+  const navigate = useNavigate();
+
+  const handleClick = (href) => {
+    navigate(href);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <footer className="section">
         <div className="container">
@@ -46,9 +77,12 @@ const Footer = () => {
                         Let&apos;s Start Learning Today!
                     </h2>
                     <div className='flex'>
-                      <Link to="/register-course" className="btn primary-purple-btn flex items-center justify-center gap-1 justify-self-start">
-                          <MdFreeCancellation /> Free Trial
-                      </Link>
+                      <FreeTrialButton />
+                      <CallUsButton
+                        label="Call Us Now"
+                        icon={FaPhoneAlt}
+                        className="text-xl md:hidden"
+                      />
                     </div>
                 </div>
 
@@ -58,11 +92,12 @@ const Footer = () => {
                         <ul>
                         {
                             sitemap.map(({label, href}, key) =>(
-                                <li key={key}>
-                                    <a href={href} className='block text-sm text-zinc-400 py-1 transition-all hover:text-zinc-200 reveal-up' >
-                                        {label}
-                                    </a>
-                                </li>
+                                <button
+                                  key={key}
+                                  onClick={() => handleClick(href)}
+                                  className="block text-sm text-zinc-400 py-1 transition-all hover:text-zinc-200 reveal-up text-left">
+                                  {label}
+                                </button>
                             ))
                         }
                         </ul>

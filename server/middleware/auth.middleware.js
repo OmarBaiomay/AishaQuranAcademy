@@ -3,7 +3,11 @@ import User from "../models/user.model.js";
 
 export const protectRoute = async (req, res, next) => {
     try {
-        const token = req.cookies.jwt_token;
+        // Try to get token from cookie or Authorization header
+        let token = req.cookies.jwt_token;
+        if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+            token = req.headers.authorization.split(' ')[1];
+        }
 
         if (!token) {
             return res.status(401).json({ message: "Unauthorized - No Token Provided" });
@@ -27,4 +31,15 @@ export const protectRoute = async (req, res, next) => {
         console.log("Error in ProtectedRoute Middleware: ", error.message);
         return res.status(500).json({ message: "Internal Server Error" });
     }
+};
+
+
+export const verifyMakeKey = (req, res, next) => {
+  const makeKey = req.headers["x-make-secret"];
+
+  if (makeKey !== process.env.MAKE_BLOG_SECRET) {
+    return res.status(403).json({ message: "Forbidden - Invalid Make Secret" });
+  }
+
+  next();
 };

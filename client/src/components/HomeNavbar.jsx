@@ -1,76 +1,53 @@
 import PropTypes from "prop-types";
-import { useEffect, useRef } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
-function Navbar( {navOpen} ) {
+function Navbar({ navOpen, setNavOpen }) {
+  const location = useLocation();
 
-    const lastActiveLink = useRef()
-    const activeBox = useRef()
-    // const [navOpenHere, setNavOpen] = useState(false);
+  // Close navbar when route changes (on mobile)
+  useEffect(() => {
+    setNavOpen(false);
+  }, [location.pathname]);
 
-    const initActiveBox = () =>{
-        activeBox.current.style.top = lastActiveLink.current.offsetTop+ 'px';
-        activeBox.current.style.left = lastActiveLink.current.offsetLeft+ 'px';
-        activeBox.current.style.width = lastActiveLink.current.offsetWidth+ 'px';
-        activeBox.current.style.height = lastActiveLink.current.offsetHeight+ 'px';
-    }
-
-    useEffect(initActiveBox, []);
-
-    window.addEventListener('resize', initActiveBox)
-    const activeCurrentLink = (e) =>{
-        lastActiveLink.current?.classList.remove('active');
-        e.target.classList.add('active')
-        lastActiveLink.current = e.target;
-        activeBox.current.style.top = e.target.offsetTop+ 'px';
-        activeBox.current.style.left = e.target.offsetLeft+ 'px';
-        activeBox.current.style.width = e.target.offsetWidth+ 'px';
-        activeBox.current.style.height = e.target.offsetHeight+ 'px';
-    
-    }
-
-    const navItems = [
-        {
-            label: 'Home',
-            link: '/',
-            className: 'nav-link active',
-            ref: lastActiveLink,
-        },
-        {
-            label: 'Register Course',
-            link: '/register-course',
-            className: 'nav-link',
-        },
-        {
-            label: 'All Courses',
-            link: '/all-courses',
-            className: 'nav-link',
-        },
-    ]
+  const navItems = [
+    { label: "Home", link: "/" },
+    { label: "Register Course", link: "/register-course" },
+    { label: "All Courses", link: "/courses" },
+    { label: "Blogs", link: "/blogs" },
+  ];
 
   return (
-    <nav className={'navbar ' + (navOpen ? 'active': '')}>
-        {
-            navItems.map(({label, link, className, ref}, key) => (
-                <Link to={link} className={className} key={key} ref={ref} onClick={activeCurrentLink}>
-                    {label}
-                </Link>
-            ))
-        }
+    <nav className={"navbar " + (navOpen ? "active" : "")}>
+      {navItems.map(({ label, link }, index) => (
+        <Link
+          to={link}
+          key={index}
+          className={`nav-link ${
+            location.pathname === link ? "active" : ""
+          }`}
+          onClick={() => setNavOpen(false)} // Close on mobile
+        >
+          {label}
+        </Link>
+      ))}
 
-        { 
-            <Link to='/login' className='nav-link block md:hidden' onClick={activeCurrentLink}>
-                Login
-            </Link>
-        }
-
-        <div className="active-box" ref={activeBox}></div>
+      <Link
+        to="/login"
+        className={`nav-link block md:hidden ${
+          location.pathname === "/login" ? "active" : ""
+        }`}
+        onClick={() => setNavOpen(false)}
+      >
+        Login
+      </Link>
     </nav>
-  )
+  );
 }
 
 Navbar.propTypes = {
-    navOpen: PropTypes.bool.isRequired
-}
+  navOpen: PropTypes.bool.isRequired,
+  setNavOpen: PropTypes.func.isRequired,
+};
 
-export default Navbar
+export default Navbar;

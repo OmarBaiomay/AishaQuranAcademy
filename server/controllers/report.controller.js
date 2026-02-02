@@ -1,7 +1,7 @@
 import Report from "../models/report.model.js";
 import Classroom from "../models/classroom.model.js";
 
-// ✅ Get all reports
+//   Get all reports
 export const getAllReports = async (req, res) => {
     try {
         const reports = await Report.find().sort({ createdAt: -1 });
@@ -12,7 +12,7 @@ export const getAllReports = async (req, res) => {
     }
 };
 
-// ✅ Get a single report
+//   Get a single report
 export const getReportById = async (req, res) => {
     try {
         const report = await Report.findById(req.params.id);
@@ -24,7 +24,7 @@ export const getReportById = async (req, res) => {
     }
 };
 
-// ✅ Create a report
+//   Create a report
 export const createReport = async (req, res) => {
     const { classId, assessment, classActivity, homework } = req.body;
 
@@ -61,7 +61,7 @@ export const createReport = async (req, res) => {
     }
 };
 
-// ✅ Update a report
+//   Update a report
 export const updateReport = async (req, res) => {
     try {
         const report = await Report.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -73,7 +73,7 @@ export const updateReport = async (req, res) => {
     }
 };
 
-// ✅ Delete a report
+//   Delete a report
 export const deleteReport = async (req, res) => {
     try {
         const report = await Report.findByIdAndDelete(req.params.id);

@@ -133,13 +133,21 @@ export const login = async (req, res) =>{
             return res.status(400).json({message: "Invalid Credentials"})
         }
 
-        generateToken(user._id, res)
+        // Use the token returned from generateToken
+        const token = generateToken(user._id, res);
 
         res.status(200).json({
             _id: user._id,
             fullName: user.fullName,
             email: user.email,
-            profilePic: user.profilePic
+            fcmTokens: user.fcmTokens,
+            role: user.role,
+            gender: user.gender,
+            availability: user.availability,
+            profilePic: user.profilePic,
+            country: user.country,
+            phone: user.phone,
+            token // Add JWT token to response
         })
 
     } catch (error) {

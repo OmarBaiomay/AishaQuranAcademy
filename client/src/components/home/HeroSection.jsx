@@ -2,11 +2,12 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { FaWhatsapp } from 'react-icons/fa'
 import { MdFreeCancellation } from "react-icons/md";
+import FreeTrialButton from '../common/FreeTrialButton';
 
 
 const HeroSection = () => {
   return (
-    <section id="home" className="pt-28 lg:pt-36">
+    <section id="home" className="pt-36 lg:pt-36">
         <div className="container lg:grid lg:grid-cols-2 items-center lg:gap-10 place-items-center">
             <div>
                 <div className="flex items-start gap-3 flex-col">
@@ -17,18 +18,16 @@ const HeroSection = () => {
                         <span className="text-zinc-600 dark:text-zinc-200" >Start Your Journy With Us Now</span>
                     </div>
 
-                    <h2 className="headline-1">
+                    <h1 className="headline-1">
                       Learn Quran and Arabic Online with Native Tutors
-                    </h2>
+                    </h1>
                     <p className='mb-2 text-md text-zinc-600 dark:text-zinc-200 italic'>
                         High-quality, affordable courses from Al-Azhar University graduates, available anytime, anywhere.
                     </p>
 
                     <div className="flex justify-center items-center gap-3">
-                        <Link to="/register-course" className="btn primary-purple-btn flex items-center justify-center gap-1 md:justify-self-end">
-                        <MdFreeCancellation /> Free Trial
-                        </Link>
-                        <a href="" className="btn primary-whatsapp-btn flex items-center justify-center gap-1 md:justify-self-end text-3xl">
+                        <FreeTrialButton className="md:justify-self-end" />
+                        <a href="https://wa.me/201227307646?text=Hello%20I%20Want%20To%20Know%20More%20About%20The%20Academy%20Courses%20and%20Offers" className="btn primary-whatsapp-btn flex items-center justify-center gap-1 md:justify-self-end text-3xl">
                             <FaWhatsapp /> WhatsApp Us
                         </a>
                     </div>

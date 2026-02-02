@@ -32,6 +32,7 @@ const classroomSchema = new mongoose.Schema({
     calssDurationInMinutes: { type: String, enum: [30, 45, 60, 90, 120], default: 30},
     pricePerclassPerMonth: { type: Number, default: 8 },
     totalPricePerMonth: { type: Number, default: 0 },
+    credits: { type: Number, default: 0 },
     classes: [classSchema],
     notes: { type: String, default: "" },
 }, { timestamps: true });

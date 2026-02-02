@@ -15,7 +15,7 @@ import {
     updateClassroomStatus,
     deleteClassFromClassroom,
     removeStudentFromClassroom,
-
+    getStudentCalendarClasses,
 } from "../controllers/calssroom.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
 
@@ -38,9 +38,12 @@ router.get('/classroom/:classroomId/classes', protectRoute, getAllClasses); // G
 router.post('/classroom/:classroomId/generate-monthly-classes', protectRoute, generateMonthlyClasses);
 router.put('/classroom/:classroomId/class/:classId/reschedule', protectRoute, rescheduleClass);
 
-router.get('/classes/upcoming/:userId', protectRoute, getUpcomingClass); // UpComing Calss
+router.get('/classes/upcoming/:userId', getUpcomingClass); // UpComing Calss
 
 router.put('/classroom/:id/status', protectRoute, updateClassroomStatus);
 router.delete('/classroom/:classroomId/classes/:classId', protectRoute, deleteClassFromClassroom); // Delete a class
+
+
+router.get('/student/:id/classes', getStudentCalendarClasses);
 
 export default router;

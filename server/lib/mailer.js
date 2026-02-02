@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 
 export const sendResetEmail = async (to, resetLink) => {
   const transporter = nodemailer.createTransport({
-    host: "smtp.hostinger.com",  // ✅ Hostinger SMTP server
+    host: "smtp.hostinger.com",  //   Hostinger SMTP server
     port: 465,                   // Use 465 for secure SSL, or 587 for TLS
     secure: true,                // true for port 465, false for 587
     auth: {

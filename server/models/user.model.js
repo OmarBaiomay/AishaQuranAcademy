@@ -5,13 +5,22 @@ const fcmTokenSchema = new mongoose.Schema({
   token: { type: String, required: true },
 });
 
+const availabilitySchema = new mongoose.Schema({
+  day: { type: String, required: true },
+  hour: { type: String, required: true },
+  isBooked: { type: Boolean, default: false },
+  period: { type: String, enum:["AM", "PM"], required: true },
+  classroomId: { type: mongoose.Schema.Types.ObjectId, ref: "Classroom" },
+}, { _id: true });
+
+
 const userSchema = new mongoose.Schema(
   {
     email: { type: String, required: true, unique: true },
     fullName: { type: String, required: true },
     gender: { type: String, required: true, enum: ["Male", "Female"] },
     age: { type: Number, min: 0, required: true, default: 0 },
-    password: { type: String, required: true, minlength: 6 },
+    password: { type: String, required: false, minlength: 6 },
     profilePic: { type: String, default: "" },
     role: { type: String, required: true, enum: ["Student", "Teacher", "Supervisor", "Administrator"], default: "Student" },
     phone: {
@@ -20,7 +29,7 @@ const userSchema = new mongoose.Schema(
     },
     country: { type: String, required: true },
     timeZone: { type: String, required: true, default: "UTC" },
-    availability: { type: Array, default: [] },
+    availability: { type: [availabilitySchema], default: [] },
     fcmTokens: [fcmTokenSchema],
     resetPasswordToken: { type: String, default: null },
     resetPasswordExpires: { type: Date, default: null },

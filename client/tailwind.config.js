@@ -46,6 +46,15 @@ export default {
         'hero-pattern':
           "url('https://demos.wrappixel.com/premium-admin-templates/react/flexy-react/main/static/media/welcome-bg-2x-svg.25338f53.svg')",
       },
+      keyframes: {
+        'grow-pulse': {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.08)' },
+        },
+      },
+      animation: {
+        'grow-pulse': 'grow-pulse 1.5s ease-in-out infinite',
+      },
     },
   },
   plugins: [],

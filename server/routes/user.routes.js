@@ -15,8 +15,11 @@ import {
     requestPasswordReset,
     resetPasswordWithToken,
     updateUserPassword,
+    addUserAvailabilityBulk,
 } from "../controllers/user.controller.js"; // Import the new controller functions
 import { protectRoute } from "../middleware/auth.middleware.js";
+import getCloudinaryUploader from "../middleware/cloudinaryMulter.js"; // Import the multer middleware for file uploads
+import User from "../models/user.model.js";
 
 const router = express.Router();
 
@@ -25,7 +28,10 @@ const router = express.Router();
 */
 
 // Create a new user
-router.post('/user', protectRoute, createUser);
+// This route is used to create a new user and upload their profile picture
+// It uses the multer middleware to handle file uploads and the protectRoute middleware to ensure the user is authenticated
+router.post('/user', protectRoute, getCloudinaryUploader("users").single("profilePic"), createUser);
+
 
 // Get all users or filter by role
 router.get('/users', protectRoute, getUsers); 
@@ -34,7 +40,7 @@ router.get('/users', protectRoute, getUsers);
 router.get('/user/:id', protectRoute, getUserById); 
 
 // Update a user by ID
-router.put('/user/:id', protectRoute, updateUser); 
+router.put('/user/:id', protectRoute,  getCloudinaryUploader("users").single("profilePic"), updateUser);
 
 // Delete a user by ID
 router.delete('/user/:id', protectRoute, deleteUser); 
@@ -78,6 +84,9 @@ router.get('/user/:userId/availability', protectRoute, getUserAvailability);
 
 // Delete a specific availability slot
 router.delete('/user/:userId/availability/:availabilityId', protectRoute, deleteUserAvailability);
+
+router.post('/user/:userId/availability/bulk', protectRoute, addUserAvailabilityBulk);
+
 
 /* 
     FCM Token Routes

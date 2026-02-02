@@ -10,19 +10,19 @@ import { protectRoute } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-// ✅ Get all reports
+//   Get all reports
 router.get("/reports", protectRoute, getAllReports);
 
-// ✅ Get a single report
+//   Get a single report
 router.get("/reports/:id", protectRoute, getReportById);
 
-// ✅ Create a new report
+//   Create a new report
 router.post("/reports", protectRoute, createReport);
 
-// ✅ Update a report
+//   Update a report
 router.put("/reports/:id", protectRoute, updateReport);
 
-// ✅ Delete a report
+//   Delete a report
 router.delete("/reports/:id", protectRoute, deleteReport);
 
 export default router;
