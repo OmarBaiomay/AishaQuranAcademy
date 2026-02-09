@@ -46,13 +46,25 @@ const BlogsPage = () => {
 
   const currentUrl = window.location.href;
 
+  const pageSeoTitle = (blogs[0] && blogs[0].seoTitle) || "Blog – Aisha Quran Academy";
+  const pageSeoDescription = (blogs[0] && (blogs[0].seoDescription || blogs[0].excerpt)) || "Explore articles about Quran, Arabic, and Islamic learning.";
+  // collect keywords from blogs (comma-separated strings) and join into one string
+  const pageSeoKeywords = (() => {
+    const kws = blogs
+      .map((b) => b.seoKeywords)
+      .filter(Boolean)
+      .map((s) => s.split(",").map((k) => k.trim()).filter(Boolean).join(", "));
+    return kws.length ? Array.from(new Set(kws.join(", ").split(",").map(k => k.trim()).filter(Boolean))).join(", ") : null;
+  })();
+
   return (
     <section className="px-4 md:px-8 pt-36 pb-16 max-w-6xl mx-auto">
       <Helmet>
-        <title>Blog – Aisha Quran Academy</title>
-        <meta name="description" content="Explore articles about Quran, Arabic, and Islamic learning." />
-        <meta property="og:title" content="Blog – Aisha Quran Academy" />
-        <meta property="og:description" content="Explore articles about Quran, Arabic, and Islamic learning." />
+        <title>{pageSeoTitle}</title>
+        <meta name="description" content={pageSeoDescription} />
+        {pageSeoKeywords && <meta name="keywords" content={pageSeoKeywords} />}
+        <meta property="og:title" content={pageSeoTitle} />
+        <meta property="og:description" content={pageSeoDescription} />
         <meta property="og:url" content={currentUrl} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />

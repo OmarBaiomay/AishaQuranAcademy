@@ -13,7 +13,7 @@ const generateExcerpt = (html = "") => {
 // ✅ Create Blog
 export const createBlog = async (req, res) => {
   try {
-    const { title, content, image, categories, tags, published = false } = req.body;
+    const { title, content, image, categories, tags, published = false, seoTitle, seoDescription, seoKeywords } = req.body;
 
     const author = req.user?._id || "678bc77af835b76c1db3dac2";
 
@@ -38,7 +38,11 @@ export const createBlog = async (req, res) => {
       tags,
       published,
       author,
-      readingTime: getReadingTime(sanitizedContent)
+      readingTime: getReadingTime(sanitizedContent),
+      seoTitle: seoTitle || undefined,
+      seoDescription: seoDescription || undefined,
+      // Expecting string like "kw1, kw2"
+      seoKeywords: typeof seoKeywords === "string" ? seoKeywords : undefined,
     });
 
     res.status(201).json({ message: "Blog post created successfully!", blog });
@@ -95,7 +99,7 @@ export const getBlogById = async (req, res) => {
 export const updateBlog = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, content, image, categories, tags, published } = req.body;
+    const { title, content, image, categories, tags, published, seoTitle, seoDescription, seoKeywords } = req.body;
 
     const sanitizedContent = sanitizeHtml(content, {
       allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "figure", "figcaption", "iframe"]),
@@ -120,7 +124,10 @@ export const updateBlog = async (req, res) => {
         tags,
         published,
         readingTime: getReadingTime(sanitizedContent),
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
+        seoTitle: seoTitle || undefined,
+        seoDescription: seoDescription || undefined,
+        seoKeywords: typeof seoKeywords === "string" ? seoKeywords : undefined,
       },
       { new: true }
     );

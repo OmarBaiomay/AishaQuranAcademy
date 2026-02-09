@@ -34,6 +34,9 @@ import models from "../models/classroom.model.js";
 import { sendNotification } from "../services/NotificationService.js";
 import Notification from "../models/notification.model.js";
 
+import registrationRoutes from "../routes/registration.routes.js";
+
+
 const { Classroom } = models;
 
 // Setup __dirname for ES Modules
@@ -540,6 +543,7 @@ app.use("/api/invoices", invoiceRoutes);
 app.use("/api/payrolls", payrollRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api", chatRoutes);
+app.use("/api", registrationRoutes);
 
 // ==================== HEALTH CHECK ====================
 app.get("/health", (req, res) => {
@@ -621,6 +625,9 @@ app.use((req, res) => {
 });
 
 // ==================== START SERVER ====================
+
+await connectDB();
+
 httpServer.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`🔌 Socket.io server ready for connections`);
@@ -631,7 +638,6 @@ httpServer.listen(PORT, () => {
   console.log(
     `📈 Unread counts API available at http://localhost:${PORT}/api/chat/unread-counts/:userId`
   );
-  connectDB();
 });
 
 // ==================== GRACEFUL SHUTDOWN ====================

@@ -13,7 +13,7 @@ function Navbar({ navOpen, setNavOpen }) {
   const navItems = [
     { label: "Home", link: "/" },
     { label: "Register Course", link: "/register-course" },
-    { label: "All Courses", link: "/courses" },
+    { label: "All Courses", link: "/coursess" },
     { label: "Blogs", link: "/blogs" },
   ];
 

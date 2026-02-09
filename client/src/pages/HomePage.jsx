@@ -6,7 +6,7 @@ import WhyUsSection from '../components/home/WhyUsSection'
 import Pricing from '../components/home/PricingPlansSection'
 import TestimonialsSlider from '../components/home/TestimonialsSliderSection'
 import Accordion from '../components/home/AccordionSection'
-import NajdFormEmbed from '../components/common/NajdFormEmbed'
+import RegistrationForm from '../components/home/RegistrationFormSection'
 
 const HomePage = () => {
   return (
@@ -54,7 +54,7 @@ const HomePage = () => {
             Register now for a free trial and experience our quality Quran, Arabic, and Islamic studies courses.
           </p>
 
-          <NajdFormEmbed />
+          <RegistrationForm />
         </section>
       </main>
     </>

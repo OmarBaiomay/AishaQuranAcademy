@@ -21,20 +21,11 @@ import TermsAndPolicyPage from "./pages/TermsAndPolicyPage.jsx";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.jsx";
 import BlogDetailsPage from "./pages/BlogDetailsPage.jsx";
 import BlogsPage from "./pages/BlogsPage.jsx";
+import WhatsAppFloating from "./components/WhatsAppFloating.jsx";
 
 const App = () => {
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://widgets.leadconnectorhq.com/loader.js";
-    script.setAttribute("data-resources-url", "https://widgets.leadconnectorhq.com/chat-widget/loader.js");
-    script.setAttribute("data-widget-id", "66941593748b6842e5ace39e");
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
   }, []);
 
   return (
@@ -54,7 +45,7 @@ const App = () => {
               <Route index element={<BlogsPage />} />
               <Route path=":slug" element={<BlogDetailsPage />} />
             </Route>
-            <Route path="/courses" element={<CoursesPage />} />
+            <Route path="/coursess" element={<CoursesPage />} />
             <Route path="/thanks-free-trial-reg" element={<ThanksFreeTrialPage />} />
             <Route path="/terms" element={<TermsAndPolicyPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
@@ -67,6 +58,8 @@ const App = () => {
           <Footer />
         </div>
       </div>
+
+      <WhatsAppFloating />
     </>
   );
 };

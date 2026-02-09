@@ -75,7 +75,7 @@ function Sidebar() {
               <MdRoom className='text-[20px]' />
               <span className='capitalize'>Classrooms</span>
             </NavLink>
-            <NavLink to='/dashboard/courses' className={({ isActive }) => isActive ? activeLink : inactiveLink}>
+            <NavLink to='/dashboard/coursess' className={({ isActive }) => isActive ? activeLink : inactiveLink}>
               <MdOutlineClass className='text-[20px]' />
               <span className='capitalize'>Courses</span>
             </NavLink>

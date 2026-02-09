@@ -1,32 +1,12 @@
-import React, { useEffect } from 'react'
-import { Helmet } from 'react-helmet-async'
+import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
+import RegistrationForm from '../components/home/RegistrationFormSection';
 import { loadWidgetSafely } from '../utils/loadWidgetSafely';
 
 const RegisterCoursePage = () => {
 
   useEffect(() => {
-    const leadScript = loadWidgetSafely({
-      src: "https://widgets.leadconnectorhq.com/loader.js",
-      attributes: {
-        "data-resources-url": "https://widgets.leadconnectorhq.com/chat-widget/loader.js",
-        "data-widget-id": "66941593748b6842e5ace39e"
-      },
-    });
-
-    const najdScript = loadWidgetSafely({
-      src: "https://link.najddigital.com/js/form_embed.js"
-    });
-
-    return () => {
-      if (leadScript && document.body.contains(leadScript)) {
-        document.body.removeChild(leadScript);
-      }
-      if (najdScript && document.body.contains(najdScript)) {
-        document.body.removeChild(najdScript);
-      }
-    };
   }, []);
-
 
   return (
     <>
@@ -55,8 +35,7 @@ const RegisterCoursePage = () => {
         <meta name="twitter:site" content="@AishaAcademy" />
       </Helmet>
 
-
-      {/* ✅ Hero Section */}
+      {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 text-center bg-gradient-to-b from-purple-50 to-white">
         <h1 className="text-4xl md:text-5xl font-bold text-zinc-800 mb-4">
           Register for Your Free Trial
@@ -66,31 +45,10 @@ const RegisterCoursePage = () => {
         </p>
       </section>
 
-      {/* ✅ Registration Section */}
-      <section id="reg" className="px-6 pb-24">
-        <div className="max-w-4xl mx-auto">
-          <iframe
-            src="https://link.najddigital.com/widget/form/S7HaN54WBMf7M68rnXb4"
-            style={{
-              width: '100%',
-              height: '847px',
-              border: 'none',
-              borderRadius: '8px',
-            }}
-            id="inline-S7HaN54WBMf7M68rnXb4"
-            data-layout='{"id":"INLINE"}'
-            data-trigger-type="alwaysShow"
-            data-trigger-value=""
-            data-activation-type="alwaysActivated"
-            data-activation-value=""
-            data-deactivation-type="neverDeactivate"
-            data-deactivation-value=""
-            data-form-name="Aisha Quran Academy Free Trial Reg"
-            data-height="847"
-            data-layout-iframe-id="inline-S7HaN54WBMf7M68rnXb4"
-            data-form-id="S7HaN54WBMf7M68rnXb4"
-            title="Aisha Quran Academy Free Trial Reg"
-          ></iframe>
+      {/* Registration Form Section */}
+      <section id="reg" className="px-6 pb-24 bg-gray-50">
+        <div className="max-w-2xl mx-auto">
+          <RegistrationForm />
         </div>
       </section>
     </>

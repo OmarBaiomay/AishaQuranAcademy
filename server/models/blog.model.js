@@ -1,31 +1,64 @@
 import mongoose from "mongoose";
-import slugify from "slugify"; // optional: if you want to auto-generate slug server-side
+import slugify from "slugify";
 
 const blogSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  slug: { type: String, unique: true }, // ✅ SEO slug
-  excerpt: { type: String },            // ✅ short preview
+
+  // 🔹 SEO
+  seoTitle: {
+    type: String,
+  },
+  seoDescription: {
+    type: String,
+  },
+  // Stored as a comma-separated string (e.g. "keyword1, keyword2")
+  seoKeywords: { type: String },
+
+  slug: { type: String, unique: true }, // ✅ SEO-friendly URL
+  excerpt: { type: String },            // ✅ fallback for meta description
   content: { type: String, required: true },
-  author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+
   categories: [{ type: mongoose.Schema.Types.ObjectId, ref: "BlogCategory" }],
   tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "BlogTag" }],
+
   image: { type: String, default: "" },
-  isFeatured: { type: Boolean, default: false },   // ✅ show in hero/card
-  published: { type: Boolean, default: false },     // ✅ draft vs public
-  views: { type: Number, default: 0 },              // ✅ tracking
-  readingTime: { type: String },                    // ✅ display like “5 min read”
+
+  isFeatured: { type: Boolean, default: false },
+  published: { type: Boolean, default: false },
+
+  views: { type: Number, default: 0 },
+  readingTime: { type: String },
+
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date },
 });
 
-// ✅ Optional: Auto-generate slug if not set
+
 blogSchema.pre("validate", function (next) {
+  // Slug
   if (!this.slug && this.title) {
     this.slug = slugify(this.title, { lower: true, strict: true });
   }
+
+  // SEO fallbacks
+  if (!this.seoTitle && this.title) {
+    this.seoTitle = this.title;
+  }
+
+  if (!this.seoDescription && this.excerpt) {
+    this.seoDescription = this.excerpt.substring(0, 160);
+  }
+
   next();
 });
 
-const Blog = mongoose.model("Blog", blogSchema);
 
+const Blog = mongoose.model("Blog", blogSchema);
 export default Blog;
+

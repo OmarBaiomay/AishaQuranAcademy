@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from "react";
 import { Helmet } from "react-helmet";
+import RegistrationForm from '../components/home/RegistrationFormSection'
 
 const CoursesPage = () => {
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -276,34 +277,7 @@ const CoursesPage = () => {
       </div>
 
       {/* Registration Section */}
-      <div id="reg" className="mt-16">
-          <h2 className="text-2xl font-bold text-zinc-700 mb-4 text-center">Ready to Start Learning?</h2>
-          <p className="text-zinc-600 text-center mb-6">
-            Join us today and take the first step towards mastering the Quran and Arabic language.
-          </p>
-            <iframe
-              src="https://link.najddigital.com/widget/form/S7HaN54WBMf7M68rnXb4"
-              style={{
-                width: "100%",
-                height: "847px",
-                border: "none",
-                borderRadius: "3px",
-              }}
-              id="inline-S7HaN54WBMf7M68rnXb4"
-              data-layout='{"id":"INLINE"}'
-              data-trigger-type="alwaysShow"
-              data-trigger-value=""
-              data-activation-type="alwaysActivated"
-              data-activation-value=""
-              data-deactivation-type="neverDeactivate"
-              data-deactivation-value=""
-              data-form-name="Aisha Quran Academy Free Trial Reg"
-              data-height="847"
-              data-layout-iframe-id="inline-S7HaN54WBMf7M68rnXb4"
-              data-form-id="S7HaN54WBMf7M68rnXb4"
-              title="Aisha Quran Academy Free Trial Reg"
-            ></iframe>
-        </div>
+      <RegistrationForm />
 
       {/* Modal for Course Details */}
       {selectedCourse && (

@@ -16,7 +16,7 @@ const sitemap = [
     },
     {
       label: 'All Courses',
-      href: '/courses'
+      href: '/coursess'
     },
     {
       label: 'Blogs',

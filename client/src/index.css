@@ -239,3 +239,20 @@ ul li {
     font-size: 1rem;
   }
 }
+
+/* Custom styles for react-phone-input-2 */
+.react-tel-input .form-control {
+  width: 100% !important;
+  height: 42px !important;
+  font-size: 14px !important;
+}
+
+/* Custom styles for react-datepicker */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  width: 100%;
+}
+

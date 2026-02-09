@@ -28,7 +28,7 @@ const ThanksFreeTrialPage = () => {
               Back to Home
             </Link>
             <Link
-              to="/courses"
+              to="/coursess"
               className="bg-zinc-100 text-purple-700 px-6 py-3 rounded-lg hover:bg-zinc-200 transition"
             >
               Browse Courses
