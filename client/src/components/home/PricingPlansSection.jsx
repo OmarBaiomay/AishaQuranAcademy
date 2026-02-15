@@ -7,14 +7,14 @@ const Pricing = () => {
         <div className="-mx-4 flex flex-wrap">
           <div className="w-full px-4">
             <div className="mx-auto mb-[60px] max-w-[510px] text-center">
-              <span className="mb-2 block text-lg font-semibold text-primary">
-                Pricing Table
+              <span className="mb-2 block text-lg font-semibold text-purple-600">
+                Pricing Plans
               </span>
               <h2 className="mb-3 text-3xl font-bold leading-[1.208] text-dark dark:text-white sm:text-4xl md:text-[40px]">
-                Our Pricing Plan
+                Affordable Online Quran Classes for Everyone
               </h2>
               <p className="text-base text-body-color dark:text-dark-6">
-                Choose the plan that suits your learning pace and budget. All plans include a free trial.
+                Choose the <strong>online Quran learning plan</strong> that suits your schedule and learning pace. All plans include a free trial lesson.
               </p>
             </div>
           </div>
@@ -23,43 +23,46 @@ const Pricing = () => {
         <div className="-mx-4 flex flex-wrap justify-center">
           <div className="-mx-4 flex flex-wrap">
             <PricingCard
-              type="Standard"
+              type="Standard Plan"
               price="$64"
               subscription="month"
-              description="2 hours/week - Ideal for consistent progress."
+              description="2 hours/week – Ideal for consistent progress"
               buttonText="Choose Standard"
               link="https://wa.me/201227307646?text=Hello!%20I'm%20interested%20in%20the%20Standard%20Plan%20($64/month)%20with%202%20hours%20per%20week.%20I'd%20like%20to%20know%20more%20and%20try%20the%20Free%20Trial%20Lesson."
             >
               <List>Monthly Reports</List>
-              <List>Rewards</List>
+              <List>Rewards & Certificates</List>
               <List>Free Trial Lesson</List>
+              <List>Native Arabic Tutor</List>
             </PricingCard>
 
             <PricingCard
-              type="Regular"
+              type="Regular Plan"
               price="$96"
               subscription="month"
-              description="3 hours/week - A balanced and flexible option."
+              description="3 hours/week – Balanced and flexible learning"
               buttonText="Choose Regular"
               active={true}
               link="https://wa.me/201227307646?text=Hello!%20I'm%20interested%20in%20the%20Regular%20Plan%20($96/month)%20with%203%20hours%20per%20week.%20I'd%20like%20to%20know%20more%20and%20try%20the%20Free%20Trial%20Lesson."
             >
               <List>Monthly Reports</List>
-              <List>Rewards</List>
+              <List>Rewards & Certificates</List>
               <List>Free Trial Lesson</List>
+              <List>Native Arabic Tutor</List>
             </PricingCard>
 
             <PricingCard
-              type="Condensed"
+              type="Condensed Plan"
               price="$128"
               subscription="month"
-              description="4 hours/week - Best for fast-track learners."
+              description="4 hours/week – Fast-track Quran learning"
               buttonText="Choose Condensed"
               link="https://wa.me/201227307646?text=Hello!%20I'm%20interested%20in%20the%20Condensed%20Plan%20($128/month)%20with%204%20hours%20per%20week.%20I'd%20like%20to%20know%20more%20and%20try%20the%20Free%20Trial%20Lesson."
             >
               <List>Monthly Reports</List>
-              <List>Rewards</List>
+              <List>Rewards & Certificates</List>
               <List>Free Trial Lesson</List>
+              <List>Native Arabic Tutor</List>
             </PricingCard>
           </div>
         </div>
@@ -81,10 +84,9 @@ const PricingCard = ({
   link
 }) => {
   return (
-    <>
       <div className="w-full px-4 md:w-1/2 lg:w-1/3">
         <div className="relative z-10 mb-10 overflow-hidden rounded-[10px] border-1 bg-white px-8 py-10 shadow-pricing dark:bg-zinc-900/50 dark:border sm:p-12 lg:px-6 lg:py-10 xl:p-[50px]">
-          <span className="mb-3 block text-lg font-semibold text-primary">
+          <span className="mb-3 block text-lg font-semibold text-purple-600">
             {type}
           </span>
           <h2 className="mb-5 text-[42px] font-bold text-dark dark:text-white">
@@ -101,7 +103,7 @@ const PricingCard = ({
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Choose Plan"
+            aria-label={`Choose ${type}`}
             className={` ${
               active
                 ? "btn primary-purple-btn block w-full rounded-md border border-primary bg-primary p-3 text-center text-base font-medium text-white transition hover:bg-opacity-90"
@@ -160,12 +162,13 @@ const PricingCard = ({
           </div>
         </div>
       </div>
-    </>
   );
 };
 
 const List = ({ children }) => {
   return (
-    <p className="text-base text-body-color dark:text-dark-6">{children}</p>
+    <p className="text-base text-body-color dark:text-dark-6 flex items-center gap-2">
+      <span className="text-green-500">✓</span> {children}
+    </p>
   );
 };

@@ -69,7 +69,7 @@ const TestimonialsSlider = () => {
     <section className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-screen-xl">
         <h2 className="mb-3 text-3xl text-center font-bold leading-[1.208] text-dark dark:text-white sm:text-4xl md:text-[40px]">
-          Testimonials
+          What Our Students Say About Our Online Quran Classes
         </h2>
 
         <div className="mt-8">

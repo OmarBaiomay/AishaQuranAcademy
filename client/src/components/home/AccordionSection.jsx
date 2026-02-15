@@ -3,48 +3,48 @@ import React, { useState } from "react";
 const Accordion = () => {
   const faqs = [
     {
-      header: "What is Aisha Quran Academy?",
-      text: "Aisha Quran Academy is an online Quran Academy based in Egypt that provides a wide range of courses customized for kids and adults, including Quran, Arabic, and Islamic studies."
+      header: "Is it possible to learn Quran online effectively?",
+      text: "Yes, live online Quran classes with qualified teachers are highly effective and widely trusted worldwide. Our one-on-one approach ensures personalized attention and rapid progress."
     },
     {
-      header: "Who teaches the courses at Aisha Quran Academy?",
-      text: "All of our courses are taught by expert native Arabic-qualified teachers. They have years of experience and are highly trained to provide the best education for you and your kids."
+      header: "Who teaches the online Quran classes?",
+      text: "All classes are taught by native Arabic tutors, most of whom are graduates of Al-Azhar University. They have years of experience teaching Quran and Arabic to non-native speakers."
     },
     {
-      header: "How are the courses customized to meet individual needs?",
-      text: "Our courses are designed to meet the specific needs and learning styles of each individual student. We offer personalized attention and feedback to help our students succeed."
+      header: "Are the online Quran classes suitable for kids?",
+      text: "Absolutely. We offer specialized online Quran classes for kids using age-appropriate teaching methods like Noor Al-Bayan, making learning fun and engaging."
     },
     {
-      header: "What courses are offered at Aisha Quran Academy?",
-      text: "We offer courses in Quran, Arabic, and Islamic studies. Our courses cover a wide range of topics and are designed to provide a comprehensive education."
-    },
-    {
-      header: "How are the courses delivered?",
-      text: "Our courses are delivered online, which allows our students to learn at their own pace and from the comfort of their own home."
-    },
-    {
-      header: "What is the cost of the courses at Aisha Quran Academy?",
-      text: "We offer affordable prices for our courses, and no matter what is your budget limit, we will find a suitable plan for you. Please visit our website or contact us for more information."
-    },
-    {
-      header: "How can I track my progress?",
-      text: "We offer the ability to track your progress and receive feedback from your teachers. You can monitor your progress and see where you need to improve."
-    },
-    {
-      header: "Are the courses suitable for beginners?",
-      text: "Yes, our courses are suitable for beginners. We offer personalized attention and feedback to help our students succeed."
-    },
-    {
-      header: "How can I enroll in a course?",
-      text: "You can enroll in a course by visiting our website or contacting us. We will guide you through the enrollment process."
+      header: "Do you offer one-on-one Quran classes online?",
+      text: "Yes, all our online Quran lessons are conducted one-on-one for maximum focus and progress. This ensures personalized attention from your dedicated Quran teacher."
     },
     {
       header: "Is there a free trial available?",
-      text: "Yes, we offer a free trial for all our courses. Please visit our website or contact us for more information."
+      text: "Yes, you can register for a free trial class before enrolling. This allows you to experience our teaching methods and meet your tutor."
     },
     {
-      header: "What if I have additional questions?",
-      text: "If you have additional questions, please feel free to contact us. We are happy to answer any questions you may have and provide more information about our courses."
+      header: "What courses are offered at Aisha Quran Academy?",
+      text: "We offer Quran recitation, Tajweed, Quran memorization (Hifz), Arabic language, and Islamic studies courses for both kids and adults."
+    },
+    {
+      header: "How are the online Quran classes delivered?",
+      text: "Our classes are delivered live online through video conferencing, allowing real-time interaction with your tutor from anywhere in the world."
+    },
+    {
+      header: "What is the cost of online Quran classes?",
+      text: "We offer affordable pricing starting from $8 per hour. We have flexible plans to suit different schedules and budgets, with options for 2, 3, or 4 hours per week."
+    },
+    {
+      header: "How can I track my progress in online Quran learning?",
+      text: "We provide monthly progress reports and continuous feedback from your teacher. You can monitor your Quran learning journey and see where you need to improve."
+    },
+    {
+      header: "Are the courses suitable for beginners?",
+      text: "Yes, our online Quran courses are suitable for complete beginners. We offer personalized attention and start from the basics, progressing at your own pace."
+    },
+    {
+      header: "How can I enroll in online Quran classes?",
+      text: "You can enroll by visiting our registration page or contacting us via WhatsApp. We will guide you through the enrollment process and schedule your free trial."
     }
   ];
 
@@ -58,14 +58,14 @@ const Accordion = () => {
         <div className="-mx-4 flex flex-wrap">
           <div className="w-full px-4">
             <div className="mx-auto mb-[60px] text-center lg:mb-20">
-              <span className="mb-2 block text-lg font-semibold text-primary">
+              <span className="mb-2 block text-lg font-semibold text-purple-600">
                 FAQ
               </span>
               <h2 className="mb-4 text-3xl font-bold text-dark dark:text-zinc-100 sm:text-[40px]/[48px]">
-                Any Questions? Look Here
+                Frequently Asked Questions About Learning Quran Online
               </h2>
               <p className="text-base text-body-color dark:text-dark-6">
-                Find the answers to the most common questions about Aisha Quran Academy.
+                Find answers to common questions about our online Quran classes and learning programs.
               </p>
             </div>
           </div>
@@ -124,7 +124,6 @@ const AccordionItem = ({ header, text }) => {
   const [active, setActive] = useState(false);
 
   const handleToggle = () => {
-    event.preventDefault();
     setActive(!active);
   };
 
@@ -147,13 +146,13 @@ const AccordionItem = ({ header, text }) => {
           </svg>
         </div>
         <div className="w-full">
-          <h4 className="mt-1 text-md font-semibold text-dark dark:text-zinc-800">
+          <h4 className="mt-1 text-md font-semibold text-dark dark:text-zinc-200">
             {header}
           </h4>
         </div>
       </button>
       <div className={`pl-[62px] duration-200 ease-in-out ${active ? "block" : "hidden"}`}>
-        <p className="py-3 text-base leading-relaxed text-body-color dark:text-zinc-800">
+        <p className="py-3 text-base leading-relaxed text-body-color dark:text-zinc-300">
           {text}
         </p>
       </div>

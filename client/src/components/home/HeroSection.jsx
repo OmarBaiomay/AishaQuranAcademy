@@ -36,7 +36,15 @@ const HeroSection = () => {
 
             <div className="">
                 <figure className="shadow-xl w-full max-w-[480px] ml-auto bg-gradient-to-t  from-purple-500 via-40% via-purple-600 to-85% rounded-full overflow-hidden">
-                    <img className="w-full" src="/images/hero.png" width={656} height={800} alt="Omar Elbayoumi" />
+                   <img 
+                        className="w-full" 
+                        src="/images/hero.png" 
+                        width={656} 
+                        height={800} 
+                        alt="Learn Quran Online with Native Arabic Tutors - Student and Teacher" 
+                        title="Online Quran Learning"
+                        loading="eager" // Hero images should load immediately
+                        />
                 </figure>
             </div>
         </div>

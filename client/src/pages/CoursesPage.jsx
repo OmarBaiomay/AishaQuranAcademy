@@ -276,8 +276,24 @@ const CoursesPage = () => {
         </div>
       </div>
 
-      {/* Registration Section */}
-      <RegistrationForm />
+      <section id="reg" className="pt-20 px-4 pb-28 dark:from-zinc-900 dark:to-zinc-800">
+          <div className="container max-w-4xl mx-auto text-center mb-12">
+            <span className="mb-2 block text-lg font-semibold text-purple-600">
+              Get Started Today
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-zinc-800 dark:text-zinc-100 mb-6">
+              Start Learning Quran Online Today
+            </h2>
+            <p className="text-lg text-zinc-600 dark:text-zinc-300 mb-4">
+              Register now for a <strong>free trial</strong> and experience high-quality <strong>online Quran classes</strong> with professional teachers who care about your progress.
+            </p>
+            <p className="text-xl font-semibold text-purple-600">
+              🎯 Start Your Free Trial Now
+            </p>
+          </div>
+
+          <RegistrationForm />
+        </section>
 
       {/* Modal for Course Details */}
       {selectedCourse && (

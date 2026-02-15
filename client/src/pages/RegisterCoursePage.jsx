@@ -35,22 +35,25 @@ const RegisterCoursePage = () => {
         <meta name="twitter:site" content="@AishaAcademy" />
       </Helmet>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 text-center bg-gradient-to-b from-purple-50 to-white">
-        <h1 className="text-4xl md:text-5xl font-bold text-zinc-800 mb-4">
-          Register for Your Free Trial
-        </h1>
-        <p className="text-lg text-zinc-600 max-w-2xl mx-auto">
-          Start your journey in learning Quran, Arabic, and Islamic Studies. Enroll now and experience our expert teaching approach.
-        </p>
-      </section>
+      <section id="reg" className="pt-32 px-4 pb-28 dark:from-zinc-900 dark:to-zinc-800">
+          <div className="container max-w-4xl mx-auto text-center mb-12">
+            <span className="mb-2 block text-lg font-semibold text-purple-600">
+              Get Started Today
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-zinc-800 dark:text-zinc-100 mb-6">
+              Start Learning Quran Online Today
+            </h2>
+            <p className="text-lg text-zinc-600 dark:text-zinc-300 mb-4">
+              Register now for a <strong>free trial</strong> and experience high-quality <strong>online Quran classes</strong> with professional teachers who care about your progress.
+            </p>
+            <p className="text-xl font-semibold text-purple-600">
+              🎯 Start Your Free Trial Now
+            </p>
+          </div>
 
-      {/* Registration Form Section */}
-      <section id="reg" className="px-6 pb-24 bg-gray-50">
-        <div className="max-w-2xl mx-auto">
           <RegistrationForm />
-        </div>
-      </section>
+        </section>
+
     </>
   );
 };
