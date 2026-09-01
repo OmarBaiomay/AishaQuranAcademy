@@ -52,7 +52,7 @@ machine (the parent folder containing all three repos), not the VPS:
 mkdir -p /opt/aisha   # one-time, on the VPS
 for d in AishaQuranAcademyBE AishaQuranAcademyDB AishaQuranAcademyFE deploy; do
   rsync -az --delete -e "ssh -i ~/.ssh/id_aisha_vps" \
-    --exclude node_modules --exclude dist --exclude .env \
+    --exclude node_modules --exclude dist --exclude .env --exclude .git \
     "$d/" "root@72.61.17.109:/opt/aisha/$d/"
 done
 ```
@@ -122,13 +122,16 @@ ln -s /etc/nginx/sites-available/app.aishaquran.com /etc/nginx/sites-enabled/app
 nginx -t && systemctl reload nginx
 ```
 
-At this point, with `/etc/hosts` or `curl --resolve` pointing the domain at
-the VPS IP, the whole path (nginx → container → Postgres) works over
-plain HTTP even before DNS or TLS are in place:
+At this point, with `curl --resolve` pointing the domain at the VPS IP,
+the whole path (nginx → container → Postgres) works over plain HTTP even
+before DNS or TLS are in place. Note `/health` itself is mounted
+unprefixed on the backend (not under `/api`), so it's only checked
+directly against the container port (step 5) — through the domain, use
+any real `/api/*` route instead:
 
 ```bash
-curl -s --resolve aishaquran.com:80:72.61.17.109 http://aishaquran.com/api/health
-curl -s --resolve app.aishaquran.com:80:72.61.17.109 http://app.aishaquran.com/api/health
+curl -s --resolve aishaquran.com:80:72.61.17.109 http://aishaquran.com/api/courses
+curl -s --resolve app.aishaquran.com:80:72.61.17.109 http://app.aishaquran.com/api/courses
 ```
 
 ## 7. Create the real super-admin account
@@ -184,11 +187,11 @@ certbot --nginx -d app.aishaquran.com -d www.app.aishaquran.com
 
 Certbot's existing renewal timer (already running for the box's other
 certs) picks these up automatically — no extra cron/systemd setup needed.
-Re-run the health checks over real HTTPS to confirm:
+Re-run the checks over real HTTPS to confirm:
 
 ```bash
-curl -s https://aishaquran.com/api/health
-curl -s https://app.aishaquran.com/api/health
+curl -s https://aishaquran.com/api/courses
+curl -s https://app.aishaquran.com/api/courses
 ```
 
 ## Common operations
@@ -204,7 +207,7 @@ docker compose up -d --build backend
 # then the compose command on the VPS)
 for d in AishaQuranAcademyBE AishaQuranAcademyDB AishaQuranAcademyFE deploy; do
   rsync -az --delete -e "ssh -i ~/.ssh/id_aisha_vps" \
-    --exclude node_modules --exclude dist --exclude .env \
+    --exclude node_modules --exclude dist --exclude .env --exclude .git \
     "$d/" "root@72.61.17.109:/opt/aisha/$d/"
 done
 ssh -i ~/.ssh/id_aisha_vps root@72.61.17.109 "cd /opt/aisha/deploy && docker compose up -d --build"

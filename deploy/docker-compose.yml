@@ -45,8 +45,12 @@ services:
       SMTP_PASS: ${SMTP_PASS}
       SMTP_FROM: ${SMTP_FROM}
       MAKE_BLOG_SECRET: ${MAKE_BLOG_SECRET}
+      FIREBASE_KEY: ${FIREBASE_KEY}
+      REGISTRATION_EMAIL_TO: ${REGISTRATION_EMAIL_TO}
       CLIENT_APP_URL: https://aishaquran.com
-      PASSWORD_RESET_APP_URL: https://app.aishaquran.com/reset-password
+      # user.controller.js appends /reset-password?token=... itself — this
+      # must be the bare app origin, not already include that path.
+      PASSWORD_RESET_APP_URL: https://app.aishaquran.com
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:5001/health"]
       interval: 10s
