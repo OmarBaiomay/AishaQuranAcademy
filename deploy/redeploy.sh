@@ -29,7 +29,7 @@ done
 
 echo "==> Rebuilding and recreating changed services"
 cd "$ROOT/deploy"
-docker compose up -d --build
+docker compose --env-file .env.production -f docker-compose.prod.yml up -d --build
 
 echo "==> Status"
-docker compose ps
+docker compose --env-file .env.production -f docker-compose.prod.yml ps
