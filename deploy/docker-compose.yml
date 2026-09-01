@@ -1,0 +1,98 @@
+name: aisha
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # Not published to the host — only reachable from other containers on
+    # this compose network. Nothing outside the VPS should ever be able to
+    # connect to it directly.
+
+  backend:
+    build:
+      context: ../AishaQuranAcademyBE
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 5001
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      EMAILJS_PUBLIC_KEY: ${EMAILJS_PUBLIC_KEY}
+      EMAILJS_PRIVATE_KEY: ${EMAILJS_PRIVATE_KEY}
+      EMAILJS_SERVICE_ID: ${EMAILJS_SERVICE_ID}
+      EMAILJS_TEMPLATE_ID: ${EMAILJS_TEMPLATE_ID}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: ${SMTP_FROM}
+      MAKE_BLOG_SECRET: ${MAKE_BLOG_SECRET}
+      CLIENT_APP_URL: https://aishaquran.com
+      PASSWORD_RESET_APP_URL: https://app.aishaquran.com/reset-password
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Not published to the host either — Caddy reaches it over the
+    # compose network at http://backend:5001, and that's the only path in.
+
+  frontend:
+    build:
+      context: ../AishaQuranAcademyFE
+      args:
+        VITE_API_BASE_URL: https://aishaquran.com/api
+        VITE_MEDIA_BASE_URL: https://aishaquran.com
+        VITE_DASHBOARD_URL: https://app.aishaquran.com
+        VITE_SITE_URL: https://aishaquran.com
+        VITE_EMAILJS_PUBLIC_KEY: ${VITE_EMAILJS_PUBLIC_KEY}
+        VITE_EMAILJS_SERVICE_ID: ${VITE_EMAILJS_SERVICE_ID}
+        VITE_EMAILJS_TEMPLATE_ID: ${VITE_EMAILJS_TEMPLATE_ID}
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: ../AishaQuranAcademyDB
+      args:
+        VITE_API_BASE_URL: https://app.aishaquran.com/api
+        VITE_MEDIA_BASE_URL: https://app.aishaquran.com
+        VITE_SOCKET_URL: https://app.aishaquran.com
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+      - frontend
+      - dashboard
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:

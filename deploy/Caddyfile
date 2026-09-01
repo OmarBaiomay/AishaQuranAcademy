@@ -1,0 +1,33 @@
+# Caddy gets a free, auto-renewing Let's Encrypt cert per domain listed
+# below the first time it starts — no separate certbot step needed.
+# Requires DNS for each domain to already point at this VPS.
+
+aishaquran.com, www.aishaquran.com {
+	# API and realtime traffic stay same-origin under the public site's
+	# own domain — the app's own code already assumes this (see the
+	# "iOS Safari blocks cross-site cookies" comment in lib/axios.js);
+	# a separate api.* subdomain would reintroduce exactly that problem.
+	handle /api/* {
+		reverse_proxy backend:5001
+	}
+	handle /socket.io/* {
+		reverse_proxy backend:5001
+	}
+	handle {
+		reverse_proxy frontend:80
+	}
+	encode gzip
+}
+
+app.aishaquran.com, www.app.aishaquran.com {
+	handle /api/* {
+		reverse_proxy backend:5001
+	}
+	handle /socket.io/* {
+		reverse_proxy backend:5001
+	}
+	handle {
+		reverse_proxy dashboard:80
+	}
+	encode gzip
+}
