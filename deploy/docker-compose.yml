@@ -52,8 +52,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    # Not published to the host either — Caddy reaches it over the
-    # compose network at http://backend:5001, and that's the only path in.
+    ports:
+      - "127.0.0.1:3012:5001"
 
   frontend:
     build:
@@ -67,6 +67,11 @@ services:
         VITE_EMAILJS_SERVICE_ID: ${VITE_EMAILJS_SERVICE_ID}
         VITE_EMAILJS_TEMPLATE_ID: ${VITE_EMAILJS_TEMPLATE_ID}
     restart: unless-stopped
+    # This VPS already runs a system nginx (+ certbot) in front of other
+    # sites on 80/443 — see deploy/nginx/. Publish to localhost only, on a
+    # port not used by the box's other apps (arena=3001, b-code=3002).
+    ports:
+      - "127.0.0.1:3010:80"
 
   dashboard:
     build:
@@ -76,23 +81,8 @@ services:
         VITE_MEDIA_BASE_URL: https://app.aishaquran.com
         VITE_SOCKET_URL: https://app.aishaquran.com
     restart: unless-stopped
-
-  caddy:
-    image: caddy:2-alpine
-    restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      - backend
-      - frontend
-      - dashboard
+      - "127.0.0.1:3011:80"
 
 volumes:
   postgres_data:
-  caddy_data:
-  caddy_config:
