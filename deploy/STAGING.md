@@ -98,7 +98,7 @@ Consider adding HTTP basic auth or an IP allowlist in the nginx vhost too
 (see the commented-out note in the conf file) — a staging dashboard with
 realistic-looking demo data is still a public URL once DNS resolves.
 
-### Create an Administrator account, then generate demo data
+### Create an Administrator account
 
 ```bash
 docker compose --env-file .env.staging -f docker-compose.staging.yml exec backend \
@@ -112,21 +112,9 @@ docker compose --env-file .env.staging -f docker-compose.staging.yml exec backen
 ```
 
 Then log in as that Administrator on `https://staging.app.aishaquran.com`
-and click **Finance & Payroll → Demo Data → Generate Demo Data** — or run
-it from the command line instead:
-
-```bash
-docker compose --env-file .env.staging -f docker-compose.staging.yml exec backend \
-  npm run seed:finance-demo
-```
-
-This creates the full test scenario (`teacher1@demo.com` .. — password
-`123456` for every demo account) described in
-`AishaQuranAcademyBE/services/financeDemoDataService.js`'s header comment:
-a teacher rate-carded at $3.00 USD/hour but paid out in EGP, students
-billed $8.00 USD/hour or its equivalent across USD/EGP/SAR, spanning July
-through today at different payroll lifecycle stages. Safe to click/run
-again any time — it always resets every `@demo.com` row first.
+and create rate cards / classrooms / sessions through the real Finance &
+Payroll UI to test each flow (there is no demo-data generator or button —
+that was tried and removed; test with real-shaped data entered by hand).
 
 ## Everyday redeploy
 
