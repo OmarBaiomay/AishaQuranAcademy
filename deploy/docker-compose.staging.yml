@@ -1,0 +1,88 @@
+name: aisha-staging
+
+# Staging stack for the Finance & Payroll module (Stage branch) — a
+# completely separate Postgres database/volume and separate containers
+# from docker-compose.prod.yml, so testing here can never touch real
+# production data. Only the backend + dashboard are staged; the public
+# marketing site (AishaQuranAcademyFE) is untouched by this module, so
+# there's no staging build of it here — see deploy/STAGING.md.
+#
+# Ports are published to localhost only, on a range that doesn't collide
+# with prod (3010-3012) or this VPS's other projects (see DEPLOY.md).
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_staging_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # Not published to the host — same isolation as prod's postgres.
+
+  backend:
+    build:
+      context: ../AishaQuranAcademyBE
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 5001
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      EMAILJS_PUBLIC_KEY: ${EMAILJS_PUBLIC_KEY}
+      EMAILJS_PRIVATE_KEY: ${EMAILJS_PRIVATE_KEY}
+      EMAILJS_SERVICE_ID: ${EMAILJS_SERVICE_ID}
+      EMAILJS_TEMPLATE_ID: ${EMAILJS_TEMPLATE_ID}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: ${SMTP_FROM}
+      MAKE_BLOG_SECRET: ${MAKE_BLOG_SECRET}
+      FIREBASE_KEY: ${FIREBASE_KEY}
+      REGISTRATION_EMAIL_TO: ${REGISTRATION_EMAIL_TO}
+      CLIENT_APP_URL: https://staging.aishaquran.com
+      PASSWORD_RESET_APP_URL: https://staging.app.aishaquran.com
+      # Finance & Payroll module (see AishaQuranAcademyBE/lib/crypto.js and
+      # services/paypalService.js) — generate a DIFFERENT key/credentials
+      # from production's; never reuse prod secrets on staging.
+      PAYOUT_ENCRYPTION_KEY: ${PAYOUT_ENCRYPTION_KEY}
+      PAYPAL_MODE: ${PAYPAL_MODE}
+      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID}
+      PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET}
+      PAYPAL_WEBHOOK_ID: ${PAYPAL_WEBHOOK_ID}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "127.0.0.1:3022:5001"
+
+  dashboard:
+    build:
+      context: ../AishaQuranAcademyDB
+      args:
+        VITE_API_BASE_URL: https://staging.app.aishaquran.com/api
+        VITE_MEDIA_BASE_URL: https://staging.app.aishaquran.com
+        VITE_SOCKET_URL: https://staging.app.aishaquran.com
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3021:80"
+
+volumes:
+  postgres_staging_data:
