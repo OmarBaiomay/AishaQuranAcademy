@@ -52,7 +52,14 @@ services:
       # must be the bare app origin, not already include that path.
       PASSWORD_RESET_APP_URL: https://app.aishaquran.com
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:5001/health"]
+      # Was `wget` — not installed in the node:20-slim base image (only
+      # openssl is, per the Dockerfile), so this failed every single time
+      # (FailingStreak stuck at max, container permanently reported
+      # "unhealthy" despite the app itself running and serving requests
+      # fine — confirmed live via the public site during a routine
+      # redeploy). Node itself is always present in this image; no need
+      # for an extra installed binary at all.
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5001/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
       interval: 10s
       timeout: 5s
       retries: 5
